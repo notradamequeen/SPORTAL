@@ -1,0 +1,6 @@
+.container{
+    background-color: #fff;
+}
+.home_container, .profile_container{
+    margin:100px 20px 20px 20px;
+}
