@@ -14,6 +14,7 @@ import Login from './Login';
 import Home from './Home';
 import Profile from './Profile';
 import Contact from './Contact';
+import Registration from './Registration';
 
 
 const CPrivateRoute = props => (
@@ -48,7 +49,7 @@ const AllRoutes = () => (
     <Router>
         <div>
             <Switch>
-                <PrivateRoute exact path="/" component={Home} />
+                <PrivateRoute exact path="/" component={Registration} />
                 <PrivateRoute exact path="/profile" component={Profile} />
                 <PrivateRoute exact path="/contact" component={Contact} />
                 <Route exact path="/login" component={Login} />
