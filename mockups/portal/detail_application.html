@@ -48,6 +48,13 @@
                     Partner Portal
                 </a>
             </div>
+            
+            <div>
+                <center>
+                    <img src="assets/img/faces/face-4.jpg"/>
+                    <h6> Westwood Secondary School </h6>
+                </center>
+            </div>
 
             <ul class="nav">
                 <li>
@@ -78,6 +85,18 @@
                     <a href="fund_requests.html">
                         <i class="ti-list"></i>
                         <p>Fund Requests</p>
+                    </a>
+                </li>
+                <li >
+                    <a href="terminations.html">
+                        <i class="ti-list"></i>
+                        <p>Terminations</p>
+                    </a>
+                </li>
+                <li >
+                    <a href="transfer.html">
+                    <i class="ti-list"></i>
+                    <p>Transfer</p>
                     </a>
                 </li>
             </ul>
@@ -266,7 +285,9 @@
                                         </div>	
                                     </div>
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Update Profile</button>
+                                        <button type="submit" class="btn btn-success btn-fill btn-wd">Accept</button>
+                                        <button type="submit" class="btn btn-danger btn-fill btn-wd">Reject</button>
+                                        <a href="applications.html"><button type="submit" class="btn btn-info btn-fill btn-wd">Back</button></a>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -283,7 +304,7 @@
                                     <li>
                                         <div class="row">
                                             <div class="col-xs-3">
-                                                <div class="avatar">
+                                                <div class="avatar ben">
                                                     <img src="assets/img/faces/face-1.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
                                                 </div>
                                             </div>
@@ -291,13 +312,16 @@
                                                 Nindya
                                                 <br />
                                                 <span class="text-muted"><small>Midwest Elementary School</small></span>
+                                            </div>
+                                            <div class="col-xs-3 text-right">
+                                                <btn class="btn btn-sm btn-danger terminate">terminate</btn>
                                             </div>                                            
                                         </div>
                                     </li>
                                     <li>
                                         <div class="row">
                                             <div class="col-xs-3">
-                                                <div class="avatar">
+                                                <div class="avatar ben">
                                                     <img src="assets/img/faces/face-1.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
                                                 </div>
                                             </div>
@@ -305,7 +329,10 @@
                                                 Alex Lee
                                                 <br />
                                                 <span class="text-muted"><small>Midwest Elementary School</small></span>
-                                            </div>                                            
+                                            </div>      
+                                            <div class="col-xs-3 text-right">
+                                                <btn class="btn btn-sm btn-danger terminate">terminate</btn>
+                                            </div>                                      
                                         </div>
                                     </li>
                                     
@@ -403,7 +430,17 @@
 	<script src="assets/js/paper-dashboard.js"></script>
 
 	<!-- Paper Dashboard DEMO methods, don't include it in your project! -->
-	<script src="assets/js/demo.js"></script>
+    <script src="assets/js/demo.js"></script>
+    <script>
+    $(document).ready(function(){
+                $(' .ben').click(function(){
+                    window.location.href = 'beneficiary_detail.html';
+                })
+                $(' .terminate').click(function(){
+                    window.location.href = 'termination_detail.html';
+                })
+            })
+    </script>
 
 
 </html>

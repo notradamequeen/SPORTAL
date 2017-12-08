@@ -76,3 +76,7 @@
 .main_form p{
 	margin-left: 5px;
 }
+
+.table span.icons{
+	display: none;
+}
