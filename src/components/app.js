@@ -49,7 +49,7 @@ const AllRoutes = () => (
     <Router>
         <div>
             <Switch>
-                <PrivateRoute exact path="/" component={Registration} />
+                <Route exact path="/" component={Registration} />
                 <PrivateRoute exact path="/profile" component={Profile} />
                 <PrivateRoute exact path="/contact" component={Contact} />
                 <Route exact path="/login" component={Login} />
