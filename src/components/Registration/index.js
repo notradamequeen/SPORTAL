@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../actions/';
-import Tab1 from './Tab1';
-import Tab2 from './Tab2';
-import Tab3 from './Tab3';
-import Tab4 from './Tab4';
-import Tab5 from './Tab5';
+import Tab1 from './tab1';
+import Tab2 from './tab2';
+import Tab3 from './tab3';
+import Tab4 from './tab4';
+import Tab5 from './tab5';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
