@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 const Tab2 = props => (
     <div className="col-md-12">
         <div className="row">
-            <p>Personal Details</p>
+            <p className="ptitle">Personal Details</p>
             <div className="col-sm-6">
                 <div className="form-group">
                     <label>Name <small>(required)</small></label>
@@ -40,6 +40,7 @@ const Tab2 = props => (
                     <label>Other Marital Status</label>
                     <input name="other4" type="text" className="form-control" placeholder="Please Specify" />
                 </div>
+                
             </div>
             <div className="col-sm-6">
                 <div className="form-group">
@@ -76,22 +77,21 @@ const Tab2 = props => (
                     <input name="other1" type="text" className="form-control" placeholder="Please Specify" />
                 </div>
             </div>
-        </div>
-
+        </div>  
         <div className="row">
-            <p>Address</p>	
+            <p className="ptitle">Address</p>	
             <div className="col-sm-6">
                 <div className="form-group">
                     <label>Street Name</label>
                     <input type="text" className="form-control" placeholder="5h Avenue" />
                 </div>
                 <div className="form-group">
-                    <label>Street Number</label>
+                    <label>Block Number</label>
                     <input type="text" className="form-control" placeholder="242" />
                 </div>
                 <div className="form-group">
                     <label>City</label>
-                    <input type="text" className="form-control" placeholder="New York..."/>
+                    <input type="text" className="form-control" placeholder="New York..." />
                 </div>
             </div>
             <div className="col-sm-6">
@@ -111,11 +111,11 @@ const Tab2 = props => (
                 </div>
                 <div className="form-group">
                     <label>Other Type of Flat</label>
-                    <input name="other2" type="text" className="form-control" placeholder="Please Specify"/>
+                    <input name="other2" type="text" className="form-control" placeholder="Please Specify" />
                 </div>
                 
                 <div className="form-group">
-                    <label>Country</label>
+                    <label>Country</label><br />
                     <select name="country" className="form-control">
                         <option value="Singapore"> Singapore </option>
                         <option value="Albania"> Albania </option>
@@ -130,109 +130,26 @@ const Tab2 = props => (
                 </div>
             </div>
         </div>
-
-        <div class="row">	
+        <div className="row">	
             <p>Personal Contact</p>	
-            <div class="col-sm-6">
-                <div class="form-group">
+            <div className="col-sm-6">
+                <div className="form-group">
                     <label>Home Phone <small>(required)</small></label>
-                    <input name="home" type="text" class="form-control" placeholder="Home no." />
+                    <input name="home" type="text" className="form-control" placeholder="Home no." />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                     <label>Mobile Phone</label>
-                    <input name="mobile" type="text" class="form-control" placeholder="Mobile no."/>
+                    <input name="mobile" type="text" className="form-control" placeholder="Mobile no." />
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="form-group">
+            <div className="col-sm-6">
+                <div className="form-group">
                     <label>Email Address </label>
-                    <input name="email2" type="text" class="form-control datepicker" placeholder="Email address"/>
+                    <input name="email2" type="text" className="form-control " placeholder="Email address" />
                 </div>
-                <div class="form-group">
-                    <label>Urgent Contact </label>
-                    <input name="urgent" type="text" class="form-control " placeholder="Urgent contact" />
-                </div>
+                
             </div>	
-        </div>	
-        <div class="row">	
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <label>Reason/s for not having an income earner / Having one income earner:</label>
-                    <div class="row col-md-12">
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-1" type="checkbox" value="Alcoholism" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-1">Alcoholism</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-2" type="checkbox" value="Cultural or personal belief" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-2">Cultural or personal belief</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-3" type="checkbox" value="Social Visit Pass" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-3">Social Visit Pass</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-1" type="checkbox" value="Chronic illness" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-1">Chronic illness</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-2" type="checkbox" value="Gambling addiction" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-2">Gambling addiction</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-3" type="checkbox" value="Temporarily unfit for work" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-3">Temporarily unfit for work</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-3" type="checkbox" value="Disability" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-3">Disability</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-3" type="checkbox" value="Low education" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-3">Low education</label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="custom-option button">
-                            <input id="checkbox-able-3" type="checkbox" value="Drug addiction" name="reason[]"/>
-                            <span class="button-checkbox"></span>
-                            </label>
-                            <label for="checkbox-able-3">Drug addiction</label>
-                        </div>
-                    </div>	
-                </div>
-                <div class="col-sm-12">
-                    <div class="col-md-4">
-                        <label>Another Reason</label>
-                        <input name="another_reason" type="text" class="form-control" placeholder="Please Specify if exist"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-            
+        </div>	          
     </div>
 );
 
