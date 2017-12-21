@@ -1,7 +1,7 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 
-import Step from './Step';
+import Step from './step';
 
 const styles = {
   root: {
