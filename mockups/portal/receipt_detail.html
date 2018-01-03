@@ -30,6 +30,12 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/excite-bike/jquery-ui.min.css" rel="stylesheet">
+    <style>
+    .removeicon .icons{
+        display: none;
+    }
+    </style>
 
 </head>
 <body>
@@ -48,7 +54,7 @@
                     Partner Portal
                 </a>
             </div>
-
+            
             <div>
                 <center>
                     <img src="assets/img/faces/face-4.jpg"/>
@@ -75,7 +81,7 @@
                         <p>Beneficiaries</p>
                     </a>
                 </li>
-                <li >
+                <li class="active">
                     <a href="receipts.html">
                         <i class="ti-list"></i>
                         <p>Receipts</p>
@@ -87,7 +93,7 @@
                         <p>Fund Requests</p>
                     </a>
                 </li>
-                <li class="active">
+                <li >
                     <a href="terminations.html">
                         <i class="ti-list"></i>
                         <p>Terminations</p>
@@ -113,14 +119,14 @@
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Termination Detail T20170001 - Kelly Cullen</a>
+                    <a class="navbar-brand" href="#">Receipt Detail -  R-171123-013</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="#" class="baloon_profile"><div class="bg-inverse text-white">Ms Ng Teng Geok</div></a>
                         </li>
-                        <li>
+						<li>
                             <a href="#">
 								<i class="ti-settings"></i>
 								<p>Profile Settings</p>
@@ -138,69 +144,102 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-7">
                         <div class="card">
-                            <div class="header">
-                                <h4 class="title">Termination Detail</h4>
-                            </div>
                             <div class="content">
                                 <form class="main_form">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Termination No</label>
-                                                <input name="name" id="name" type="text" class="form-control" placeholder="Termination No" value="T201600021" disabled="">
+                                                <label>Receipt No</label>
+                                                <input name="name" id="" type="text" class="form-control" placeholder="Receipt No" value="R-171123-037" disabled="">
                                             </div>
                                             <div class="form-group">
-                                                    <label>Terminated by Partner</small></label>
-                                                    <input name="name" id="name" type="text" class="form-control" placeholder="Terminated by Partner" value="Westwood Secondary School" disabled>
-                                                </div>
+                                                <label>Application No</label>
+                                                <input name="nric" id="nric" type="text" class="form-control" placeholder="Application No" value="AP-201700003" disabled>
+                                            </div>
                                             <div class="form-group">
-                                                <label>Termination Status </label>
-                                                <select class="form-control valid" aria-invalid="false" disabled>
-                                                        <option value="Rejected by SPMF">Rejected by SPMF</option
-                                                        ><option value="Planned">Planned</option>
-														<option value="Verified by Partner">Verified by Partner</option>
-														<option value="Approved by Partner">Approved by Partner</option>
-														<option value="Submitted to SPMF">Submitted to SPMF</option>
-														<option value="Rejected by Partner">Rejected by Partner</option>
-														<option value="Cancelled by Partner">Cancelled by Partner</option>
-														<option value="Verified by SPMF">Verified by SPMF</option>
-														<option value="Approved by SPMF" selected="selected">Approved</option>
+                                                <label>Issued By</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="" value="Westwood Secondary School" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Approved Amount ($)</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="Approved Amount" value="" >
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Payout Amount ($)</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="Payout Amount" value="95" >
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Fund Request Item</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="Fund Request Item" value="FAI-000003" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Generated From</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="Generated From" value="Khairul B Ramlee 1700003" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Mode of Payment </label>
+                                                <select class="form-control valid" aria-invalid="false" >
+                                                    <option value="">Choose Payment</option>
                                                 </select>
                                             </div>
-                                            
-
-                                            
-                                            
-                                            
-                                        </div>
-                                        <div class="col-sm-6">   
                                             <div class="form-group">
-                                                <label>Termination Date</label>
-                                                <input name="dob" type="text" class="form-control datepicker" placeholder="Termination Date" value="08/12/2016" disabled>
-                                            </div>                                         
-                                            <div class="form-group" >
-                                                <label>Terminating Beneficary</label>
-                                                <input name="other1" type="text" class="form-control" placeholder="Please Specify" value="Chow Ley Peng" disabled>
+                                                <label>Cheque / Transaction No.</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="Cheque / Transaction No." value="" >
+                                            </div>                                            
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Status </label>
+                                                <select class="form-control valid" aria-invalid="false" disabled>
+                                                    <option value="Planned">Pending</option>
+                                                </select>
                                             </div>
-                                            
-                                            <div class="form-group" >
-                                                <label>Reason for Termination</label>
-                                                <input name="other1" type="text" class="form-control" placeholder="Please Specify" value="Use the fund to buy cigarettes" disabled>
+                                            <div class="form-group">
+                                                <label>For Level</label>
+                                                <input name="field" id="field" type="text" class="form-control" placeholder="" value="Secondary" >
                                             </div>
-                                            
+                                            <div class="form-group">
+                                                <label>Date Approved </label>
+                                                <input name="dob" type="text" class="form-control datepicker" placeholder="" value="12/12/2017" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date Requested</label>
+                                                <input name="dob" type="text" class="form-control datepicker" placeholder="" value="12/10/2017" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date Disbursed </label>
+                                                <input name="dob" type="text" class="form-control datepicker" placeholder="" value="" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Scheduled Payout Date </label>
+                                                <input name="dob" type="text" class="form-control datepicker" placeholder="Scheduled Payout Date" value="" >
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date Received</label>
+                                                <input name="dob" type="text" class="form-control datepicker" placeholder="" value="01/12/2017" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Application No</label>
+                                                <input name="tes" type="text" class="form-control" placeholder="" value="AP-201700003" disabled>
+                                            </div>
+                                            <div class="form-group removeicon">
+                                                <label>Application No</label>
+                                                <input type="checkbox"  valued="yes" checked="checked" style="width:20px;overflow:hidden" >
+                                            </div>
                                             
                                         </div>
                                     </div>
                                     
-                                    
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Update Termination</button>
+                                        <button type="submit" class="btn btn-success btn-fill btn-wd">Save</button>
+                                        <button type="submit" class="btn btn-danger btn-fill btn-wd">Cancel</button>
+                                        <a href="receipts.html"><button type="submit" class="btn btn-info btn-fill btn-wd">Back</button></a>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div>    
                     <div class="col-lg-4 col-md-5">
                         <div class="card">
                             <div class="header">
@@ -216,9 +255,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
-                                                Chow Yun Fatt
+                                                Nadia B Ramlee
                                                 <br />
-                                                <span class="text-muted"><small>Applicant : Chow Tzee Cheng</small></span>
+                                                <span class="text-muted"><small>Applicant : Ramlee Bin Mohd Yusoff</small></span>
                                             </div>
                                             <div class="col-xs-3 text-right">
                                                 <btn class="btn btn-sm btn-danger">detail</btn>
@@ -229,7 +268,7 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div>                
                 </div>
             </div>
         </div>
@@ -255,6 +294,7 @@
     <!--   Core JS Files   -->
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
 	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>	
 
 	<!--  Checkbox, Radio & Switch Plugins -->
 	<script src="assets/js/bootstrap-checkbox-radio.js"></script>
@@ -272,7 +312,25 @@
 	<script src="assets/js/paper-dashboard.js"></script>
 
 	<!-- Paper Dashboard DEMO methods, don't include it in your project! -->
-	<script src="assets/js/demo.js"></script>
+    <script src="assets/js/demo.js"></script>
+    <script>
+    $(document).ready(function(){
+                $(' .ben').click(function(){
+                    window.location.href = 'beneficiary_detail.html';
+                })
+                $(' .terminate').click(function(){
+                    window.location.href = 'termination_detail.html';
+                })
+                $('.datepicker').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                format: 'dd-mm-yyyy',
+                showDropdowns: true,
+                changeMonth: true,
+                    changeYear: true
+            });
+            })
+    </script>
 
 
 </html>

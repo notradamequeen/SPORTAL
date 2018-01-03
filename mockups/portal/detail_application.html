@@ -94,7 +94,7 @@
                     </a>
                 </li>
                 <li >
-                    <a href="transfer.html">
+                    <a href="transfers.html">
                     <i class="ti-list"></i>
                     <p>Transfer</p>
                     </a>
@@ -113,11 +113,14 @@
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Application Detail - AP2017-12-11</a>
+                    <a class="navbar-brand" href="#">Application Detail - AP201700005</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
-						<li>
+                        <li>
+                            <a href="#" class="baloon_profile"><div class="bg-inverse text-white">Ms Ng Teng Geok</div></a>
+                        </li>
+                        <li>
                             <a href="#">
 								<i class="ti-settings"></i>
 								<p>Profile Settings</p>
@@ -145,7 +148,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Name <small>(required)</small></label>
-                                                <input name="name" id="name" type="text" class="form-control" placeholder="Fullname" value="Richard Son" disabled="">
+                                                <input name="name" id="name" type="text" class="form-control" placeholder="Fullname" value="Caliste Cullen" disabled="">
                                             </div>
                                             <div class="form-group">
                                                 <label>ID Type </label>
@@ -200,10 +203,10 @@
                                                 <label>Race </label>
                                                 <select class="form-control valid" aria-invalid="false" disabled>
                                                     <option value="">Select Race</option>
-                                                    <option  value="Chinese" selected="selected">Chinese</option>
+                                                    <option  value="Chinese">Chinese</option>
                                                     <option  value="Malay">Malay</option>
                                                     <option  value="Indian">Indian</option>
-                                                    <option  value="Eurasian">Eurasian</option>
+                                                    <option  value="Eurasian" selected="selected">Eurasian</option>
                                                     <option  value="other">Others (Please Specify)</option>
                                                 </select>
                                             </div>
@@ -280,7 +283,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Email Address </label>
-                                                <input name="email2" type="text" class="form-control " placeholder="Email address" value="rich12.son@gmail.com" disabled>
+                                                <input name="email2" type="text" class="form-control " placeholder="Email address" value="cali.cullen@gmail.com" disabled>
                                             </div>
                                         </div>	
                                     </div>
@@ -309,9 +312,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
-                                                Nindya
+                                                Kelly Cullen
                                                 <br />
-                                                <span class="text-muted"><small>Midwest Elementary School</small></span>
+                                                <span class="text-muted"><small>Midwest Primary School</small></span>
                                             </div>
                                             <div class="col-xs-3 text-right">
                                                 <btn class="btn btn-sm btn-danger terminate">terminate</btn>
@@ -326,9 +329,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
-                                                Alex Lee
+                                                Alex Cullen
                                                 <br />
-                                                <span class="text-muted"><small>Midwest Elementary School</small></span>
+                                                <span class="text-muted"><small>Riverside Secondary School</small></span>
                                             </div>      
                                             <div class="col-xs-3 text-right">
                                                 <btn class="btn btn-sm btn-danger terminate">terminate</btn>
@@ -348,14 +351,14 @@
                                     <li>
                                         <div class="row">
                                             <div class="col-xs-3">
-                                                <div class="avatar">
+                                                <div class="avatar other">
                                                     <img src="assets/img/faces/face-0.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
-                                                Aimar Go
+                                                Daisy Swee
                                                 <br />
-                                                <span class="text-muted"><small>Father</small></span>
+                                                <span class="text-muted"><small>Wife</small></span>
                                             </div>
 
                                             <div class="col-xs-3 text-right">
@@ -366,12 +369,12 @@
                                     <li>
                                         <div class="row">
                                             <div class="col-xs-3">
-                                                <div class="avatar">
+                                                <div class="avatar other">
                                                     <img src="assets/img/faces/face-0.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
                                                 </div>
                                             </div>
                                             <div class="col-xs-6">
-                                                Alicia Keys
+                                                Magdalene Cullen
                                                 <br />
                                                 <span class="text-muted"><small>Mother</small></span>
                                             </div>
@@ -435,6 +438,9 @@
     $(document).ready(function(){
                 $(' .ben').click(function(){
                     window.location.href = 'beneficiary_detail.html';
+                })
+                $(' .other').click(function(){
+                    window.location.href = 'other_household.html';
                 })
                 $(' .terminate').click(function(){
                     window.location.href = 'termination_detail.html';
