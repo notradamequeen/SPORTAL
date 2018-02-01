@@ -3,8 +3,20 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-const Tab5 = props => (
-    <div className="col-md-12">
+class Tab5 extends React.Component {
+
+    constructor() {
+        super();
+        
+    }
+
+    submitApp = () => {
+        this.props.submitApp();
+    }
+
+    render() {
+        return (
+        <div className="col-md-12">
         <div className="row">
             <h5 className="">Declaration of consent</h5>
             <div className="col-sm-10 col-sm-offset-1">
@@ -35,21 +47,21 @@ const Tab5 = props => (
         <div className="row">
             <br />
             <center>
-                <input type="checkbox" value="1" name="checkagree" id="checkagree" autocomplete="off" required /> 													
-                <input type='button' class='btn btn-lg btn-fill btn-primary btn-wd' id="agreebtn" name='agree' value='I Agree and Submit' />
+                <input type="checkbox" value="1" name="checkagree" id="checkagree" autoComplete="off" required /> 													
+                <input type='button' className='btn btn-lg btn-fill btn-primary btn-wd' id="agreebtn" name='agree' value='I Agree and Submit' onClick={this.props.submitApp}/>
             </center>
             <br />
             <br />
         </div>
-    </div>
-);
-
+    </div>)
+    }
+}
 
 Tab5.propTypes = {
     title: PropTypes.string
 };
 Tab5.defaultProps = {
-    title: 'tab5',
+    title: 'tab5 ',
 };
 
 
@@ -59,8 +71,6 @@ const mapDispatchToProps = (dispatch)  => ({
 
 const mapStateToProps = state => ({
     user: state.user,
-});
-
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tab5);
-

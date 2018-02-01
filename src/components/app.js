@@ -47,7 +47,7 @@ const PrivateRoute = connect(privateRouteToProps)(CPrivateRoute);
 
 const AllRoutes = () => (
     <Router>
-        <div>
+        <div className="registrationForm">
             <Switch>
                 <Route exact path="/" component={Registration} />
                 <PrivateRoute exact path="/profile" component={Profile} />

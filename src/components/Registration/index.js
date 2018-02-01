@@ -9,6 +9,7 @@ import Tab2 from './tab2';
 import Tab3 from './tab3';
 import Tab4 from './tab4';
 import Tab5 from './tab5';
+import $ from 'jquery';
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -54,10 +55,48 @@ class Registration extends React.Component {
             }
             }],
             currentStep: 0,
-            tabIndex: 0
+            tabIndex: 0,
+            //data
+            check1: '',
+            check2: '',
+            check3: '',
+            check4: '',
+            check5: '',
+            check6: '',
+            check7: '',
+            check8: '',
+            check9: '',
+            check10: '',
+            Full_Name__c: '',
+            ID_Type__c  : 'NRIC',
+            Marital_Status__c: 'Single',
+            Date_of_Birth__c: '',
+            Gender__c: 'Male',
+            Nationality__c: 'Singaporean',
+            Race__c: '',
+            Street__c: '',
+            Unit_Number__c: '',
+            City__c: '',
+            Fail_Flat_Type__c: '',
+            Country__c: 'Singapore',
+            Home_Phone__c: '',
+            Mobile_Phone__c: '',
+            Email_Address__c: '',
+            Ben: Array(),
+            Hou: Array()
         };
-        this.onClickNext = this.onClickNext.bind(this);
-        this.onClickPrev = this.onClickPrev.bind(this);
+        this.onClickNext                = this.onClickNext.bind(this);
+        this.onClickPrev                = this.onClickPrev.bind(this);
+        this.submitApp                  = this.submitApp.bind(this);
+        this.changeState                = this.changeState.bind(this);
+        this.onSelect                   = this.onSelect.bind(this);
+        
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("beforeunload", function (event) {
+            console.log(event);
+        })
     }
     
     onClickNext() {
@@ -76,43 +115,117 @@ class Registration extends React.Component {
         });
     }
 
+    onSelect() {
+        
+    }
+
+    changeState(name, val){
+        this.setState({
+            [name]: val
+        });
+        //console.log(this.state[name])
+    }
+
+    submitApp(){
+        var data = {
+            Full_Name__c: this.state.Full_Name__c,
+            ID_Number__c  : this.state.ID_Number__c,
+            ID_Type__c  : this.state.ID_Type__c,
+            Marital_Status__c: this.state.Marital_Status__c,
+            Date_of_Birth__c: this.state.Date_of_Birth__c,
+            Gender__c: this.state.Gender__c,
+            Nationality__c: this.state.Nationality__c,
+            Race__c: this.state.Race__c,
+            Street__c: this.state.Street__c,
+            Unit_Number__c: this.state.Unit_Number__c,
+            City__c: this.state.City__c,
+            Fail_Flat_Type__c: this.state.Fail_Flat_Type__c,
+            Country__c: this.state.Country__c,
+            Home_Phone__c: this.state.Home_Phone__c,
+            Mobile_Phone__c: this.state.Mobile_Phone__c,
+            Email_Address__c: this.state.Email_Address__c,
+            Ben: this.state.Ben,
+            Hou: this.state.Hou
+        };
+        return fetch('http://localhost:3000/save',
+        {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            body: JSON.stringify(data)
+        },
+        })
+        .then((response) => response.json())
+        .then((responseData) => {
+        console.warn(responseData);
+        return responseData;
+        })
+        .catch(error => console.warn(error));
+        //console.log(data);
+        return true;
+    }
+
     render() {
         const { steps, currentStep } = this.state;
         const buttonStyle = { background: '#E0E0E0', width: 200, padding: 16, textAlign: 'center', margin: '0 auto', marginTop: 32 };
         let buttonprev = null;
         let buttonnext = null;
         if (currentStep > 0) {
-            buttonprev = <button onClick={ this.onClickPrev } className="btn btn-primary btn-100">Prev</button>;
+            buttonprev = <button onClick={ this.onClickPrev } className="btn btn-warning btn-100">Prev</button>;
           } else {
             buttonprev = '';
           }
           if (currentStep == 4) {
             buttonnext = '';
           } else {
-            buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100">Next</button>;
+            if(this.state.check1 == 'on' && this.state.check2 == 'on' &&  this.state.check4 == 'on' &&  this.state.check5 == 'on' &&  this.state.check6 == 'on' &&  this.state.check7 == 'on' &&  this.state.check8 == 'on' &&  this.state.check9 == 'on' &&  this.state.check10 == 'on' ){
+                buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100">Next</button>;
+            }
+            else{
+                buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100" disabled>Next</button>;
+            }
           }
        return ( 
         <div className="container body">
-            <div className="">
+            <div className="" id="AppForm">
                 <Stepper steps={ steps } activeStep={ currentStep } />
                 
-                <Tabs selectedIndex={this.state.tabIndex}>
-            
+                <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
+                <TabList style={{ display: "none" }}>
+                    <Tab>Title 1</Tab>
+                    <Tab>Title 2</Tab>
+                    <Tab>Title 3</Tab>
+                    <Tab>Title 4</Tab>
+                    <Tab>Title 5</Tab>
+                </TabList>
+
                     <TabPanel>
-                        <Tab1 />
+                        <Tab1 
+                            changeState={this.changeState}
+                            data={this.state}
+                            />
                     </TabPanel>
                     <TabPanel>
-                        <Tab2 />
-                        
+                        <Tab2 
+                            changeState={this.changeState}
+                            data={this.state}
+                        />
                     </TabPanel>
                     <TabPanel>
-                        <Tab3 />
+                        <Tab3 
+                            changeState={this.changeState}
+                            data={this.state}
+                        />
                     </TabPanel>
                     <TabPanel>
-                        <Tab4 />
+                        <Tab4 
+                            changeState={this.changeState}
+                            data={this.state}
+                        />
                     </TabPanel>
                     <TabPanel>
-                        <Tab5 />
+                        <Tab5 submitApp={this.submitApp}/>
                     </TabPanel>
                 </Tabs>
                 <br />

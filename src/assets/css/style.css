@@ -6,6 +6,9 @@ html{
     height: 100%;
     padding: 50px;
 }
+.registrationForm{
+  margin: 50px;
+}
 .home_container, .profile_container{
     margin:100px 20px 20px 20px;
 }
@@ -61,4 +64,24 @@ html{
   
   .react-tabs__tab-panel--selected {
     display: block;
+  }
+
+  .fullw{
+    width: 100% !important;
+  }
+
+  .ulnone{
+    list-style: none;
+  }
+
+  .react-datepicker-wrapper,.react-datepicker__input-container{
+    width: 100% !important;
+  }
+
+  input[type=checkbox]{
+    margin: 10px;
+  }
+
+  .btn-100{
+    width: 100px;
   }
