@@ -147,7 +147,7 @@ class Registration extends React.Component {
             Ben: this.state.Ben,
             Hou: this.state.Hou
         };
-        return fetch('http://localhost:3000/save',
+        return fetch('https://us-central1-fbfunctions-5b218.cloudfunctions.net/api1/save',
         {
             method: "POST",
             headers: {
