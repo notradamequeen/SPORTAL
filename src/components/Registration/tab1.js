@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import { getPostalCodeRecord, getPersonField } from '../../actions/salesforces';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -39,10 +40,11 @@ class Tab1 extends React.Component {
     }
 
     componentWillMount(){
-        console.log(this.props);
+        
     }
 
     componentDidMount() {
+        getPersonField();
     }
 
 
@@ -101,6 +103,7 @@ const mapDispatchToProps = (dispatch)  => ({
 
 const mapStateToProps = state => ({
     user: state.user,
+    salesforce: state.salesforce
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tab1);

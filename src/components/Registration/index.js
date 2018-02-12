@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { logoutUser } from '../../actions/';
+import { getSalesforceToken, getPostalCodeRecord, getPersonField, getPersonFields, getSchoolList } from '../../actions/salesforces';
 import Stepper from './stepper';
 import Tab1 from './tab1';
 import Tab2 from './tab2';
@@ -15,8 +15,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 class Registration extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             steps: [{
             title: 'Start',
@@ -93,6 +93,12 @@ class Registration extends React.Component {
         
     }
 
+    componentDidMount() {
+        this.props.getSalesforceToken();
+        this.props.getPostalCodeRecord();
+        this.props.getSchoolList();
+    }
+
     componentWillUnmount() {
         window.removeEventListener("beforeunload", function (event) {
             console.log(event);
@@ -100,6 +106,7 @@ class Registration extends React.Component {
     }
     
     onClickNext() {
+        const tkn = localStorage.getItem('tokensf')
         const { steps, currentStep , tabIndex} = this.state;
         this.setState({
             currentStep: currentStep + 1,
@@ -188,6 +195,15 @@ class Registration extends React.Component {
           }
        return ( 
         <div className="container body">
+            <div className="col-md-12" id="logoHeader">
+                <div className="col-md-3">
+                <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
+                </div>
+                <div className="col-md-9 header-title">
+                    <br /><br /><br /><br />
+                    <h4>STSPMF Application Form</h4>
+                </div>
+            </div>
             <div className="" id="AppForm">
                 <Stepper steps={ steps } activeStep={ currentStep } />
                 
@@ -241,7 +257,6 @@ class Registration extends React.Component {
 
 Registration.propTypes = {
     title: PropTypes.string,
-    logoutUser: PropTypes.func.isRequired,
 };
 Registration.defaultProps = {
     title: 'Hello World',
@@ -250,12 +265,16 @@ Registration.defaultProps = {
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        logoutUser,
+        getSalesforceToken,
+        getPostalCodeRecord,
+        getPersonField,
+        getSchoolList,
     }, dispatch)
 );
 
 const mapStateToProps = state => ({
     user: state.user,
+    salesforce: state.salesforce,
 });
 
 

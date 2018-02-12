@@ -85,3 +85,6 @@ html{
   .btn-100{
     width: 100px;
   }
+  .header-title{
+    text-align: center;
+  }

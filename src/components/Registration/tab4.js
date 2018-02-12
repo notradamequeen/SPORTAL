@@ -71,9 +71,10 @@ class Tab4 extends React.Component {
         const update = this.UpdateBen.bind(this);
         const dob = this.state.dob;
         const handleDOBChange = this.handleDOBChange.bind(this);
+        const state = this.state
         return (
             <div className="col-md-12" id="Tab4">
-        <h5 className="info-text"> Other Household Member</h5>
+        <h5 className="info-text">Main Applicant</h5>
         {Array.apply(0, Array(this.state.houCount)).map(function (x, i) {
             return (
                 <div className="fullh">
@@ -115,21 +116,109 @@ class Tab4 extends React.Component {
                 <div className="row">
                     <div className="col-sm-4">
                         <div className="form-group">
-                            <label>Age</label>
-                            <input onChange={update} name="cname[]" type="text" className="form-control" placeholder="Age" />
+                            <label>Date of Birth</label>
+                            <DatePicker
+                                name="dob"
+                                selected={state.dob}
+                                dateFormat="DD/MM/YYYY"
+                                onChange={update} 
+                                placeholderText="Date of Birth"
+                                className="form-control fullw"
+                                showYearDropdown
+                                showMonthDropdown
+                            />
                         </div>
                     </div>
                     <div className="col-sm-4">
                         <div className="form-group">
                             <label>Gross Monthly Income <a href="#" data-toggle="tooltip" title="The gross household income of the individual"><img src="assets/img/question.png" width="15px" /></a></label>
-                            <input onChange={update} name="Monthly_Gross_Income__c" id="Hou[0][Monthly_Gross_Income__c]" type="text" className="form-control" placeholder="Montly Income" />
+                            <input
+                                onChange={update}
+                                name="Monthly_Gross_Income__c"
+                                id="Hou[0][Monthly_Gross_Income__c]"
+                                type="text"
+                                className="form-control"
+                                placeholder="Montly Income" />
+                        </div>
+                    </div>
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <label>Employment Status</label>
+                            <input
+                                onChange={update}
+                                name="Employment_Status__c"
+                                id="Hou[0][Employment_Status__c]"
+                                type="text"
+                                className="form-control"
+                                placeholder="Employment Status" />
                         </div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-sm-4">
                         <div className="form-group">
-                            <input onChange={update} type="file" className="form-control-file" id="mla1" aria-describedby="fh1" />
+                            <label>Occupation</label>
+                            <input
+                                onChange={update}
+                                name="Occupation__c"
+                                id="Hou[0][Occupation__c]"
+                                type="text"
+                                className="form-control"
+                                placeholder="Occupation__c" />
+                        </div>
+                    </div>
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <label>Company</label>
+                            <input
+                                onChange={update}
+                                name="Company__c"
+                                id="Hou[0][Company__c]"
+                                type="text"
+                                className="form-control"
+                                placeholder="Company" />
+                        </div>
+                    </div>
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <label>Employment Start Date</label>
+                            <DatePicker
+                                name="Employment_Start_Date__c"
+                                selected={state.dob}
+                                dateFormat="DD/MM/YYYY"
+                                onChange={update} 
+                                placeholderText="Employment Start Date"
+                                className="form-control fullw"
+                                showYearDropdown
+                                showMonthDropdown
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <label>Employment End Date</label>
+                            <DatePicker
+                                name="Employment_End_Date__c"
+                                selected={state.dob}
+                                dateFormat="DD/MM/YYYY"
+                                onChange={update} 
+                                placeholderText="Employment End Date"
+                                className="form-control fullw"
+                                showYearDropdown
+                                showMonthDropdown
+                            />
+                        </div>
+                    </div>
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <input
+                                onChange={update}
+                                type="file"
+                                className="form-control-file"
+                                id="mla1"
+                                aria-describedby="fh1" />
                             <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format: jpg, png, pdf only </small>
                         </div>
                     </div>
@@ -156,63 +245,117 @@ class Tab4 extends React.Component {
                         <div className="row col-md-12">
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-1" type="checkbox" value="Alcoholism" name="reason[]" /> 
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-1"
+                                    type="checkbox"
+                                    value="Alcoholism"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} /> 
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-1">Alcoholism</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-2" type="checkbox" value="Cultural or personal belief" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-2"
+                                    type="checkbox"
+                                    value="Cultural or personal belief"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-2">Cultural or personal belief</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-3" type="checkbox" value="Social Visit Pass" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-3"
+                                    type="checkbox"
+                                    value="Social Visit Pass"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-3">Social Visit Pass</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-1" type="checkbox" value="Chronic illness" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-1"
+                                    type="checkbox"
+                                    value="Chronic illness"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-1">Chronic illness</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-2" type="checkbox" value="Gambling addiction" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-2"
+                                    type="checkbox"
+                                    value="Gambling addiction"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-2">Gambling addiction</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-3" type="checkbox" value="Temporarily unfit for work" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-3"
+                                    type="checkbox"
+                                    value="Temporarily unfit for work"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-3">Temporarily unfit for work</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-3" type="checkbox" value="Disability" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-3"
+                                    type="checkbox"
+                                    value="Disability"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-3">Disability</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-3" type="checkbox" value="Low education" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-3"
+                                    type="checkbox"
+                                    value="Low education"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-3">Low education</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
-                                <input onChange={update} id="checkbox-able-3" type="checkbox" value="Drug addiction" name="reason[]" />
+                                <input
+                                    onChange={update}
+                                    id="checkbox-able-3"
+                                    type="checkbox"
+                                    value="Drug addiction"
+                                    name="reason[]"
+                                    disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
                                 <label for="checkbox-able-3">Drug addiction</label>
@@ -222,7 +365,13 @@ class Tab4 extends React.Component {
                     <div className="col-sm-12">
                         <div className="col-md-4">
                             <label>Another Reason</label>
-                            <input onChange={update} name="another_reason" type="text" className="form-control" placeholder="Please Specify if exist" />
+                            <input
+                                onChange={update}
+                                name="another_reason"
+                                type="text"
+                                className="form-control"
+                                placeholder="Please Specify if exist"
+                                disabled={state.houCount > 1 ? true : false} />
                         </div>
                     </div>
                 </div>

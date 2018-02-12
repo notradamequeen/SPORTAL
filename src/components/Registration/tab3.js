@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import $ from 'jquery';
+import Select from 'react-select';
 
+import 'react-select/dist/react-select.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class Tab3 extends React.Component {
@@ -14,15 +16,30 @@ class Tab3 extends React.Component {
         super(props);
         this.state = {
             dob: moment(),
-            bencount: 1
+            bencount: 1,
+            schoolList: [],
+            selectedCS: null,
+            selectedAT: null,
+            msList: [],
+            nationList: [],
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
         this.addCount                         = this.addCount.bind(this);
         this.UpdateBen                        = this.UpdateBen.bind(this);
+        this.cs_handleChange                  = this.cs_handleChange.bind(this);
+        this.at_handleChange                  = this.at_handleChange.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
+    }
+
+    cs_handleChange(selectedCS) {
+        this.setState({ selectedCS, selectedCS });
+    }
+
+    at_handleChange(selectedAT) {
+        this.setState({ selectedAT });
     }
 
     inputChangeHandler(event) {
@@ -50,6 +67,11 @@ class Tab3 extends React.Component {
     }
 
     componentDidMount() {
+        const schoolList = []
+        this.props.salesforce.schoolList.fields.records.map((field) => {
+            schoolList.push({type:"school_list", value: field.Name, label: field.Name })
+        })
+        this.state.schoolList = schoolList
     }
 
     addCount(){
@@ -71,6 +93,10 @@ class Tab3 extends React.Component {
         const update = this.UpdateBen.bind(this);
         const dob = this.state.dob;
         const handleDOBChange = this.handleDOBChange.bind(this);
+        const cs_handleChange = this.cs_handleChange.bind(this);
+        const at_handleChange = this.at_handleChange.bind(this)
+        const school_list = this.state.schoolList
+        const state = this.state
         return (
             <div className="col-md-12" id="tab3">
         <h5 className="info-text"> Beneficiaries List</h5>
@@ -82,7 +108,15 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Name <small>(required)</small></label>
-                            <input onChange={update} name="Full_Name_del__c" id="Ben[{i}[Full_Name_del__c]" type="text" className="form-control" placeholder="Fullname" />
+                            <input
+                                onChange={update}
+                                name="Full_Name_del__c"
+                                id="Ben[{i}[Full_Name_del__c]"
+                                type="text"
+                                className="form-control"
+                                placeholder="Fullname"
+                                required
+                                />
                         </div>
                     </div>
                     <div className="col-sm-3">
@@ -143,17 +177,27 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>School</label>
-                            <select onChange={update} name="Current_School__c" id="Ben[{i}][Current_School__c]" className="form-control">
+                            {/* <select onChange={update} name="Current_School__c" id="Ben[{i}][Current_School__c]" className="form-control">
                                 <option value="NorthLight Primary"> NorthLight Primary </option>
                                 <option value="Nanyang Secondary"> Nanyang Secondary </option>
                                 <option value="Temasek Polytechnic"> Temasek Polytechnic </option>
-                            </select>
+                            </select> */}
+                            <Select
+                                name="Current_School__c" 
+                                ref="Ben[{i}][Current_School__c]" 
+                                id="Ben[{i}][Current_School__c]" 
+                                onChange={cs_handleChange}
+                                options={school_list}
+                                placeholder="please select postal code"
+                                value={state.selectedCS}
+                                required />
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Stream</label>
                             <select onChange={update} name="Stream__c" id="Ben[{i}][Stream__c]" className="form-control">
+                                <option></option>
                                 <option value="Express">Express</option>
                                 <option value="Normal Academic">Normal Academic</option>
                                 <option value="Normal Technical">Normal Technical</option>
@@ -163,12 +207,20 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Applying to</label>
-                            <select onChange={update} name="Applying_to__c" id="Ben[{i}][Applying_to__c]"  className="form-control apply1">
+                            <Select
+                                name="Applying_to__c" 
+                                ref="Ben[{i}][Applying_to__c]" 
+                                id="Ben[{i}][Applying_to__c]" 
+                                onChange={at_handleChange}
+                                options={school_list}
+                                value={state.selectedAT}
+                                required />
+                            {/* <select onChange={update} name="Applying_to__c" id="Ben[{i}][Applying_to__c]"  className="form-control apply1">
                                 <option value="NorthLight Primary">NorthLight Primary </option>
                                 <option value="Nanyang Secondary">Nanyang Secondary </option>
                                 <option value="Temasek Polytechnic">Temasek Polytechnic </option>
                                 <option value="other"> Other </option>
-                            </select>
+                            </select> */}
                         </div>
                     </div>
                 </div>
@@ -213,6 +265,7 @@ const mapDispatchToProps = (dispatch)  => ({
 
 const mapStateToProps = state => ({
     user: state.user,
+    salesforce: state.salesforce
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tab3);
