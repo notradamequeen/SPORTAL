@@ -131,7 +131,9 @@ class Tab4 extends React.Component {
                     </div>
                     <div className="col-sm-4">
                         <div className="form-group">
-                            <label>Gross Monthly Income <a href="#" data-toggle="tooltip" title="The gross household income of the individual"><img src="assets/img/question.png" width="15px" /></a></label>
+                            <label>Gross Monthly Income <a href="#" data-toggle="tooltip" title="The gross household income of the individual">
+                                <img src={require('../../assets/img/question.png')} width="15px" /></a>
+                            </label>
                             <input
                                 onChange={update}
                                 name="Monthly_Gross_Income__c"
