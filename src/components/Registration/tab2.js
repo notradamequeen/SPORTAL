@@ -116,6 +116,7 @@ class Tab2 extends React.Component {
 
     componentDidMount() {
         const postalCodeOption = []
+        if (this.props.salesforce.postalCodeRecord.fields.records === undefined) return;
         this.props.salesforce.postalCodeRecord.fields.records.map((pc_list, idx) => {
            postalCodeOption.push({
                type:"postal_code",

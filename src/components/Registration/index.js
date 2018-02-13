@@ -94,9 +94,11 @@ class Registration extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSalesforceToken();
-        this.props.getPostalCodeRecord();
-        this.props.getSchoolList();
+        this.props.getSalesforceToken(() => {
+            this.props.getPostalCodeRecord();
+            this.props.getSchoolList();
+        });
+        
     }
 
     componentWillUnmount() {

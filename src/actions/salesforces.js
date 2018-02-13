@@ -3,13 +3,13 @@ import {
     q_SCHOLL_LIST
 } from './query';
 import { sfRequestSync, sfRequest } from '../utils/common';
-const spmfcloudFunctionUrl = 'http://localhost:3000'
+const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'http://13.229.173.240/sf/';
 
 export function getSalesforceToken(callback) {
     return async (dispatch, getState) => {
         // if (getState().CurrentUser === null) return;
         // const token = await getState().CurrentUser.getIdToken();
-        const url = `${spmfcloudFunctionUrl}/salesforces/salesforce-token`;
+        const url = `${spmfcloudFunctionUrl}/salesforce-token`;
         const json = await fetch(url, {
             method: 'GET',
             headers: {

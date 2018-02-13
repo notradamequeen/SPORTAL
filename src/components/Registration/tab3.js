@@ -68,6 +68,7 @@ class Tab3 extends React.Component {
 
     componentDidMount() {
         const schoolList = []
+        if (this.props.salesforce.schoolList.fields.records === undefined) return;
         this.props.salesforce.schoolList.fields.records.map((field) => {
             schoolList.push({type:"school_list", value: field.Name, label: field.Name })
         })
