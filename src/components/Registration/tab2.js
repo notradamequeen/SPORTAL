@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { getApplicationField, getPersonField } from '../../actions/salesforces';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import Select from 'react-select';
@@ -27,15 +28,18 @@ class Tab2 extends React.Component {
             otherRace: false,
             otherTF: false,
             msList: [],
+            flatTypeList: [],
             selectedMS: null,
             nationList: [],
             selectedNation: null,
+            selectedFlatType: null,
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
         this.handelAddressChange              = this.handelAddressChange.bind(this);
         this.ms_handleChange                  = this.ms_handleChange.bind(this);
         this.nation_handleChange              = this.nation_handleChange.bind(this);
+        this.flatType_handleChange            = this.flatType_handleChange.bind(this);
         
     }
 
@@ -57,14 +61,24 @@ class Tab2 extends React.Component {
     ms_handleChange(selectedMS){
         if (selectedMS.value == "Others"){
             this.setState({ otherMS: true })
-        }
+        } 
+        this.props.changeState('Marital_Status__c', selectedMS.value);
         this.setState({ selectedMS })
     }
     nation_handleChange(selectedNation){
         if (selectedNation.value == "Others"){
             this.setState({ otherNation: true })
-        }
+        } 
+        this.props.changeState('Nationality__c', selectedNation.value);
         this.setState({ selectedNation })   
+    }
+
+    flatType_handleChange(selectedFlatType){
+        if (selectedFlatType.value == "Others"){
+            this.setState({ otherTF: true })
+        }
+        this.setState({ selectedFlatType })
+        this.props.changeState(['Flat_Type__c'],selectedFlatType.value);  
     }
 
     handelAddressChange(evt) {
@@ -72,6 +86,8 @@ class Tab2 extends React.Component {
         const update = require('react-addons-update');
         const newData = update(this.state.selectedAddress, { $merge: JSON.parse(target) });
         this.setState({ selectedAddress: newData });
+
+        this.props.changeState([evt.target.name],evt.target.value);
     }
 
     handleInputChange(evt) {
@@ -126,24 +142,7 @@ class Tab2 extends React.Component {
         });
         this.state.postal_code = postalCodeOption
 
-        const SF_VERSION = 'v20.0';
-        const salesforceToken = this.props.salesforce.token
-        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/Person__c/describe/`;
-        const fetchConfig = {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${salesforceToken.accessToken}`,
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-            },
-            timeout: 5000,
-        };
-        fetch(fullUrl, fetchConfig).then((response) => {
-            if (response.status === 204) {
-                return { ok: true, id: request.id };
-            }
-            return response.json();
-        }).then((json) => {
+        getPersonField(this.props.salesforce.token).then((json) => {
             const fields = json.fields;
             fields.sort((a, b) => {
                 if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
@@ -157,12 +156,25 @@ class Tab2 extends React.Component {
                 if (item.name == "Nationality__c") {
                     this.state.nationList = item.picklistValues                    
                 }
-            })
+            });
+        });
 
-            })
+        getApplicationField(this.props.salesforce.token).then((resjson)=> {
+            console.log(resjson)
+            const appFields = resjson.fields;
+            appFields.sort((a, b) => {
+                if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
+                if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
+                return 0;
+            });
+            appFields.map((item) => {
+                if (item.name == "Flat_Type__c") {
+                    this.state.flatTypeList = item.picklistValues                 
+                }
+            });
+            console.log(this.state.flatTypeList)
+        })
     }
-
-
     render() {
         return (
             <div className="col-md-12">
@@ -175,7 +187,13 @@ class Tab2 extends React.Component {
                 </div>
                 <div className="form-group">
                     <label>ID Type</label>
-                    <select id="ID_Type__c" name="ID_Type__c" className="form-control valid" aria-invalid="false" value={this.props.data.ID_Type__c} onChange={this.handleInputChange}>
+                    <select 
+                        id="ID_Type__c"
+                        name="ID_Type__c"
+                        className="form-control valid"
+                        aria-invalid="false"
+                        value={this.props.data.ID_Type__c}
+                        onChange={this.handleInputChange}>
                         <option value="NRIC">NRIC</option>
                         <option value="FIN">FIN</option>
                         <option value="other">Others</option>
@@ -183,11 +201,19 @@ class Tab2 extends React.Component {
                 </div>
                 <div className="form-group">
                     <label>ID Number <small style={{color:"red"}}>(required)</small></label>
-                    <input name="ID_Number__c" id="ID_Number__c" type="text" className="form-control" placeholder="NRIC / FIN" onChange={this.handleInputChange}/>
+                    <input
+                        name="ID_Number__c"
+                        id="ID_Number__c"
+                        type="text"
+                        className="form-control"
+                        placeholder="NRIC / FIN"
+                        onChange={this.handleInputChange}
+                    />
                 </div>
                 <div className="form-group">
                     <label>Date of Birth </label>
                     <DatePicker
+                        name="Date_of_Birth__c"
                         selected={this.state.dob}
                         dateFormat="DD/MM/YYYY"
                         onChange={this.handleDOBChange} 
@@ -212,7 +238,7 @@ class Tab2 extends React.Component {
                 <div className="form-group">
                     <label>Other Marital Status</label>
                     <input 
-                        name="other4"
+                        name="Marital_Status__c"
                         type="text"
                         className="form-control"
                         placeholder="Please Specify" 
@@ -243,7 +269,7 @@ class Tab2 extends React.Component {
                 <div className="form-group" >
                     <label>Other Nationality</label>
                     <input
-                        name="other1"
+                        name="other_nationality"
                         type="text"
                         className="form-control"
                         placeholder="Please Specify"
@@ -268,7 +294,7 @@ class Tab2 extends React.Component {
                 <div className="form-group">
                     <label>Other Race</label>
                     <input
-                        name="other1"
+                        name="other_race"
                         type="text"
                         className="form-control"
                         placeholder="Please Specify"
@@ -318,23 +344,13 @@ class Tab2 extends React.Component {
             <div className="col-sm-6">
                 <div className="form-group">
                     <label>Type of Flat  </label>
-                    <select
-                        id="Fail_Flat_Type__c" 
-                        name="Fail_Flat_Type__c"
-                        className="form-control valid"
+                    <Select
+                        id="Flat_Type__c" 
+                        name="Flat_Type__c"
                         aria-invalid="false"
-                        onChange={this.handleInputChange}>
-                        <option value="1 Room HDB Flat">1 Room HDB Flat</option>
-                        <option value="2 Room HDB Flat">2 Room HDB Flat</option>
-                        <option value="3 Room HDB Flat">3 Room HDB Flat</option>
-                        <option value="4 Room HDB Flat">4 Room HDB Flat</option>
-                        <option value="5 Room HDB Flat">5 Room HDB Flat</option>
-                        <option value="Interim Rental Housing">Interim Rental Housing</option>
-                        <option value="Transitional Shelter">Transitional Shelter</option>
-                        <option value="Crisis Shelter">Crisis Shelter</option>
-                        <option value="Homeless">Homeless</option>
-                        <option  value="other">Others (Please Specify)</option>
-                    </select>
+                        options={this.state.flatTypeList}
+                        value={this.state.selectedFlatType}
+                        onChange={this.flatType_handleChange} />
                 </div>
                 <div className="form-group">
                     <label>Other Type of Flat</label>
@@ -375,17 +391,35 @@ class Tab2 extends React.Component {
             <div className="col-sm-6">
                 <div className="form-group">
                     <label>Home Phone <small style={{color:"red"}}>(required)</small></label>
-                    <input name="Home_Phone__c" id="Home_Phone__c" type="text" className="form-control" placeholder="Home no." />
+                    <input
+                        name="Home_Phone__c"
+                        id="Home_Phone__c"
+                        type="text"
+                        className="form-control"
+                        placeholder="Home no."
+                        onChange={this.handleInputChange} />
                 </div>
                 <div className="form-group">
                     <label>Mobile Phone</label>
-                    <input name="Mobile_Phone__c" id="Mobile_Phone__c" type="text" className="form-control" placeholder="Mobile no." />
+                    <input
+                        name="Mobile_Phone__c"
+                        id="Mobile_Phone__c"
+                        type="text"
+                        className="form-control"
+                        placeholder="Mobile no."
+                        onChange={this.handleInputChange} />
                 </div>
             </div>
             <div className="col-sm-6">
                 <div className="form-group">
                     <label>Email Address </label>
-                    <input name="Email_Address__c" id="Email_Address__c" type="text" className="form-control " placeholder="Email address" />
+                    <input
+                        name="Email_Address__c"
+                        id="Email_Address__c"
+                        type="text"
+                        className="form-control"
+                        placeholder="Email address"
+                        onChange={this.handleInputChange} />
                 </div>
                 
             </div>	

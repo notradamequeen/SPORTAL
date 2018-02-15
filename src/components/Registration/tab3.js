@@ -22,6 +22,7 @@ class Tab3 extends React.Component {
             selectedAT: null,
             msList: [],
             nationList: [],
+            Ben:[{}]
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
@@ -34,7 +35,7 @@ class Tab3 extends React.Component {
     componentWillReceiveProps(nextProps) {
     }
 
-    cs_handleChange(selectedCS) {
+    cs_handleChange(selectedCS, evt) {
         this.setState({ selectedCS, selectedCS });
     }
 
@@ -56,7 +57,7 @@ class Tab3 extends React.Component {
         var newdate = date.format("YYYY/MM/DD").toString();
         //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
         this.setState({
-            dob: date
+            dob: newDate
         });
         //console.log( date.format("DD/MM/YYYY"));
         //alert('aaaa');
@@ -70,23 +71,35 @@ class Tab3 extends React.Component {
         const schoolList = []
         if (this.props.salesforce.schoolList.fields.records === undefined) return;
         this.props.salesforce.schoolList.fields.records.map((field) => {
-            schoolList.push({type:"school_list", value: field.Name, label: field.Name })
+            schoolList.push({type:"school_list", value: field.Id, label: field.Name })
         })
         this.state.schoolList = schoolList
+
+        console.log('props', this.props.data)
     }
 
     addCount(){
         this.setState({
             bencount: (this.state.bencount+1)
         });
+        this.props.data.Ben.push({})
+        console.log(this.props.data)
     }
 
-    UpdateBen(){
-        var data = Array();
-        $(".full").each(function() {
-            data.push($(this).find('select, textarea, input').serializeArray());
-        })
-        this.props.changeState('Ben', data);
+    UpdateBen(event){
+        // var data = Array();
+        // $(".full").each(function() {
+        //     data.push($(this).find('select, textarea, input').serializeArray());
+        // })
+        // this.props.changeState('Ben', data);
+        // console.log(this.props)
+        const BenList = this.state.Ben
+        BenList[Number(event.target.id.match(/\d+/)[0])][event.target.name] = event.target.value 
+        this.setState({ 
+            Ben: BenList
+        });
+        this.props.changeState('Ben', BenList);
+        console.log(this.state)
     }
 
 
@@ -98,6 +111,7 @@ class Tab3 extends React.Component {
         const at_handleChange = this.at_handleChange.bind(this)
         const school_list = this.state.schoolList
         const state = this.state
+        const props = this.props
         return (
             <div className="col-md-12" id="tab3">
         <h5 className="info-text"> Beneficiaries List</h5>
@@ -109,42 +123,56 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Name <small>(required)</small></label>
-                            <input
-                                onChange={update}
-                                name="Full_Name_del__c"
-                                id="Ben[{i}[Full_Name_del__c]"
-                                type="text"
-                                className="form-control"
-                                placeholder="Fullname"
-                                required
+                                <input
+                                    onChange={update}
+                                    name="Full_Name__c"
+                                    id={`Ben${i}][Full_Name_del__c]`}
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Fullname"
+                                    required
                                 />
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>NRIC</label>
-                            <input onChange={update} name="ID_Number__c" id="Ben[{i}][ID_Number__c]" type="text" className="form-control" placeholder="Nric " />
+                                <input
+                                    onChange={update}
+                                    name="ID_Number__c"
+                                    id={`Ben${i}[ID_Number__c]`}
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="NRIC "
+                                />
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Date of Birth</label>
-                            <DatePicker
-                                name="Date_of_Birth__c"
-                                selected={dob}
-                                dateFormat="DD/MM/YYYY"
-                                onChange={handleDOBChange} 
-                                placeholderText="Date of Birth"
-                                className="form-control fullw"
-                                showYearDropdown
-                                showMonthDropdown
-                            />
+                                <DatePicker
+                                    name="Date_of_Birth__c"
+                                    selected={dob}
+                                    id={`Ben${i}[Date_of_Birth__c]`}
+                                    dateFormat="DD/MM/YYYY"
+                                    onChange={handleDOBChange} 
+                                    placeholderText="Date of Birth"
+                                    className="form-control fullw"
+                                    showYearDropdown
+                                    showMonthDropdown
+                                />
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Current level</label>
-                            <select onChange={update} name="Current_Level__c" id="Ben[{i}][Current_Level__c]" className="form-control">
+                            <select
+                                onChange={update}
+                                name="Current_Level__c"
+                                id={`Ben${i}[Current_Level__c]`}
+                                className="form-control"
+                            >
+
                                 <option value="Primary 1">Primary 1</option>
                                 <option value="Primary 2">Primary 2</option>
                                 <option value="Primary 3">Primary 3</option>
@@ -172,32 +200,43 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Email</label>
-                            <input onChange={update} name="Email_Address__c" id="Ben[{i}][Email_Address__c]" type="text" className="form-control" placeholder="Email" />
+                                <input
+                                    onChange={update}
+                                    name="Email_Address__c"
+                                    id={`Ben${i}[Email_Address__c]`}
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Email"
+                                />
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>School</label>
-                            {/* <select onChange={update} name="Current_School__c" id="Ben[{i}][Current_School__c]" className="form-control">
-                                <option value="NorthLight Primary"> NorthLight Primary </option>
-                                <option value="Nanyang Secondary"> Nanyang Secondary </option>
-                                <option value="Temasek Polytechnic"> Temasek Polytechnic </option>
-                            </select> */}
-                            <Select
+                            <select
                                 name="Current_School__c" 
                                 ref="Ben[{i}][Current_School__c]" 
-                                id="Ben[{i}][Current_School__c]" 
-                                onChange={cs_handleChange}
-                                options={school_list}
-                                placeholder="please select postal code"
-                                value={state.selectedCS}
-                                required />
+                                id={`Ben${i}[Current_School__c]`}
+                                onChange={update}
+                                className="form-control"
+                                required>
+                                <option value="">---Please Select Current School---</option>
+                                {school_list.map((school_opt) => {
+                                    return(
+                                    <option value={school_opt.value}>{school_opt.label}</option>
+                                    )
+                                })}
+                            </select>
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Stream</label>
-                            <select onChange={update} name="Stream__c" id="Ben[{i}][Stream__c]" className="form-control">
+                            <select
+                                onChange={update}
+                                name="Stream__c"
+                                id={`Ben${i}[Stream__c]`}
+                                className="form-control">
                                 <option></option>
                                 <option value="Express">Express</option>
                                 <option value="Normal Academic">Normal Academic</option>
@@ -208,33 +247,42 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <label>Applying to</label>
-                            <Select
-                                name="Applying_to__c" 
+                            <select
+                                name="Applying_to__c"
+                                className="form-control"
                                 ref="Ben[{i}][Applying_to__c]" 
-                                id="Ben[{i}][Applying_to__c]" 
-                                onChange={at_handleChange}
-                                options={school_list}
-                                value={state.selectedAT}
-                                required />
-                            {/* <select onChange={update} name="Applying_to__c" id="Ben[{i}][Applying_to__c]"  className="form-control apply1">
-                                <option value="NorthLight Primary">NorthLight Primary </option>
-                                <option value="Nanyang Secondary">Nanyang Secondary </option>
-                                <option value="Temasek Polytechnic">Temasek Polytechnic </option>
-                                <option value="other"> Other </option>
-                            </select> */}
+                                id={`Ben${i}[Applying_to__c]`}
+                                onChange={update}
+                                required >
+                                <option value="">---Please Select Applying to---</option>
+                                {school_list.map((school_opt) => {
+                                    return(
+                                    <option value={school_opt.value}>{school_opt.label}</option>
+                                    )
+                                })}
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-sm-3">
                         <div className="form-group">
-                            <input onChange={update} type="file" className="form-control-file" id="file1" aria-describedby="fileHelp1" />
+                            <input
+                                onChange={update}
+                                type="file"
+                                className="form-control-file"
+                                id="file1"
+                                aria-describedby="fileHelp1" />
                             <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
                         </div>
                     </div>
                     <div className="col-sm-3">
                         <div className="form-group">
-                            <input onChange={update} type="checkbox" value="1" id="grad1" /> 
+                            <input
+                                onChange={update}
+                                type="checkbox"
+                                value="1"
+                                id="grad1" /> 
                             <label htmlFor="grad1">Graduating this year</label>
                         </div>
                     </div>

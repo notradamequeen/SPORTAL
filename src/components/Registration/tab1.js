@@ -44,7 +44,6 @@ class Tab1 extends React.Component {
     }
 
     componentDidMount() {
-        getPersonField();
     }
 
 

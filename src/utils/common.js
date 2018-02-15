@@ -66,7 +66,12 @@ export function sfRequest(sobject, request, dispatch, dispatchType) {
     dispatch({ type: 'TOGGLE_LOADING' });
     let fullUrl = '';
     if (sobject != null) {
-        fullUrl = `${request.url}/services/data/${SF_VERSION}${(request.composite ? '/composite/tree/' : '/sobjects/') + sobject + '/' + (request.id ? request.id : '')}`;
+        if(request.method == 'GET') {
+            fullUrl = `${request.url}/services/data/${SF_VERSION}${(request.composite ? '/composite/tree/' : '/sobjects/') + sobject + '/' + (request.id ? request.id : '')}`;
+        }
+        if (request.method == 'POST') {
+            fullUrl = `${request.url}/services/data/${SF_VERSION}/sobjects/${sobject}/`;
+        }
     } else {
         fullUrl = `${request.url}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(request.query)}`;
     }
@@ -124,4 +129,20 @@ export function sfRequest(sobject, request, dispatch, dispatchType) {
                 });
             }
         });
+}
+
+export function getCurrentDate(){
+    const date = new Date()
+    let day = String(date.getDate());
+    let month = String(date.getMonth()+1);
+    const year = String(date.getFullYear());
+
+    if (month.length == 1){
+        month = '0' + month
+    }
+    if (day.length == 1){
+        day = '0' + day
+    }
+
+    return year + '-' + month + '-' + day 
 }

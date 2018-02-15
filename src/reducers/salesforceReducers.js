@@ -10,6 +10,13 @@ const DEFAULT_STATE = {
     schoolList: {
         fields: [],
     },
+    applicationField: {
+        retrievedAt: 0,
+        fields: [],
+    },
+    recordType: {
+        data: {}
+    },
 
 };
 
@@ -36,6 +43,19 @@ const fnList = {
     SCHOOL_LIST: (state, payload) => ({
         ...state,
         schoolList: {
+            retrievedAt: new Date().getTime(),
+            fields: payload,
+        },
+    }),
+    RECORD_TYPE: (state, payload) => ({
+        ...state,
+        recordType: {
+            data: payload
+        }
+    }),
+    APPLICATION_FIELD: (state, payload) => ({
+        ...state,
+        applicationField: {
             retrievedAt: new Date().getTime(),
             fields: payload,
         },
