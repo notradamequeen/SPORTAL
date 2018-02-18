@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import $ from 'jquery';
+import { getBase64, regexValidate, validateNRIC } from '../../utils/common';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -15,7 +16,9 @@ class Tab4 extends React.Component {
         this.state = {
             dob: moment(),
             houCount: 1,
-            Hou: [],
+            Hou: [{}],
+            HouFiles: [],
+            isValidHouNric: [],
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
@@ -23,6 +26,7 @@ class Tab4 extends React.Component {
         this.UpdateHou                        = this.UpdateHou.bind(this);
         this.handleStartDateChange            = this.handleStartDateChange.bind(this);
         this.handleEndDateChange              = this.handleEndDateChange.bind(this);
+        this.uploadHouFile                    = this.uploadHouFile.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -35,12 +39,22 @@ class Tab4 extends React.Component {
     }
 
     handleInputChange(event) {
-        this.props.changeState([event.target.name],event.target.value);
+        const value = event.target.value
+        if (event.target.name == 'ID_Number__c'){
+            const isValidId = value !== '' ? validateNRIC(value) : true;
+            if(!isValidId) {
+                document.getElementById("nric_error0").innerHTML = "invalid NRIC/FIN format"
+            } else {
+                document.getElementById("nric_error0").innerHTML = ""
+            }
+            this.props.data.isValidMainNric = isValidId;
+        }
+        this.props.changeState([event.target.name], value);
         console.log('step4', this.props.data)
     }
 
     handleDOBChange(date) {
-        var newdate = date.format("YYYY-MM-DD").toString();
+        var newDate = date.format("YYYY-MM-DD").toString();
         //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
         this.setState({
             dob: date
@@ -48,12 +62,12 @@ class Tab4 extends React.Component {
         this.props.changeState('Date_of_Birth__c', newDate)
     }
     handleStartDateChange(date) {
-        var newdate = date.format("YYYY-MM-DD").toString();
+        var newDate = date.format("YYYY-MM-DD").toString();
         //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
         this.props.changeState('Employment_Start_Date__c', newDate)
     }
     handleEndDateChange(date) {
-        var newdate = date.format("YYYY-MM-DD").toString();
+        var newDate = date.format("YYYY-MM-DD").toString();
         //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
         this.props.changeState('Employment_End_Date__c', newDate)
     }
@@ -69,23 +83,54 @@ class Tab4 extends React.Component {
         this.setState({
             houCount: (this.state.houCount+1)
         });
-        this.state.Hou.push({RecordType: 'Household Member'})
-    }
-    updateMain(){
-
+        this.props.data.Hou.push({
+            data: {
+                Date_of_Birth__c:'',
+                Employment_Start_Date__c: '',
+                Employment_End_Date__c: '',
+            },
+            attachment: {},
+        })
+        this.props.data.isValidHouNric.push('');
     }
     UpdateHou(event){
-        const HouList = this.state.Hou
-        HouList[Number(event.target.id.match(/\d+/)[0])][event.target.name] = event.target.value 
+        const HouList = this.props.data.Hou
+        const houIdx = Number(event.target.id.match(/\d+/)[0])
+        HouList[houIdx]['data'][event.target.name] = event.target.value 
+        if(event.target.name === 'ID_Number__c'){
+            let isValidNric = validateNRIC(event.target.value)
+            if (!isValidNric) {
+                document.getElementById(`hou_nric_error${houIdx}`).innerHTML = 'invalid format NRIC/FIN';
+            } else {
+                document.getElementById(`hou_nric_error${houIdx}`).innerHTML = '';
+            }
+            this.props.data.isValidHouNric = isValidNric.toString()
+        }
         this.setState({ 
             Hou: HouList
         });
         this.props.changeState('Hou', HouList);
-        console.log(this.state)
+    }
+    uploadHouFile(event){
+        const hou = this.props.data.Hou[Number(event.target.id.match(/\d+/)[0])]
+        const name = event.target.name
+        const file = event.target.files[0]
+        const prefixFile = {file1: 'Nric_Fin_', file2: 'Income_Receipt_'}
+        const fileName = prefixFile[event.target.name] + file.name.replace(/ |-/g, '_')
+        const attachment = {
+            Name: fileName,
+            Body: '',
+            parentId: ''
+        }
+        getBase64(file).then((encodedFile) => {
+            attachment.Body = encodedFile.split(',')[1]
+            hou['attachment'][name] = attachment
+        });
+        console.log(hou)
     }
 
-
     render() {
+        const that = this;
         const update = this.UpdateHou.bind(this);
         const updateMain = this.handleInputChange.bind(this)
         const dob = this.state.dob;
@@ -99,7 +144,7 @@ class Tab4 extends React.Component {
         <h5 className="info-text">Main Applicant</h5>
         {Array.apply(0, Array(this.state.houCount)).map(function (x, i) {
             return (
-                <div className="fullh">
+                <div className="fullh" key={i.toString()}>
                     <div className="row ">
                     <p>Member - 1</p>
                     <div className="col-sm-4">
@@ -130,23 +175,30 @@ class Tab4 extends React.Component {
                         <div className="form-group">
                             <label>NRIC</label>
                             {i == 0 ? 
+                                <div>
                                 <input
                                     onChange={updateMain}
                                     name="ID_Number__c"
                                     id={`Hou${i}[ID_Number__c]`}
                                     type="text"
                                     className="form-control"
-                                    placeholder="Nric "
+                                    placeholder="NRIC "
+                                    maxlength="9"
                                     value={props.data.ID_Number__c}
-                                /> :
+                                /><br/>
+                                <span id="nric_error0" style={{color: "red"}}></span></div> :
+                                <div>
                                 <input
                                     onChange={update}
                                     name="ID_Number__c"
                                     id={`Hou${i}[ID_Number__c]`}
                                     type="text"
                                     className="form-control"
-                                    placeholder="Nric "
-                                /> 
+                                    maxlength="9"
+                                    placeholder="NRIC "
+                                /><br/>
+                                <span id={`hou_nric_error${i}`} style={{color: "red"}}></span>
+                                </div>
                             }
                             
                         </div>
@@ -160,8 +212,13 @@ class Tab4 extends React.Component {
                                     id="Hou[0][Relationship_to_Applicant__c]" 
                                     className="form-control relation1"
                                     onChange={updateMain}
+                                    value={props.data.Relationship_to_Applicant__c}
                                 >
-                                    <option value="Self" selected>Self</option>
+                                    {props.data.relationList.map((rel) => {
+                                        return (
+                                            <option key={rel.value} value={rel.value}>{rel.label}</option>
+                                        );
+                                    })}
                                 </select>
                                 :
                                 <select
@@ -170,19 +227,11 @@ class Tab4 extends React.Component {
                                     className="form-control relation1"
                                     onChange={update}
                                 >
-                                    <option value="Self">Self</option>
-                                    <option value="Son">Son</option>
-                                    <option value="Daughter">Daughter</option>
-                                    <option value="Step son">Step Son</option>
-                                    <option value="Step daughter">Step Daughter</option>
-                                    <option value="Father">Father</option>
-                                    <option value="Mother">Mother</option>
-                                    <option value="Grandfather">Grandfather</option>
-                                    <option value="Grandmother">Grandmother</option>
-                                    <option value="Step father">Step Father</option>
-                                    <option value="Step mother">Step Mother</option>
-                                    <option value="Wife">Wife</option>
-                                    <option value="Husband">Husband</option>
+                                    {props.data.relationList.map((rel) => {
+                                        return (
+                                            <option key={rel.value} value={rel.value}>{rel.label}</option>
+                                        );
+                                    })}
                                 </select>
                             }
                             
@@ -206,9 +255,15 @@ class Tab4 extends React.Component {
                                 /> :
                                 <DatePicker
                                     name="Date_of_Birth__c"
-                                    selected={moment(props.data.Date_of_Birth__c)}
+                                    selected={
+                                        props.data.Hou[i].data.Date_of_Birth__c !== '' ?
+                                        moment(props.data.Hou[i].data.Date_of_Birth__c) : ''
+                                    }
                                     dateFormat="DD/MM/YYYY"
-                                    onChange={update} 
+                                    onChange={date => {
+                                        const newDate = date.format("YYYY-MM-DD").toString()
+                                        props.data.Hou[i].data.Date_of_Birth__c = newDate
+                                        that.forceUpdate();}}
                                     placeholderText="Date of Birth"
                                     className="form-control fullw"
                                     showYearDropdown
@@ -248,22 +303,34 @@ class Tab4 extends React.Component {
                         <div className="form-group">
                             <label>Employment Status</label>
                             {i == 0 ? 
-                                <input
+                                <select
                                     onChange={updateMain}
                                     name="Employment_Status__c"
                                     id={`Hou${i}[Employment_Status__c]`}
                                     type="text"
                                     className="form-control"
                                     placeholder="Employment Status" 
-                                /> :
-                                <input
+                                > 
+                                    {props.data.employStatusList.map((emStat)=>{
+                                        return (
+                                            <option key={emStat.value} value={emStat.value}>{emStat.label}</option>
+                                        )
+                                    })}
+                                </select> :
+                                <select
                                     onChange={update}
                                     name="Employment_Status__c"
                                     id={`Hou${i}[Employment_Status__c]`}
                                     type="text"
                                     className="form-control"
                                     placeholder="Employment Status" 
-                                />
+                                >
+                                    {props.data.employStatusList.map((emStat)=>{
+                                            return (
+                                                <option key={emStat.value} value={emStat.value}>{emStat.label}</option>
+                                            )
+                                    })}
+                                </select>
                             }
                             
                         </div>
@@ -336,10 +403,19 @@ class Tab4 extends React.Component {
                                 /> :
                                 <DatePicker
                                     name="Employment_Start_Date__c"
-                                    selected={state.dob}
+                                    selected={
+                                        props.data.Hou[i].data.Employment_Start_Date__c !== '' ?
+                                        moment(props.data.Hou[i].data.Employment_Start_Date__c) : ''
+                                    }
                                     id={`Hou${i}[Employment_Start_Date__c]`}
                                     dateFormat="DD/MM/YYYY"
-                                    onChange={update} 
+                                    onChange={date => {
+                                        console.log(props.data.Hou[i])
+                                        const newDate = date.format("YYYY-MM-DD").toString()
+                                        props.data.Hou[i].data.Employment_Start_Date__c = newDate
+                                        that.forceUpdate();
+                                        console.log(props.data.Hou[i])
+                                    }} 
                                     placeholderText="Employment Start Date"
                                     className="form-control fullw"
                                     showYearDropdown
@@ -368,10 +444,16 @@ class Tab4 extends React.Component {
                                 /> :
                                 <DatePicker
                                     name="Employment_End_Date__c"
-                                    selected={state.dob}
+                                    selected={
+                                        props.data.Hou[i].data.Employment_End_Date__c !== '' ? 
+                                        moment(props.data.Hou[i].data.Employment_End_Date__c) : ''
+                                    }
                                     id={`Hou${i}[Employment_End_Date__c]`}
                                     dateFormat="DD/MM/YYYY"
-                                    onChange={update} 
+                                    onChange={date => {
+                                        const newDate = date.format("YYYY-MM-DD").toString()
+                                        props.data.Hou[i].data.Employment_End_Date__c = newDate
+                                        that.forceUpdate();}}
                                     placeholderText="Employment End Date"
                                     className="form-control fullw"
                                     showYearDropdown
@@ -383,17 +465,24 @@ class Tab4 extends React.Component {
                     <div className="col-sm-4">
                         <div className="form-group">
                             <input
-                                onChange={update}
+                                onChange={that.uploadHouFile}
                                 type="file"
+                                name="file1"
                                 className="form-control-file"
-                                id="mla1"
+                                id={`Hou${i}[nric_fin_file]`}
                                 aria-describedby="fh1" />
                             <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format: jpg, png, pdf only </small>
                         </div>
                     </div>
                     <div className="col-sm-4">
                         <div className="form-group">
-                            <input onChange={update} type="file" className="form-control-file" id="mlb1" aria-describedby="gh1" />
+                            <input
+                                onChange={that.uploadHouFile}
+                                name="file2"
+                                type="file"
+                                className="form-control-file"
+                                id={`Hou${i}[income_receipt_file]`}
+                                aria-describedby="gh1" />
                             <small id="gh1" className="form-text text-muted">Income Statement Receipt,  format: jpg, png, pdf only </small>
                         </div>
                     </div>
@@ -423,12 +512,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} /> 
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-1">Alcoholism</label>
+                                <label htmlFor="checkbox-able-1">Alcoholism</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-2"
                                     type="checkbox"
                                     value="Cultural or personal belief"
@@ -436,12 +525,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-2">Cultural or personal belief</label>
+                                <label htmlFor="checkbox-able-2">Cultural or personal belief</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-3"
                                     type="checkbox"
                                     value="Social Visit Pass"
@@ -449,12 +538,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-3">Social Visit Pass</label>
+                                <label htmlFor="checkbox-able-3">Social Visit Pass</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-1"
                                     type="checkbox"
                                     value="Chronic illness"
@@ -462,12 +551,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-1">Chronic illness</label>
+                                <label htmlFor="checkbox-able-1">Chronic illness</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-2"
                                     type="checkbox"
                                     value="Gambling addiction"
@@ -475,12 +564,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-2">Gambling addiction</label>
+                                <label htmlFor="checkbox-able-2">Gambling addiction</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-3"
                                     type="checkbox"
                                     value="Temporarily unfit for work"
@@ -488,12 +577,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-3">Temporarily unfit for work</label>
+                                <label htmlFor="checkbox-able-3">Temporarily unfit for work</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-3"
                                     type="checkbox"
                                     value="Disability"
@@ -501,12 +590,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-3">Disability</label>
+                                <label htmlFor="checkbox-able-3">Disability</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-3"
                                     type="checkbox"
                                     value="Low education"
@@ -514,12 +603,12 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-3">Low education</label>
+                                <label htmlFor="checkbox-able-3">Low education</label>
                             </div>
                             <div className="col-md-4">
                                 <label className="custom-option">
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     id="checkbox-able-3"
                                     type="checkbox"
                                     value="Drug addiction"
@@ -527,7 +616,7 @@ class Tab4 extends React.Component {
                                     disabled={state.houCount > 1 ? true : false} />
                                 <span className="button-checkbox"></span>
                                 </label>
-                                <label for="checkbox-able-3">Drug addiction</label>
+                                <label htmlFor="checkbox-able-3">Drug addiction</label>
                             </div>
                         </div>	
                     </div>
@@ -536,7 +625,7 @@ class Tab4 extends React.Component {
                             <label>Another Reason</label>
                             <input
                                 onChange={update}
-                                name="another_reason"
+                                name="Other_Reason_Description__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="Please Specify if exist"

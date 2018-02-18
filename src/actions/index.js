@@ -96,3 +96,27 @@ export function getUserToken() {
         payload: request,
     };
 }
+
+export function validation(step, data){
+    const requiredField = []
+    return new Promise((resolve, reject) => {
+        if (step == 2){
+            requiredField = ['Full_Name__c', 'ID_Number__c', 'Home_Phone__c']
+            if(data[requiredField[0]] !== '' && data[requiredField[1]] !== '' && data[requiredField[2]] !== '') {
+                return Promise.resolve({valid: true})
+            } else {
+                return Promise.resolve({valid: false})
+            }
+        }
+        // if (step == 3) {
+        //     requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Current_Level__c',
+        //                      'Current_School__c', 'Applying_to__c'
+        //                     ];
+        //     const validFields = []
+        //     data.Ben.map((dataBen) => {
+        //         if(dataBen[requiredField[0]] == '' && )
+        //     })
+        // }
+    });
+    
+}

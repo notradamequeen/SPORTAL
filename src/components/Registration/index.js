@@ -14,7 +14,7 @@ import {
         getApplicationField,
         getRecordType
     } from '../../actions/salesforces';
-import { getCurrentDate } from '../../utils/common';
+import { getCurrentDate, validation, getBase64 } from '../../utils/common';
 import moment from 'moment';
 import Stepper from './stepper';
 import Tab1 from './tab1';
@@ -23,7 +23,8 @@ import Tab3 from './tab3';
 import Tab4 from './tab4';
 import Tab5 from './tab5';
 import $ from 'jquery';
-
+import swal from 'sweetalert';
+import Iframe from './iframe';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { error } from '@firebase/database/dist/esm/src/core/util/util';
 
@@ -71,6 +72,12 @@ class Registration extends React.Component {
             currentStep: 0,
             tabIndex: 0,
             RecordType: {Household_Member : "0125D0000008awbQAA", Beneficiary: "0125D0000008awgQAA"},
+            employStatusList: [],
+            relationList: [],
+            isValidMainEmail: true,
+            isValidBenEmail: ['true'],
+            isValidBenNric: ['', ],
+            isValidHouNric: ['',],
             //data
             check1: '',
             check2: '',
@@ -84,53 +91,53 @@ class Registration extends React.Component {
             check10: '',
             // Application
             Alcoholism__c: false,
-            Applicant__c: null,
-            Application_Type__c: null,
-            Approved_Bene__c: null,
-            Calculated_per_capita_income__c: null,
-            Cancelled_Bene__c: null,
+            Applicant__c: '',
+            Application_Type__c: '',
+            Approved_Bene__c: '',
+            Calculated_per_capita_income__c: '',
+            Cancelled_Bene__c: '',
             Chronic_Illness__c: false,
-            City__c: null,
-            Country__c: null,
-            Cultural_or_personal_belief__c: null,
+            City__c: '',
+            Country__c: '',
+            Cultural_or_personal_belief__c: '',
             Date_of_Application__c: getCurrentDate(),
-            Declaration_Completed__c: null,
+            Declaration_Completed__c: '',
             Disability__c: false,
             Drug_Addiction__c: false,
-            Fail_Bene_Requirement__c: null,
-            Fail_Eligibility__c: null,
-            Fail_Flat_Type__c: null,
-            Fail_Per_Cap_Income__c: null,
-            Flat_Type__c: null,
-            Gambling_Addiction__c: null,
-            Home_Ownership__c: null,
-            Low_Education__c: null,
-            Media_Coverage_consent__c: null,
-            No_of_Bene__c: null,
-            No_of_dependent_youth_children__c: null,
-            Other_Reason__c: null,
-            Other_Reason_Description__c: null,
-            Other_Source_of_Income__c: null,
-            Other_Source_of_Income_Amount__c: null,
-            Postal__c: null,
-            Reason_s_for_Single_No_income_earner__c: null,
-            Related_Account__c: null,
-            Social_Visit_Pass__c: null,
-            Source_of_Application__c: null,
-            Street__c: null,
-            Temporarily_unfit_for_work__c: null,
-            Total_income_earners__c: null,
-            Total_Monthly_Gross_Income__c: null,
-            Total_number_of_household_members__c: null,
-            Unit_Number__c: null,
+            Fail_Bene_Requirement__c: '',
+            Fail_Eligibility__c: '',
+            Fail_Flat_Type__c: '',
+            Fail_Per_Cap_Income__c: '',
+            Flat_Type__c: '',
+            Gambling_Addiction__c: '',
+            Home_Ownership__c: '',
+            Low_Education__c: '',
+            Media_Coverage_consent__c: '',
+            No_of_Bene__c: '',
+            No_of_dependent_youth_children__c: '',
+            Other_Reason__c: '',
+            Other_Reason_Description__c: '',
+            Other_Source_of_Income__c: '',
+            Other_Source_of_Income_Amount__c: '',
+            Postal__c: '',
+            Reason_s_for_Single_No_income_earner__c: '',
+            Related_Account__c: '',
+            Social_Visit_Pass__c: '',
+            Source_of_Application__c: '',
+            Street__c: '',
+            Temporarily_unfit_for_work__c: '',
+            Total_income_earners__c: '',
+            Total_Monthly_Gross_Income__c: '',
+            Total_number_of_household_members__c: '',
+            Unit_Number__c: '',
             // Person
-            Applying_to__c: null,
-            Applying_to_Education_Level__c: null,
-            Applying_to_Level_Year__c: null,
+            Applying_to__c: '',
+            Applying_to_Education_Level__c: '',
+            Applying_to_Level_Year__c: '',
             City__c: '',
             Company__c: '',
             Country__c: 'Singapore',
-            Current_Level__c: null,
+            Current_Level__c: '',
             Current_School__c: '',
             Date_of_Birth__c: '2011-01-10',
             Email_Address__c: '',
@@ -162,12 +169,14 @@ class Registration extends React.Component {
             // Referred_From__c
             // Referring_Reason__c
             // Related_Contact__c	
-            Relationship_to_Applicant__c: '',	
+            Relationship_to_Applicant__c: 'Self',	
             Religion__c: '',
             Remarks__c: '',
             Stream__c: '',
-            Ben: [{RecordType: 'Beneficiary'}],
-            Hou: [],
+            Ben: [{data:{}, attachment:{}}],
+            BenAttachments:[],
+            Hou: [{attachment:{}}],
+            HouAttachments: [],
             isLoading: true,
         };
         this.onClickNext                = this.onClickNext.bind(this);
@@ -178,18 +187,36 @@ class Registration extends React.Component {
         this.save                       = this.save.bind(this);
         this.update                     = this.update.bind(this);
         this.retrieve                   = this.retrieve.bind(this);
+        this.generatePdf                = this.generatePdf.bind(this);
         
     }
 
     componentDidMount() {
+        const a = ['as', 'sds']
         this.props.getSalesforceToken(() => {
             this.props.getPostalCodeRecord();
             this.props.getSchoolList();
         }).then(() => {
             this.setState({ isLoading: false })
         });
-       this.retrieve('Person__c').then((json)=>{console.log('ani', json)})
-       this.retrieve('RecordType').then((json)=>{console.log('ini', json)})
+        this.retrieve('Person__c/describe').then((json)=>{
+            const fields = json.fields
+            fields.sort((a, b) => {
+                if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
+                if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
+                return 0;
+            });
+            console.log('fields', fields)
+            fields.map((item) => {
+                if (item.name == "Employment_Status__c") {
+                    this.state.employStatusList = item.picklistValues                    
+                }
+                if (item.name == "Relationship_to_Applicant__c") {
+                    this.state.relationList = item.picklistValues
+                }
+            });
+        })
+       this.retrieve('Attachment/describe').then((json)=>{console.log('ini', json)})
        getRecordType();
     }
 
@@ -201,10 +228,47 @@ class Registration extends React.Component {
     
     onClickNext() {
         const { steps, currentStep , tabIndex} = this.state;
-        this.setState({
-            currentStep: currentStep + 1,
-            tabIndex: tabIndex + 1
-        });
+        if (currentStep > 0) {
+            const isValid = validation(currentStep+1, this.state);
+            let validNric = null;
+            const validFormat = currentStep == 1 ? this.state.isValidMainEmail : !this.state.isValidBenEmail.includes("false");
+
+            if(currentStep == 1) {
+                validNric = this.state.isValidMainNric
+             }
+            if(currentStep == 2) {
+                validNric = !this.state.isValidBenNric.includes("false")
+             }
+            if (currentStep == 3) {
+                validNric = !this.state.isValidHouNric.includes("false")
+                console.log('4', validNric)
+            }
+
+            if (!validFormat) {
+                console.log('false')
+                swal('Invalid Format Email')
+            }
+            if (!validNric){
+                swal('Invalid Format NRIC/FIN')
+            }
+            if(!isValid){
+                swal('cannot move to next step, please fill all required fields');
+            }
+            if(validNric && validFormat && isValid){
+                this.setState({
+                    currentStep: currentStep + 1,
+                    tabIndex: tabIndex + 1
+                });
+            }
+        } else {
+            this.setState({
+                currentStep: currentStep + 1,
+                tabIndex: tabIndex + 1
+            });
+        }
+        
+        
+        
     }
 
     onClickPrev() {
@@ -228,7 +292,7 @@ class Registration extends React.Component {
     retrieve(sobjects) {
         const SF_VERSION = 'v20.0';
         const salesforceToken = this.props.salesforce.token
-        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}/0125D0000008awg`;
+        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`;
         const fetchConfig = {
             method: 'GET',
             headers: {
@@ -272,7 +336,18 @@ class Registration extends React.Component {
         };
         return fetch(fullUrl, fetchConfig).then((response) => response.json());
     }
+    generatePdf(){
+        var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+        var content = document.getElementById("PrintedForm").innerHTML;
+        pri.document.open();
+        pri.document.write('<link ret=stylesheet src="../../assets/css/document.css" type="text/css" />')
+        pri.document.write(content);
+        pri.document.close();
+        pri.focus();
+        pri.print();
+    }
     submitApp(){
+        this.generatePdf()
         var personData = {
             Applying_to__c: this.state.Applying_to__c,
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
@@ -333,35 +408,76 @@ class Registration extends React.Component {
             Unit_Number__c: this.state.Unit_Number__c,
         }
         const salesforceToken = this.props.salesforce.token;
-        this.state.Ben.map((benData) => {
-            console.log(benData)
-            benData.Application__c = 'a0o5D000000L0NNQA0'
-            // benData.RecordTypeId = '0125D0000008awgQAA'
-            this.save('Person__c', benData).then((result)=>{
-                console.log('ben', result)
-            }).catch((err)=>{
-                console.log(err)
-            })
-        })
-        // saveObject('Application__c', applicationData, salesforceToken).then((json1) => {
-        //     const applicationId = json1.id
-        //     personData.Application__c = applicationId
-        //     saveObject('Person__c', personData, salesforceToken).then((json2) => {
-        //         const personId = json2.id
-        //         const dataToUpdate = {Applicant__c: personId}
-        //         updateObject('Application__c', applicationId, dataToUpdate, salesforceToken).then(
-        //             (json3) => {
-        //                 console.log(json3)
-        //         })
-        //         this.state.Ben.map((benData) => {
-        //             console.log(benData)
-        //             benData.Application__c = applicationId
-        //             this.save('Person__c', benData).then((result)=>{
-        //                 console.log(result)
-        //             })
-        //         })
-        //     })
-        // })
+        saveObject('Application__c', applicationData, salesforceToken).then((json1) => {
+            const applicationId = json1.id
+            personData.Application__c = applicationId
+            console.log('personData', personData)
+            console.log('appRes', json1)
+            saveObject('Person__c', personData, salesforceToken).then((json2) => {
+                console.log('updateRes', json2)
+                const personId = json2.id
+                const dataToUpdate = {Applicant__c: personId}
+                console.log('dataappUpdate', dataToUpdate)
+                updateObject('Application__c', applicationId, dataToUpdate, salesforceToken).then(
+                    (json3) => {
+                        console.log(json3)
+                })
+                if (this.state.Hou[0].attachment.file1 !== undefined) {
+                    console.log(personId)
+                    this.state.Hou[0].attachment.file1.parentId = personId
+                        this.save('Attachment', this.state.Hou[0].attachment.file1).then((resAttach)=>{
+                            console.log('personAttachfile1', resAttach)
+                        }).catch((err) => { alert(err) })
+                }
+                if (this.state.Hou[0].attachment.file2 !== undefined) {
+                    this.state.Hou[0].attachment.file2.parentId = personId
+                        this.save('Attachment', this.state.Hou[0].attachment.file2).then((resAttach)=>{
+                            console.log('personAttachfile2', resAttach)
+                        }).catch((err) => { alert(err) })
+                }
+            }); /* end Of save Main Applicant */
+            /*  save BenData */
+            this.state.Ben.map((benData) => {
+                benData.data.Application__c = applicationId
+                benData.data.RecordTypeId = '0125D0000008awgQAA'
+                this.save('Person__c', benData.data).then((resBen)=>{
+                    const benId = resBen.id
+                    if (benData.attachment.Name !== undefined){
+                        benData.attachment.parentId = benId
+                        console.log('benesave', resBen)
+                        this.save('Attachment', benData.attachment).then((resBenAttach)=>{
+                            console.log('beneattach', resBenAttach)
+                        }).catch((err) => { alert(err) })
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }); /* end of save BenData */
+            /* save HouData */
+            this.state.Hou.map((houData, idx) => {
+                if(idx !== 0){
+                    console.log(houData);
+                    houData.data.Application__c = applicationId
+                    this.save('Person__c', houData.data).then((resHou)=>{
+                        const personHouId = resHou.id
+                        if (houData.attachment.file1 !== undefined) {
+                            houData.attachment.file1.parentId = personHouId
+                            this.save('Attachment', houData.attachment.file1).then((resHouAttach)=>{
+                                console.log('houattach', resHouAttach)
+                            }).catch((err) => { alert(err) })
+                        }
+                        if (houData.attachment.file2 !== undefined) {
+                            houData.attachment.file2.parentId = personHouId
+                            this.save('Attachment', houData.attachment.file2).then((resHouAttach)=>{
+                                console.log('houattach', resHouAttach)
+                            }).catch((err) => { alert(err) })
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+                }    
+            }); /*  end of save HouData */
+        }); /* end of submit to SF process */
         return true;
     }
 
@@ -408,7 +524,7 @@ class Registration extends React.Component {
                         <Tab>Title 4</Tab>
                         <Tab>Title 5</Tab>
                     </TabList>
-
+                    <div id="PrintedForm">
                         <TabPanel>
                             <Tab1 
                                 changeState={this.changeState}
@@ -436,14 +552,17 @@ class Registration extends React.Component {
                         <TabPanel>
                             <Tab5 submitApp={this.submitApp}/>
                         </TabPanel>
+                    </div>
                     </Tabs>
+                
                     <br />
                     <div className="text-center">
                         {buttonprev}
                         {buttonnext}
                     </div>
                 </div>
-            } 
+            }
+            <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
         </div>
        );
     }

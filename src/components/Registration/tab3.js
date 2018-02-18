@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import $ from 'jquery';
 import Select from 'react-select';
+import { getBase64, regexValidate, validateNRIC } from '../../utils/common'
 
 import 'react-select/dist/react-select.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,7 +23,9 @@ class Tab3 extends React.Component {
             selectedAT: null,
             msList: [],
             nationList: [],
-            Ben:[{}]
+            Ben:[{data:{}, attachment: {}}],
+            isValidEmailFormat: [],
+            isValidBenNric: [],
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
@@ -30,6 +33,7 @@ class Tab3 extends React.Component {
         this.UpdateBen                        = this.UpdateBen.bind(this);
         this.cs_handleChange                  = this.cs_handleChange.bind(this);
         this.at_handleChange                  = this.at_handleChange.bind(this);
+        this.uploadBen                        = this.uploadBen.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -82,28 +86,64 @@ class Tab3 extends React.Component {
         this.setState({
             bencount: (this.state.bencount+1)
         });
-        this.props.data.Ben.push({})
+        this.props.data.Ben.push({data:{Date_of_Birth__c : ''}, attachment: {}});
+        this.state.isValidEmailFormat.push('');
+        this.state.isValidBenNric.push('');
+        this.props.data.isValidBenEmail = this.state.isValidEmailFormat;
+        this.props.data.isValidBenNric = this.state.isValidBenNric;
         console.log(this.props.data)
     }
 
     UpdateBen(event){
-        // var data = Array();
-        // $(".full").each(function() {
-        //     data.push($(this).find('select, textarea, input').serializeArray());
-        // })
-        // this.props.changeState('Ben', data);
-        // console.log(this.props)
-        const BenList = this.state.Ben
-        BenList[Number(event.target.id.match(/\d+/)[0])][event.target.name] = event.target.value 
+        const BenList = this.props.data.Ben
+        const benIdx = Number(event.target.id.match(/\d+/)[0])
+        const value = event.target.value
+        if ( event.target.name.indexOf("Email") !== -1) {
+            let isValidEmail = value !== '' ? regexValidate("email", value) : true;
+            if (!isValidEmail) {
+                document.getElementById(`ben_email_error${benIdx}`).innerHTML = 'invalid email format';
+            } else {
+                document.getElementById(`ben_email_error${benIdx}`).innerHTML = '';
+            }  
+            this.state.isValidEmailFormat[benIdx] = isValidEmail.toString()
+            this.props.data.isValidBenEmail = this.state.isValidEmailFormat
+        }
+        if(event.target.name === 'ID_Number__c'){
+            let isValidNric = validateNRIC(value)
+            if (!isValidNric) {
+                document.getElementById(`ben_nric_error${benIdx}`).innerHTML = 'invalid format NRIC/FIN';
+            } else {
+                document.getElementById(`ben_nric_error${benIdx}`).innerHTML = '';
+            }
+            this.state.isValidBenNric[benIdx] = isValidNric.toString()
+            this.props.data.isValidBenNric = this.state.isValidBenNric
+        }
+        
+        BenList[benIdx]['data'][event.target.name] = value
         this.setState({ 
             Ben: BenList
         });
         this.props.changeState('Ben', BenList);
-        console.log(this.state)
+        console.log('state', this.state)
+    }
+
+    uploadBen(event){
+        const file = event.target.files[0]
+        let ben = this.props.data.Ben[Number(event.target.id.match(/\d+/)[0])]
+        let attachment = {
+            Name : 'Nric_Fin_'+file.name.replace(' ', '_'),
+            Body : file,
+            parentId : '' //the id of the opportunity
+          }
+        getBase64(file).then((encodedFile) => {
+            attachment.Body = encodedFile.split(',')[1]
+            ben['attachment'] = attachment
+        })
     }
 
 
     render() {
+        const that = this
         const update = this.UpdateBen.bind(this);
         const dob = this.state.dob;
         const handleDOBChange = this.handleDOBChange.bind(this);
@@ -117,7 +157,7 @@ class Tab3 extends React.Component {
         <h5 className="info-text"> Beneficiaries List</h5>
         {Array.apply(0, Array(this.state.bencount)).map(function (x, i) {
             return (
-            <div className="full">
+            <div className="full" key={i.toString()}>
                 <div className="row">
                     <p>Beneficiary - {(i+1)}</p>
                     <div className="col-sm-3">
@@ -143,8 +183,10 @@ class Tab3 extends React.Component {
                                     id={`Ben${i}[ID_Number__c]`}
                                     type="text"
                                     className="form-control"
+                                    maxlength="9"
                                     placeholder="NRIC "
                                 />
+                                <span id={`ben_nric_error${i}`} style={{ color: "red"}}></span>
                         </div>
                     </div>
                     <div className="col-sm-3">
@@ -152,10 +194,13 @@ class Tab3 extends React.Component {
                             <label>Date of Birth</label>
                                 <DatePicker
                                     name="Date_of_Birth__c"
-                                    selected={dob}
+                                    selected={props.data.Ben[i].data.Date_of_Birth__c !== '' ? moment(props.data.Ben[i].data.Date_of_Birth__c) : ''}
                                     id={`Ben${i}[Date_of_Birth__c]`}
                                     dateFormat="DD/MM/YYYY"
-                                    onChange={handleDOBChange} 
+                                    onChange={date => {
+                                        const newDate = date.format("YYYY-MM-DD").toString()
+                                        props.data.Ben[i].data.Date_of_Birth__c = newDate
+                                        that.forceUpdate();}}
                                     placeholderText="Date of Birth"
                                     className="form-control fullw"
                                     showYearDropdown
@@ -172,7 +217,7 @@ class Tab3 extends React.Component {
                                 id={`Ben${i}[Current_Level__c]`}
                                 className="form-control"
                             >
-
+                                <option value=''></option>
                                 <option value="Primary 1">Primary 1</option>
                                 <option value="Primary 2">Primary 2</option>
                                 <option value="Primary 3">Primary 3</option>
@@ -208,6 +253,7 @@ class Tab3 extends React.Component {
                                     className="form-control"
                                     placeholder="Email"
                                 />
+                                <span id={`ben_email_error${i}`} style={{ color: "red"}}></span>
                         </div>
                     </div>
                     <div className="col-sm-3">
@@ -223,7 +269,7 @@ class Tab3 extends React.Component {
                                 <option value="">---Please Select Current School---</option>
                                 {school_list.map((school_opt) => {
                                     return(
-                                    <option value={school_opt.value}>{school_opt.label}</option>
+                                        <option key={school_opt.value} value={school_opt.value}>{school_opt.label}</option>
                                     )
                                 })}
                             </select>
@@ -257,7 +303,7 @@ class Tab3 extends React.Component {
                                 <option value="">---Please Select Applying to---</option>
                                 {school_list.map((school_opt) => {
                                     return(
-                                    <option value={school_opt.value}>{school_opt.label}</option>
+                                    <option key={`at${school_opt.value}`} value={school_opt.value}>{school_opt.label}</option>
                                     )
                                 })}
                             </select>
@@ -268,10 +314,10 @@ class Tab3 extends React.Component {
                     <div className="col-sm-3">
                         <div className="form-group">
                             <input
-                                onChange={update}
+                                onChange={that.uploadBen}
                                 type="file"
                                 className="form-control-file"
-                                id="file1"
+                                id={`Ben${i}[file]`}
                                 aria-describedby="fileHelp1" />
                             <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
                         </div>
