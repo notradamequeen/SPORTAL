@@ -183,7 +183,7 @@ class Tab4 extends React.Component {
                                     type="text"
                                     className="form-control"
                                     placeholder="NRIC "
-                                    maxlength="9"
+                                    maxLength="9"
                                     value={props.data.ID_Number__c}
                                 /><br/>
                                 <span id="nric_error0" style={{color: "red"}}></span></div> :

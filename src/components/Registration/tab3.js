@@ -183,7 +183,7 @@ class Tab3 extends React.Component {
                                     id={`Ben${i}[ID_Number__c]`}
                                     type="text"
                                     className="form-control"
-                                    maxlength="9"
+                                    maxLength="9"
                                     placeholder="NRIC "
                                 />
                                 <span id={`ben_nric_error${i}`} style={{ color: "red"}}></span>

@@ -220,7 +220,7 @@ class Tab2 extends React.Component {
                         type="text"
                         className="form-control"
                         placeholder="NRIC / FIN"
-                        maxlength="9"
+                        maxLength="9"
                         onChange={this.handleInputChange}
                     />
                     <span id="nric_error" style={{color: "red"}}></span>
