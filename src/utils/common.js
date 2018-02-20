@@ -1,4 +1,9 @@
 import swal from 'sweetalert';
+import Logo from '../assets/img/spmf_logo.jpg';
+import jsPDF from 'jspdf';
+require('jspdf-autotable');
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'gentelella/build/css/custom.min.css';
 
 const SF_VERSION = 'v20.0';
 const RegexList = {
@@ -7,6 +12,7 @@ const RegexList = {
     fullName: /^([a-zA-Z]{2,}\s[a-zA-z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/,
     phoneNumber: /^\+\d*$/,
 };
+const spmfBackendUrl = __DEV__ ? 'http://localhost:2018' : 'http://13.229.173.240/sf/';
 
 export function sfRequestSync(sobject, request) {
     let fullUrl = '';
@@ -153,12 +159,11 @@ export function getCurrentDate(){
 }
 
 export function validation(step, data){
-    // return true
+    return true
     let requiredField = []
     let validFields = []
     let isValid = false;
         if (step == 2){
-            // return true
             requiredField = ['Full_Name__c', 'ID_Number__c', 'Home_Phone__c']
 
             if(data[requiredField[0]] !== '' && data[requiredField[1]] !== '' && data[requiredField[2]] !== '') {
@@ -167,7 +172,6 @@ export function validation(step, data){
             return isValid
         }
         if (step == 3) {
-            // return true
             requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Current_Level__c',
                              'Current_School__c', 'Applying_to__c'
                             ];
@@ -239,6 +243,7 @@ export function getBase64(file) {
  }
 
  export function validateNRIC(str) {
+     return true
     if (str.length != 9)
         return false;
 
@@ -275,3 +280,178 @@ export function getBase64(file) {
 
     return (icArray[8] === theAlpha)
  }
+
+export function getBase64FromImageUrl(src, outputFormat) {
+    return new Promise((resolve, reject) => {
+        var img = new Image();
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        img.crossOrigin = 'Anonymous';
+        img.src = src;
+        img.onload = function() {
+            var dataURL;
+            canvas.height = this.naturalHeight;
+            canvas.width = this.naturalWidth;
+            ctx.drawImage(this, 0, 0);
+            dataURL = canvas.toDataURL(outputFormat);
+            resolve(dataURL);
+        };
+    });
+    
+}
+  
+export function generatePdf(data){
+    console.log('genNode', data.nodeList)
+    getBase64FromImageUrl(`http://localhost:8080${require('../assets/img/spmf_pdf.jpg')}`).then((url)=>{
+        let eligibilityColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
+        let eligibilityRows = [
+            {title: "   ", text: '-  Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)'},
+            {title: "   ", text: '-  Family is living in a 4-room HDB flat or smaller'},
+            {title: "   ", text: '-  Family has a gross per capita income (PCI) of $625/ month or less'},
+            {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme'},
+            {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme'},
+            {title: "   ", text: '-  Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education.'},
+            {title: "   ", text: '-  Student is 20 years or younger at point of application'},
+        ]
+        let docColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
+        let docRows = [
+            {title: "   ", text: '-  Photocopy of student(s)’s NRIC / birth certificate'},
+            {title: "   ", text: '-  Photocopy of both parents’/ guardian’s NRIC / passport'},
+        ]
+        let PersonalDetailColumns = ["Personal Details", '', '', '', '', ''];
+        let PersonalDetailRows = [
+            [""],
+            ["Full Name", ":", data.Full_Name__c, "Gender", ":", data.Gender__c],
+            ["ID Type", ":", "NRIC", "Nationality", ":", data.Nationality__c],
+            ["ID Number", ":", data.ID_Number__c, "Other Nationality", ":", data.Other_Nationality__c],
+            ["Date of Birth", ":", data.Date_of_Birth__c, "Race", ":", data.Race__c],
+            ["Marital Status", ":", data.Marital_Status__c, "Other Race", ":", data.Other_Race__c],
+            ["Other Marital Status", ":", data.Other_Marital_Status__c],
+        ];
+        let AddressColumns = ["Address", '', '', '', '', ''];
+        let AddressRows = [
+            [""],
+            ["Postal Code", ":", data.Postal__c, "Type Of Flat", ":", data.Flat_Type__c],
+            ["Street Name", ":", data.Street_Name__c, "Other Type of Flat", ":", data.Other_Flat_Type__c],
+            ["Block Number", ":", data.Block_Number__c, "Country", ":", data.Country__c],
+        ];
+        let contactRows = [
+            [""],
+            ["Home Phone", ":", data.Home_Phone__c, "Mobile Phone", ":", data.Mobile_Phone__c],
+            ["Email Address", ":", data.Email_Address__c]
+        ]
+        let tab2ColumnStyle = {
+            0: {columnWidth: 100},
+            1: {columnWidth: 20},
+            2: {columnWidth: 120},
+            3: {columnWidth: 100},
+            4: {columnWidth:20},
+            5: {columnWidth: 120}
+        };
+        let body2 = document.createElement('DIV')
+        body2.id = "iframecontent"
+        var x = document.createElement("IMG");
+            x.setAttribute("src", url);
+            x.setAttribute("width", "600");
+            x.setAttribute("height", "83");
+        body2.appendChild(x)
+        // console.log(body2.innerHTML)
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        let htmlSTring = '';
+        // const pageBreak = `<!-- ADD_PAGE -->`
+        // htmlSTring += pageBreak
+        body2.innerHTML += htmlSTring
+        var source = body2
+        var specialElementHandlers = {
+            // element with id of "bypass" - jQuery style selector
+            '#bypassme': function (element, renderer) {
+                // true = "handled elsewhere, bypass text extraction"
+                return true
+            }
+        };
+        var margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+        source, // HTML string or DOM elem ref.
+        margins.left, // x coord
+        margins.top, { // y coord
+            'width': margins.width, // max width of content on PDF
+            'elementHandlers': specialElementHandlers
+        },
+        function (dispose) {
+            pdf.setFontSize(16);
+            pdf.autoTable(["Eligibility Criteria"], [], {
+                theme: 'plain',
+                startY: 200,
+            })
+            pdf.autoTable(eligibilityColumns, eligibilityRows, {
+                theme: 'plain',
+                startY: pdf.autoTable.previous.finalY-15,
+                bodyStyles: {valign: 'top'},
+                styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+                drawRow: function (row, data) {
+                    row.height = row.height * 1.2
+                },
+            })
+            pdf.autoTable(["All completed STSPMF application forms must be attached with the relevant documents listed below:"], [], {
+                theme: 'plain',
+                startY: pdf.autoTable.previous.finalY + 20,
+                drawRow: function (row, data) {
+                    row.height = row.height * 1.2
+                },
+            })
+            pdf.autoTable(docColumns, docRows, {
+                theme: 'plain',
+                startY: pdf.autoTable.previous.finalY-15,
+                bodyStyles: {valign: 'top'},
+                styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                columnStyles: {text: {columnWidth: 'auto'}},
+            })
+            pdf.addPage()
+            pdf.autoTable(PersonalDetailColumns, PersonalDetailRows, {
+                theme: 'plain',
+                startY: 80,
+                drawRow: function (row, data) {
+                    if(row.index > 0){
+                        row.height = row.height * 1.5
+                    }
+                },
+                columnStyles: tab2ColumnStyle,
+            })
+            let first = pdf.autoTable.previous;
+            pdf.autoTable(AddressColumns, AddressRows, {
+                theme: 'plain',
+                startY: first.finalY + 20,
+                showHeader: 'firstPage',
+                margin: {right: 107},
+                drawRow: function (row, data) {
+                    if(row.index > 0){
+                        row.height = row.height * 1.5
+                    }
+                },
+                columnStyles: tab2ColumnStyle,
+            });
+            let second = pdf.autoTable.previous;
+            pdf.autoTable(["Personal Contact", '', '', '', '', ''], contactRows, {
+                theme: 'plain',
+                startY: second.finalY + 20,
+                showHeader: 'firstPage',
+                margin: {right: 107},
+                drawRow: function (row, data) {
+                    if(row.index > 0){
+                        row.height = row.height * 1.5
+                    }
+                },
+                columnStyles: tab2ColumnStyle,
+            });
+            pdf.save('Test.pdf');
+        }, margins);
+    });
+}

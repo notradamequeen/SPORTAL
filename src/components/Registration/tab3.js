@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import $ from 'jquery';
 import Select from 'react-select';
-import { getBase64, regexValidate, validateNRIC } from '../../utils/common'
+import { getBase64, regexValidate, validateNRIC, validation } from '../../utils/common'
 
 import 'react-select/dist/react-select.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -83,15 +83,22 @@ class Tab3 extends React.Component {
     }
 
     addCount(){
-        this.setState({
-            bencount: (this.state.bencount+1)
-        });
-        this.props.data.Ben.push({data:{Date_of_Birth__c : ''}, attachment: {}});
-        this.state.isValidEmailFormat.push('');
-        this.state.isValidBenNric.push('');
-        this.props.data.isValidBenEmail = this.state.isValidEmailFormat;
-        this.props.data.isValidBenNric = this.state.isValidBenNric;
-        console.log(this.props.data)
+        const isValidRequired = validation('3', this.props.data);
+        if (!isValidRequired) {
+            swal('please fill all required fields!')
+        } else {
+            this.setState({
+                bencount: (this.state.bencount+1)
+            });
+            this.props.data.Ben.push({data:{Date_of_Birth__c : ''}, attachment: {}});
+            this.state.isValidEmailFormat.push('');
+            this.state.isValidBenNric.push('');
+            this.props.data.isValidBenEmail = this.state.isValidEmailFormat;
+            this.props.data.isValidBenNric = this.state.isValidBenNric;
+            console.log(this.props.data)
+        }
+        
+        
     }
 
     UpdateBen(event){
@@ -153,190 +160,179 @@ class Tab3 extends React.Component {
         const state = this.state
         const props = this.props
         return (
-            <div className="col-md-12" id="tab3">
-        <h5 className="info-text"> Beneficiaries List</h5>
-        {Array.apply(0, Array(this.state.bencount)).map(function (x, i) {
-            return (
-            <div className="full" key={i.toString()}>
-                <div className="row">
-                    <p>Beneficiary - {(i+1)}</p>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Name <small>(required)</small></label>
-                                <input
-                                    onChange={update}
-                                    name="Full_Name__c"
-                                    id={`Ben${i}][Full_Name_del__c]`}
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Fullname"
-                                    required
-                                />
+            <div className="col-md-12 print" id="tab3">
+                <h5 className="info-text"> Beneficiaries List</h5>
+            {Array.apply(0, Array(this.state.bencount)).map(function (x, i) {
+                return (
+                    <div className="full" key={i.toString()}>
+                        <div className="row">
+                            <p>Beneficiary - {(i+1)}</p>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Name <small style={{color: "red"}}>(required)</small></label>
+                                        <input
+                                            onChange={update}
+                                            name="Full_Name__c"
+                                            id={`Ben${i}][Full_Name_del__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Fullname"
+                                            required
+                                        />
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>NRIC <small style={{color: "red"}}>(required)</small> </label>
+                                        <input
+                                            onChange={update}
+                                            name="ID_Number__c"
+                                            id={`Ben${i}[ID_Number__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            maxLength="9"
+                                            placeholder="NRIC "
+                                        />
+                                        <span id={`ben_nric_error${i}`} style={{ color: "red"}}></span>
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Date of Birth <small style={{color: "red"}}>(required)</small></label>
+                                        <DatePicker
+                                            name="Date_of_Birth__c"
+                                            selected={props.data.Ben[i].data.Date_of_Birth__c !== '' ? moment(props.data.Ben[i].data.Date_of_Birth__c) : ''}
+                                            id={`Ben${i}[Date_of_Birth__c]`}
+                                            dateFormat="DD/MM/YYYY"
+                                            onChange={date => {
+                                                const newDate = date.format("YYYY-MM-DD").toString()
+                                                props.data.Ben[i].data.Date_of_Birth__c = newDate
+                                                that.forceUpdate();}}
+                                            placeholderText="Date of Birth"
+                                            className="form-control fullw"
+                                            showYearDropdown
+                                            showMonthDropdown
+                                        />
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Current level <small style={{color: "red"}}>(required)</small></label>
+                                    <select
+                                        onChange={update}
+                                        name="Current_Level__c"
+                                        id={`Ben${i}[Current_Level__c]`}
+                                        className="form-control"
+                                    >
+                                        <option value=''></option>
+                                        {props.data.currLevelList !== undefined && props.data.currLevelList.map((option) => {
+                                            return (
+                                                <option key={option.value} value={option.value}>{option.label}</option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>NRIC</label>
-                                <input
-                                    onChange={update}
-                                    name="ID_Number__c"
-                                    id={`Ben${i}[ID_Number__c]`}
-                                    type="text"
-                                    className="form-control"
-                                    maxLength="9"
-                                    placeholder="NRIC "
-                                />
-                                <span id={`ben_nric_error${i}`} style={{ color: "red"}}></span>
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Email <small style={{color: "red"}}>(required)</small></label>
+                                        <input
+                                            onChange={update}
+                                            name="Email_Address__c"
+                                            id={`Ben${i}[Email_Address__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Email"
+                                        />
+                                        <span id={`ben_email_error${i}`} style={{ color: "red"}}></span>
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>School <small style={{color: "red"}}>(required)</small></label>
+                                    <select
+                                        name="Current_School__c" 
+                                        ref="Ben[{i}][Current_School__c]" 
+                                        id={`Ben${i}[Current_School__c]`}
+                                        onChange={update}
+                                        className="form-control"
+                                        required>
+                                        <option value="">---Please Select Current School---</option>
+                                        {school_list.map((school_opt) => {
+                                            return(
+                                                <option key={school_opt.value} value={school_opt.value}>{school_opt.label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Stream</label>
+                                    <select
+                                        onChange={update}
+                                        name="Stream__c"
+                                        id={`Ben${i}[Stream__c]`}
+                                        className="form-control"
+                                    >
+                                        <option value=''></option>
+                                        {props.data.streamList !== undefined && props.data.streamList.map((option) => {
+                                            return (
+                                                <option key={option.value} value={option.value}>{option.label}</option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Applying to <small style={{color: "red"}}>(required)</small></label>
+                                    <select
+                                        name="Applying_to__c"
+                                        className="form-control"
+                                        ref="Ben[{i}][Applying_to__c]" 
+                                        id={`Ben${i}[Applying_to__c]`}
+                                        onChange={update}
+                                        required >
+                                        <option value="">---Please Select Applying to---</option>
+                                        {school_list.map((school_opt) => {
+                                            return(
+                                            <option key={`at${school_opt.value}`} value={school_opt.value}>{school_opt.label}</option>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Date of Birth</label>
-                                <DatePicker
-                                    name="Date_of_Birth__c"
-                                    selected={props.data.Ben[i].data.Date_of_Birth__c !== '' ? moment(props.data.Ben[i].data.Date_of_Birth__c) : ''}
-                                    id={`Ben${i}[Date_of_Birth__c]`}
-                                    dateFormat="DD/MM/YYYY"
-                                    onChange={date => {
-                                        const newDate = date.format("YYYY-MM-DD").toString()
-                                        props.data.Ben[i].data.Date_of_Birth__c = newDate
-                                        that.forceUpdate();}}
-                                    placeholderText="Date of Birth"
-                                    className="form-control fullw"
-                                    showYearDropdown
-                                    showMonthDropdown
-                                />
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <input
+                                        onChange={that.uploadBen}
+                                        type="file"
+                                        className="form-control-file"
+                                        id={`Ben${i}[file]`}
+                                        aria-describedby="fileHelp1" />
+                                    <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
+                                </div>
+                            </div>
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <input
+                                        onChange={update}
+                                        type="checkbox"
+                                        value="1"
+                                        id="grad1" /> 
+                                    <label htmlFor="grad1">Graduating this year</label>
+                                </div>
+                            </div>
                         </div>
+                        <hr />
                     </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Current level</label>
-                            <select
-                                onChange={update}
-                                name="Current_Level__c"
-                                id={`Ben${i}[Current_Level__c]`}
-                                className="form-control"
-                            >
-                                <option value=''></option>
-                                <option value="Primary 1">Primary 1</option>
-                                <option value="Primary 2">Primary 2</option>
-                                <option value="Primary 3">Primary 3</option>
-                                <option value="Primary 4">Primary 4</option>
-                                <option value="Primary 5">Primary 5</option>
-                                <option value="Primary 6">Primary 6</option>
-                                <option value="Secondary 1">Secondary 1</option>
-                                <option value="Secondary 2">Secondary 2</option>
-                                <option value="Secondary 3">Secondary 3</option>
-                                <option value="Secondary 4">Secondary 4</option>
-                                <option value="Secondary 5">Secondary 5</option>
-                                <option value="NITEC 1">NITEC 1</option>
-                                <option value="NITEC 2">NITEC 2</option>
-                                <option value="Higher NITEC">Higher NITEC</option>
-                                <option value="Polytechnic 1">Polytechnic 1</option>
-                                <option value="Polytechnic 2">Polytechnic 2</option>
-                                <option value="Polytechnic 3">Polytechnic 3</option>
-                                <option value="JC1">JC1</option>
-                                <option value="JC2">JC2</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Email</label>
-                                <input
-                                    onChange={update}
-                                    name="Email_Address__c"
-                                    id={`Ben${i}[Email_Address__c]`}
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Email"
-                                />
-                                <span id={`ben_email_error${i}`} style={{ color: "red"}}></span>
-                        </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>School</label>
-                            <select
-                                name="Current_School__c" 
-                                ref="Ben[{i}][Current_School__c]" 
-                                id={`Ben${i}[Current_School__c]`}
-                                onChange={update}
-                                className="form-control"
-                                required>
-                                <option value="">---Please Select Current School---</option>
-                                {school_list.map((school_opt) => {
-                                    return(
-                                        <option key={school_opt.value} value={school_opt.value}>{school_opt.label}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Stream</label>
-                            <select
-                                onChange={update}
-                                name="Stream__c"
-                                id={`Ben${i}[Stream__c]`}
-                                className="form-control">
-                                <option></option>
-                                <option value="Express">Express</option>
-                                <option value="Normal Academic">Normal Academic</option>
-                                <option value="Normal Technical">Normal Technical</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <label>Applying to</label>
-                            <select
-                                name="Applying_to__c"
-                                className="form-control"
-                                ref="Ben[{i}][Applying_to__c]" 
-                                id={`Ben${i}[Applying_to__c]`}
-                                onChange={update}
-                                required >
-                                <option value="">---Please Select Applying to---</option>
-                                {school_list.map((school_opt) => {
-                                    return(
-                                    <option key={`at${school_opt.value}`} value={school_opt.value}>{school_opt.label}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <input
-                                onChange={that.uploadBen}
-                                type="file"
-                                className="form-control-file"
-                                id={`Ben${i}[file]`}
-                                aria-describedby="fileHelp1" />
-                            <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
-                        </div>
-                    </div>
-                    <div className="col-sm-3">
-                        <div className="form-group">
-                            <input
-                                onChange={update}
-                                type="checkbox"
-                                value="1"
-                                id="grad1" /> 
-                            <label htmlFor="grad1">Graduating this year</label>
-                        </div>
-                    </div>
-                </div>
-                <hr />
-            </div>
-        )
-        })}
+                )
+            })}
         <br />
         <center>
             <button onClick={this.addCount} className="btn btn-primary">Add more beneficary</button>

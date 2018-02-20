@@ -14,8 +14,15 @@ import {
         getApplicationField,
         getRecordType
     } from '../../actions/salesforces';
-import { getCurrentDate, validation, getBase64 } from '../../utils/common';
+import { 
+        getCurrentDate,
+        validation,
+        getBase64,
+        getBase64FromImageUrl,
+        generatePdf } from '../../utils/common';
 import moment from 'moment';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import Stepper from './stepper';
 import Tab1 from './tab1';
 import Tab2 from './tab2';
@@ -28,8 +35,8 @@ import Iframe from './iframe';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { error } from '@firebase/database/dist/esm/src/core/util/util';
 
-class Registration extends React.Component {
 
+class Registration extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -71,6 +78,7 @@ class Registration extends React.Component {
             }],
             currentStep: 0,
             tabIndex: 0,
+            nodeList: [],
             RecordType: {Household_Member : "0125D0000008awbQAA", Beneficiary: "0125D0000008awgQAA"},
             employStatusList: [],
             relationList: [],
@@ -139,10 +147,10 @@ class Registration extends React.Component {
             Country__c: 'Singapore',
             Current_Level__c: '',
             Current_School__c: '',
-            Date_of_Birth__c: '2011-01-10',
+            Date_of_Birth__c: '',
             Email_Address__c: '',
-            Employment_End_Date__c: '2011-01-10',
-            Employment_Start_Date__c: '2011-01-10',
+            Employment_End_Date__c: '',
+            Employment_Start_Date__c: '',
             Employment_Status__c: '',
             Fail_Standard_Criteria__c: '',	
             Fail_Flat_Type__c: '',
@@ -173,7 +181,7 @@ class Registration extends React.Component {
             Religion__c: '',
             Remarks__c: '',
             Stream__c: '',
-            Ben: [{data:{}, attachment:{}}],
+            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}}],
             BenAttachments:[],
             Hou: [{attachment:{}}],
             HouAttachments: [],
@@ -187,37 +195,42 @@ class Registration extends React.Component {
         this.save                       = this.save.bind(this);
         this.update                     = this.update.bind(this);
         this.retrieve                   = this.retrieve.bind(this);
-        this.generatePdf                = this.generatePdf.bind(this);
-        
     }
 
     componentDidMount() {
-        const a = ['as', 'sds']
         this.props.getSalesforceToken(() => {
             this.props.getPostalCodeRecord();
             this.props.getSchoolList();
         }).then(() => {
             this.setState({ isLoading: false })
+            this.retrieve('Person__c/describe').then((json)=>{
+                const fields = json.fields
+                fields.sort((a, b) => {
+                    if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
+                    if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
+                    return 0;
+                });
+                fields.map((item) => {
+                    if (item.name == "Current_Level__c") {
+                        this.state.currLevelList = item.picklistValues;
+                    }
+                    if (item.name == "Employment_Status__c") {
+                        this.state.employStatusList = item.picklistValues;                 
+                    }
+                    if (item.name == "Race__c") {
+                        this.state.raceList = item.picklistValues;
+                    }
+                    if (item.name == "Relationship_to_Applicant__c") {
+                        this.state.relationList = item.picklistValues;
+                    }
+                    if (item.name == "Stream__c") {
+                        this.state.streamList = item.picklistValues;
+                    }
+    
+                });
+            });
         });
-        this.retrieve('Person__c/describe').then((json)=>{
-            const fields = json.fields
-            fields.sort((a, b) => {
-                if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
-                if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
-                return 0;
-            });
-            console.log('fields', fields)
-            fields.map((item) => {
-                if (item.name == "Employment_Status__c") {
-                    this.state.employStatusList = item.picklistValues                    
-                }
-                if (item.name == "Relationship_to_Applicant__c") {
-                    this.state.relationList = item.picklistValues
-                }
-            });
-        })
-       this.retrieve('Attachment/describe').then((json)=>{console.log('ini', json)})
-       getRecordType();
+        
     }
 
     componentWillUnmount() {
@@ -227,6 +240,10 @@ class Registration extends React.Component {
     }
     
     onClickNext() {
+        let node = document.getElementsByClassName('print')
+        this.state.nodeList.push(node)
+        console.log('node', this.state.nodeList)
+        // generatePdf(this.state)
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
             const isValid = validation(currentStep+1, this.state);
@@ -265,12 +282,8 @@ class Registration extends React.Component {
                 currentStep: currentStep + 1,
                 tabIndex: tabIndex + 1
             });
-        }
-        
-        
-        
+        }    
     }
-
     onClickPrev() {
         const { steps, currentStep, tabIndex } = this.state;
         this.setState({
@@ -278,11 +291,9 @@ class Registration extends React.Component {
             tabIndex: tabIndex - 1
         });
     }
-
     onSelect() {
         
     }
-
     changeState(name, val){
         this.setState({
             [name]: val
@@ -336,18 +347,8 @@ class Registration extends React.Component {
         };
         return fetch(fullUrl, fetchConfig).then((response) => response.json());
     }
-    generatePdf(){
-        var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-        var content = document.getElementById("PrintedForm").innerHTML;
-        pri.document.open();
-        pri.document.write('<link ret=stylesheet src="../../assets/css/document.css" type="text/css" />')
-        pri.document.write(content);
-        pri.document.close();
-        pri.focus();
-        pri.print();
-    }
     submitApp(){
-        this.generatePdf()
+        generatePdf()
         var personData = {
             Applying_to__c: this.state.Applying_to__c,
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
@@ -501,70 +502,70 @@ class Registration extends React.Component {
                 buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100" disabled>Next</button>;
             }
           }
-       return ( 
-        <div className="container body">
-            <div className="col-md-12" id="logoHeader">
-                <div className="col-md-3">
-                <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
+        return ( 
+            <div className="container body" id="printed">
+                <div className="col-md-12" id="logoHeader">
+                    <div className="col-md-3">
+                    <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
+                    </div>
+                    <div className="col-md-9 header-title">
+                        <br /><br /><br /><br />
+                        <h4>STSPMF Application Form</h4>
+                    </div>
                 </div>
-                <div className="col-md-9 header-title">
-                    <br /><br /><br /><br />
-                    <h4>STSPMF Application Form</h4>
-                </div>
-            </div>
-            {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
-                <div className="" id="AppForm">
-                    <Stepper steps={ steps } activeStep={ currentStep } />
-                    
-                    <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
-                    <TabList style={{ display: "none" }}>
-                        <Tab>Title 1</Tab>
-                        <Tab>Title 2</Tab>
-                        <Tab>Title 3</Tab>
-                        <Tab>Title 4</Tab>
-                        <Tab>Title 5</Tab>
-                    </TabList>
-                    <div id="PrintedForm">
-                        <TabPanel>
-                            <Tab1 
-                                changeState={this.changeState}
-                                data={this.state}
+                {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
+                    <div className="" id="AppForm">
+                        <Stepper steps={ steps } activeStep={ currentStep } />
+                        
+                        <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
+                        <TabList style={{ display: "none" }}>
+                            <Tab>Title 1</Tab>
+                            <Tab>Title 2</Tab>
+                            <Tab>Title 3</Tab>
+                            <Tab>Title 4</Tab>
+                            <Tab>Title 5</Tab>
+                        </TabList>
+                        <div id="PrintedForm">
+                            <TabPanel>
+                                <Tab1 
+                                    changeState={this.changeState}
+                                    data={this.state}
+                                    />
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab2 
+                                    changeState={this.changeState}
+                                    data={this.state}
                                 />
-                        </TabPanel>
-                        <TabPanel>
-                            <Tab2 
-                                changeState={this.changeState}
-                                data={this.state}
-                            />
-                        </TabPanel>
-                        <TabPanel>
-                            <Tab3 
-                                changeState={this.changeState}
-                                data={this.state}
-                            />
-                        </TabPanel>
-                        <TabPanel>
-                            <Tab4 
-                                changeState={this.changeState}
-                                data={this.state}
-                            />
-                        </TabPanel>
-                        <TabPanel>
-                            <Tab5 submitApp={this.submitApp}/>
-                        </TabPanel>
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab3 
+                                    changeState={this.changeState}
+                                    data={this.state}
+                                />
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab4 
+                                    changeState={this.changeState}
+                                    data={this.state}
+                                />
+                            </TabPanel>
+                            <TabPanel>
+                                <Tab5 submitApp={this.submitApp}/>
+                            </TabPanel>
+                        </div>
+                        </Tabs>
+                    
+                        <br />
+                        <div className="text-center">
+                            {buttonprev}
+                            {buttonnext}
+                        </div>
                     </div>
-                    </Tabs>
-                
-                    <br />
-                    <div className="text-center">
-                        {buttonprev}
-                        {buttonnext}
-                    </div>
-                </div>
-            }
-            <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
-        </div>
-       );
+                }
+                <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
+            </div>
+        );
     }
  }
 

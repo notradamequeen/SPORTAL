@@ -4,7 +4,7 @@ import {
     q_RECORD_TYPE
 } from './query';
 import { sfRequestSync, sfRequest } from '../utils/common';
-const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'http://13.229.173.240/sf/';
+const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'http://spmf.interaktiv.sg/sf/';
 const SF_VERSION = 'v20.0';
 
 export function getSalesforceToken(callback) {
