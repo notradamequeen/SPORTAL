@@ -181,11 +181,18 @@ class Registration extends React.Component {
             Religion__c: '',
             Remarks__c: '',
             Stream__c: '',
-            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}}],
+            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}}, 
+            {data:{Date_of_Birth__c: '', }, attachment:{}},
+            {data:{Date_of_Birth__c: '', }, attachment:{}}, 
+            {data:{Date_of_Birth__c: '', }, attachment:{}}, 
+            {data:{Date_of_Birth__c: '', }, attachment:{}}, {data:{Date_of_Birth__c: '', }, attachment:{}},
+            {data:{Date_of_Birth__c: '', }, attachment:{}}
+            ],
             BenAttachments:[],
             Hou: [{attachment:{}}],
             HouAttachments: [],
             isLoading: true,
+            fullUrl: '',
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
@@ -240,9 +247,6 @@ class Registration extends React.Component {
     }
     
     onClickNext() {
-        let node = document.getElementsByClassName('print')
-        this.state.nodeList.push(node)
-        console.log('node', this.state.nodeList)
         // generatePdf(this.state)
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
@@ -303,7 +307,9 @@ class Registration extends React.Component {
     retrieve(sobjects) {
         const SF_VERSION = 'v20.0';
         const salesforceToken = this.props.salesforce.token
-        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`;
+        if (salesforceToken !== null){
+            this.setState( {fullUrl : `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`})
+        }
         const fetchConfig = {
             method: 'GET',
             headers: {
@@ -313,12 +319,15 @@ class Registration extends React.Component {
             },
             timeout: 5000,
         };
-        return fetch(fullUrl, fetchConfig).then((response) => response.json())
+        return fetch(this.state.fullUrl, fetchConfig).then((response) => response.json())
     }
     save(sobjects, data) {
         const SF_VERSION = 'v20.0';
         const salesforceToken = this.props.salesforce.token
-        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}/`;
+        if (salesforceToken !== null){
+            this.setState( {fullUrl : `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`})
+        };
+        const fullUrl = fullUrl;
         const fetchConfig = {
             method: 'POST',
             headers: {
@@ -329,12 +338,14 @@ class Registration extends React.Component {
             body: JSON.stringify(data),
             timeout: 5000,
         };
-        return fetch(fullUrl, fetchConfig).then((response) => response.json());
+        return fetch(this.state.fullUrl, fetchConfig).then((response) => response.json());
     }
     update(sobjects, id, data) {
         const SF_VERSION = 'v20.0';
         const salesforceToken = this.props.salesforce.token
-        const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}/${id}`;
+        if (salesforceToken !== null){
+            this.setState( {fullUrl : `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}/${id}`})
+        };
         const fetchConfig = {
             method: 'PATCH',
             headers: {
@@ -345,10 +356,10 @@ class Registration extends React.Component {
             body: JSON.stringify(data),
             timeout: 5000,
         };
-        return fetch(fullUrl, fetchConfig).then((response) => response.json());
+        return fetch(this.state.fullUrl, fetchConfig).then((response) => response.json());
     }
     submitApp(){
-        generatePdf()
+        generatePdf(this.state)
         var personData = {
             Applying_to__c: this.state.Applying_to__c,
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,

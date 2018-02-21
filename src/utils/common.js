@@ -12,7 +12,8 @@ const RegexList = {
     fullName: /^([a-zA-Z]{2,}\s[a-zA-z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/,
     phoneNumber: /^\+\d*$/,
 };
-const spmfBackendUrl = __DEV__ ? 'http://localhost:2018' : 'http://13.229.173.240/sf/';
+const spmfBackendUrl = __DEV__ ? 'http://localhost:2018' : 'http://spmf.interaktiv.sg/sf/';
+const spmfUrl = __DEV__ ? 'http://localhost:8080' : 'http://spmf.interaktiv.sg/';
 
 export function sfRequestSync(sobject, request) {
     let fullUrl = '';
@@ -159,7 +160,6 @@ export function getCurrentDate(){
 }
 
 export function validation(step, data){
-    return true
     let requiredField = []
     let validFields = []
     let isValid = false;
@@ -243,7 +243,6 @@ export function getBase64(file) {
  }
 
  export function validateNRIC(str) {
-     return true
     if (str.length != 9)
         return false;
 
@@ -302,156 +301,431 @@ export function getBase64FromImageUrl(src, outputFormat) {
   
 export function generatePdf(data){
     console.log('genNode', data.nodeList)
-    getBase64FromImageUrl(`http://localhost:8080${require('../assets/img/spmf_pdf.jpg')}`).then((url)=>{
-        let eligibilityColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
-        let eligibilityRows = [
-            {title: "   ", text: '-  Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)'},
-            {title: "   ", text: '-  Family is living in a 4-room HDB flat or smaller'},
-            {title: "   ", text: '-  Family has a gross per capita income (PCI) of $625/ month or less'},
-            {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme'},
-            {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme'},
-            {title: "   ", text: '-  Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education.'},
-            {title: "   ", text: '-  Student is 20 years or younger at point of application'},
-        ]
-        let docColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
-        let docRows = [
-            {title: "   ", text: '-  Photocopy of student(s)’s NRIC / birth certificate'},
-            {title: "   ", text: '-  Photocopy of both parents’/ guardian’s NRIC / passport'},
-        ]
-        let PersonalDetailColumns = ["Personal Details", '', '', '', '', ''];
-        let PersonalDetailRows = [
-            [""],
-            ["Full Name", ":", data.Full_Name__c, "Gender", ":", data.Gender__c],
-            ["ID Type", ":", "NRIC", "Nationality", ":", data.Nationality__c],
-            ["ID Number", ":", data.ID_Number__c, "Other Nationality", ":", data.Other_Nationality__c],
-            ["Date of Birth", ":", data.Date_of_Birth__c, "Race", ":", data.Race__c],
-            ["Marital Status", ":", data.Marital_Status__c, "Other Race", ":", data.Other_Race__c],
-            ["Other Marital Status", ":", data.Other_Marital_Status__c],
-        ];
-        let AddressColumns = ["Address", '', '', '', '', ''];
-        let AddressRows = [
-            [""],
-            ["Postal Code", ":", data.Postal__c, "Type Of Flat", ":", data.Flat_Type__c],
-            ["Street Name", ":", data.Street_Name__c, "Other Type of Flat", ":", data.Other_Flat_Type__c],
-            ["Block Number", ":", data.Block_Number__c, "Country", ":", data.Country__c],
-        ];
-        let contactRows = [
-            [""],
-            ["Home Phone", ":", data.Home_Phone__c, "Mobile Phone", ":", data.Mobile_Phone__c],
-            ["Email Address", ":", data.Email_Address__c]
-        ]
-        let tab2ColumnStyle = {
-            0: {columnWidth: 100},
-            1: {columnWidth: 20},
-            2: {columnWidth: 120},
-            3: {columnWidth: 100},
-            4: {columnWidth:20},
-            5: {columnWidth: 120}
-        };
-        let body2 = document.createElement('DIV')
-        body2.id = "iframecontent"
-        var x = document.createElement("IMG");
-            x.setAttribute("src", url);
-            x.setAttribute("width", "600");
-            x.setAttribute("height", "83");
-        body2.appendChild(x)
-        // console.log(body2.innerHTML)
-        var pdf = new jsPDF('p', 'pt', 'letter');
-        let htmlSTring = '';
-        // const pageBreak = `<!-- ADD_PAGE -->`
-        // htmlSTring += pageBreak
-        body2.innerHTML += htmlSTring
-        var source = body2
-        var specialElementHandlers = {
-            // element with id of "bypass" - jQuery style selector
-            '#bypassme': function (element, renderer) {
-                // true = "handled elsewhere, bypass text extraction"
-                return true
-            }
-        };
-        var margins = {
-            top: 80,
-            bottom: 60,
-            left: 40,
-            width: 522
-        };
-        // all coords and widths are in jsPDF instance's declared units
-        // 'inches' in this case
-        pdf.fromHTML(
-        source, // HTML string or DOM elem ref.
-        margins.left, // x coord
-        margins.top, { // y coord
-            'width': margins.width, // max width of content on PDF
-            'elementHandlers': specialElementHandlers
-        },
-        function (dispose) {
-            pdf.setFontSize(16);
-            pdf.autoTable(["Eligibility Criteria"], [], {
-                theme: 'plain',
-                startY: 200,
-            })
-            pdf.autoTable(eligibilityColumns, eligibilityRows, {
-                theme: 'plain',
-                startY: pdf.autoTable.previous.finalY-15,
-                bodyStyles: {valign: 'top'},
-                styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                columnStyles: {text: {columnWidth: 'auto'}},
-                drawRow: function (row, data) {
-                    row.height = row.height * 1.2
-                },
-            })
-            pdf.autoTable(["All completed STSPMF application forms must be attached with the relevant documents listed below:"], [], {
-                theme: 'plain',
-                startY: pdf.autoTable.previous.finalY + 20,
-                drawRow: function (row, data) {
-                    row.height = row.height * 1.2
-                },
-            })
-            pdf.autoTable(docColumns, docRows, {
-                theme: 'plain',
-                startY: pdf.autoTable.previous.finalY-15,
-                bodyStyles: {valign: 'top'},
-                styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                columnStyles: {text: {columnWidth: 'auto'}},
-            })
-            pdf.addPage()
-            pdf.autoTable(PersonalDetailColumns, PersonalDetailRows, {
-                theme: 'plain',
-                startY: 80,
-                drawRow: function (row, data) {
-                    if(row.index > 0){
-                        row.height = row.height * 1.5
-                    }
-                },
-                columnStyles: tab2ColumnStyle,
-            })
-            let first = pdf.autoTable.previous;
-            pdf.autoTable(AddressColumns, AddressRows, {
-                theme: 'plain',
-                startY: first.finalY + 20,
-                showHeader: 'firstPage',
-                margin: {right: 107},
-                drawRow: function (row, data) {
-                    if(row.index > 0){
-                        row.height = row.height * 1.5
-                    }
-                },
-                columnStyles: tab2ColumnStyle,
-            });
-            let second = pdf.autoTable.previous;
-            pdf.autoTable(["Personal Contact", '', '', '', '', ''], contactRows, {
-                theme: 'plain',
-                startY: second.finalY + 20,
-                showHeader: 'firstPage',
-                margin: {right: 107},
-                drawRow: function (row, data) {
-                    if(row.index > 0){
-                        row.height = row.height * 1.5
-                    }
-                },
-                columnStyles: tab2ColumnStyle,
-            });
-            pdf.save('Test.pdf');
-        }, margins);
-    });
+    const img1 = getBase64FromImageUrl(`${spmfUrl}${require('../assets/img/spmf_pdf.jpg')}`).then((url)=>{return url})
+    const img2 = getBase64FromImageUrl(`${spmfUrl}${require('../assets/img/check.png')}`).then((url)=>{return url})
+    console.log(img1.then(img1=>img1), img2.PromiseValue)
+    ([img1, img2]).then((value)=>{
+        console.log(value)
+    })
+    // getBase64FromImageUrl(`${spmfUrl}${require('../assets/img/spmf_pdf.jpg')}`).then((url)=>{
+    //     console.log(url);
+    //     let eligibilityColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
+    //     let eligibilityRows = [
+    //         {title: "   ", text: '-  Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)'},
+    //         {title: "   ", text: '-  Family is living in a 4-room HDB flat or smaller'},
+    //         {title: "   ", text: '-  Family has a gross per capita income (PCI) of $625/ month or less'},
+    //         {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme'},
+    //         {title: "   ", text: '-  Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme'},
+    //         {title: "   ", text: '-  Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education.'},
+    //         {title: "   ", text: '-  Student is 20 years or younger at point of application'},
+    //     ]
+    //     let docColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
+    //     let docRows = [
+    //         {title: "   ", text: '-  Photocopy of student(s)’s NRIC / birth certificate'},
+    //         {title: "   ", text: '-  Photocopy of both parents’/ guardian’s NRIC / passport'},
+    //     ]
+    //     let PersonalDetailColumns = ["Personal Details", '', '', '', '', ''];
+    //     let PersonalDetailRows = [
+    //         [""],
+    //         ["Full Name", ":", data.Full_Name__c, "Gender", ":", data.Gender__c],
+    //         ["ID Type", ":", "NRIC", "Nationality", ":", data.Nationality__c],
+    //         ["ID Number", ":", data.ID_Number__c, "Other Nationality", ":", data.Other_Nationality__c],
+    //         ["Date of Birth", ":", data.Date_of_Birth__c, "Race", ":", data.Race__c],
+    //         ["Marital Status", ":", data.Marital_Status__c, "Other Race", ":", data.Other_Race__c],
+    //         ["Other Marital Status", ":", data.Other_Marital_Status__c],
+    //     ];
+    //     let AddressColumns = ["Address", '', '', '', '', ''];
+    //     let AddressRows = [
+    //         [""],
+    //         ["Postal Code", ":", data.Postal__c, "Type Of Flat", ":", data.Flat_Type__c],
+    //         ["Street Name", ":", data.Street_Name__c, "Other Type of Flat", ":", data.Other_Flat_Type__c],
+    //         ["Block Number", ":", data.Block_Number__c, "Country", ":", data.Country__c],
+    //     ];
+    //     let contactRows = [
+    //         [""],
+    //         ["Home Phone", ":", data.Home_Phone__c, "Mobile Phone", ":", data.Mobile_Phone__c],
+    //         ["Email Address", ":", data.Email_Address__c]
+    //     ]
+    //     let tab2ColumnStyle = {
+    //         0: {columnWidth: 100},
+    //         1: {columnWidth: 20},
+    //         2: {columnWidth: 120},
+    //         3: {columnWidth: 100},
+    //         4: {columnWidth:20},
+    //         5: {columnWidth: 120}
+    //     };
+    //     let body2 = document.createElement('DIV')
+    //     body2.id = "iframecontent"
+    //     var x = document.createElement("IMG");
+    //         x.setAttribute("src", url);
+    //         x.setAttribute("width", "600");
+    //         x.setAttribute("height", "83");
+    //     body2.appendChild(x)
+    //     // console.log(body2.innerHTML)
+    //     var pdf = new jsPDF('p', 'pt', 'letter');
+    //     let htmlSTring = '';
+    //     // const pageBreak = `<!-- ADD_PAGE -->`
+    //     // htmlSTring += pageBreak
+    //     body2.innerHTML += htmlSTring
+    //     var source = body2
+    //     var specialElementHandlers = {
+    //         // element with id of "bypass" - jQuery style selector
+    //         '#bypassme': function (element, renderer) {
+    //             // true = "handled elsewhere, bypass text extraction"
+    //             return true
+    //         }
+    //     };
+    //     var margins = {
+    //         top: 80,
+    //         bottom: 60,
+    //         left: 40,
+    //         width: 522
+    //     };
+    //     // all coords and widths are in jsPDF instance's declared units
+    //     // 'inches' in this case
+    //     pdf.fromHTML(
+    //         source, // HTML string or DOM elem ref.
+    //         margins.left, // x coord
+    //         margins.top, { // y coord
+    //             'width': margins.width, // max width of content on PDF
+    //             'elementHandlers': specialElementHandlers
+    //         },
+    //         function (dispose) {
+    //             pdf.autoTable(["Eligibility Criteria"], [], {
+    //                 theme: 'plain',
+    //                 startY: 200,
+    //             })
+    //             var images = [];
+    //             let a = 0;
+    //             pdf.autoTable(eligibilityColumns, eligibilityRows, {
+    //                 theme: 'plain',
+    //                 startY: pdf.autoTable.previous.finalY-15,
+    //                 bodyStyles: {valign: 'top'},
+    //                 styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+    //                 columnStyles: {text: {columnWidth: 'auto'}},
+    //                 drawRow: function (row, data) {
+    //                     row.height = row.height * 1.2
+    //                 },
+    //                 drawCell: function(cell, opts) {
+    //                     if (opts.column.dataKey === 'title') {
+    //                         images.push({
+    //                             x: cell.textPos.x,
+    //                             y: cell.textPos.y
+    //                         });
+    //                         a++;
+    //                     }
+    //                 },
+    //                 addPageContent: function() {
+    //                     console.log(checkUrl)
+    //                     for (var i = 0; i < images.length; i++) {
+    //                         doc.addImage(checkUrl, images[i].x, images[i].y, 20, 20);
+    //                     }
+    //                 }
+    //             })
+    //             pdf.autoTable(["All completed STSPMF application forms must be attached with the relevant documents listed below:"], [], {
+    //                 theme: 'plain',
+    //                 startY: pdf.autoTable.previous.finalY + 20,
+    //                 drawRow: function (row, data) {
+    //                     row.height = row.height * 1.2
+    //                 },
+    //             })
+    //             pdf.autoTable(docColumns, docRows, {
+    //                 theme: 'plain',
+    //                 startY: pdf.autoTable.previous.finalY-15,
+    //                 bodyStyles: {valign: 'top'},
+    //                 styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+    //                 columnStyles: {text: {columnWidth: 'auto'}},
+    //             })
+    //             pdf.addPage()
+    //             pdf.autoTable(["Application Profile"], [""], {
+    //                 theme: 'plain',
+    //                 startY: 60,
+    //                 styles : {fontSize: 13}
+    //             })
+    //             pdf.autoTable(PersonalDetailColumns, PersonalDetailRows, {
+    //                 theme: 'plain',
+    //                 startY: pdf.autoTable.previous.finalY - 5,
+    //                 drawRow: function (row, data) {
+    //                     if(row.index > 0){
+    //                         row.height = row.height * 1.5
+    //                     }
+    //                 },
+    //                 columnStyles: tab2ColumnStyle,
+    //             })
+    //             let first = pdf.autoTable.previous;
+    //             pdf.autoTable(AddressColumns, AddressRows, {
+    //                 theme: 'plain',
+    //                 startY: first.finalY + 20,
+    //                 showHeader: 'firstPage',
+    //                 margin: {right: 107},
+    //                 drawRow: function (row, data) {
+    //                     if(row.index > 0){
+    //                         row.height = row.height * 1.5
+    //                     }
+    //                 },
+    //                 columnStyles: tab2ColumnStyle,
+    //             });
+    //             let second = pdf.autoTable.previous;
+    //             pdf.autoTable(["Personal Contact", '', '', '', '', ''], contactRows, {
+    //                 theme: 'plain',
+    //                 startY: second.finalY + 20,
+    //                 showHeader: 'firstPage',
+    //                 margin: {right: 107},
+    //                 drawRow: function (row, data) {
+    //                     if(row.index > 0){
+    //                         row.height = row.height * 1.5
+    //                     }
+    //                 },
+    //                 columnStyles: tab2ColumnStyle,
+    //             });
+    //             pdf.addPage()
+    //             // write Beneficiary
+    //             pdf.autoTable(["Beneficiary List"], [""], {
+    //                 theme: 'plain',
+    //                 startY: 60,
+    //                 styles : {fontSize: 13}
+    //             });
+    //             for (let i=0; i < data.Ben.length; i++){
+    //                 if(i == 0){
+    //                     pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+    //                         theme: 'plain',
+    //                         startY: pdf.autoTable.previous.finalY - 8,
+    //                         showHeader: 'firstPage',
+    //                         margin: {right: 107},
+    //                         drawRow: function (row, data) {
+    //                             if(row.index > 0){
+    //                                 row.height = row.height * 1.2
+    //                             }
+    //                         },
+    //                         columnStyles: tab2ColumnStyle,
+    //                     });
+    //                 }
+    //                 if (i !== 0 && i < 4){
+    //                     pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+    //                         theme: 'plain',
+    //                         startY: pdf.autoTable.previous.finalY+10,
+    //                         showHeader: 'firstPage',
+    //                         margin: {right: 107},
+    //                         drawRow: function (row, data) {
+    //                             if(row.index > 0){
+    //                                 row.height = row.height * 1.2
+    //                             }
+    //                         },
+    //                         columnStyles: tab2ColumnStyle,
+    //                     });
+    //                     console.log('end', i, pdf.autoTable.previous.finalY)
+    //                 }
+    //                 if (i > 3) {
+    //                     if ((i+1) % 5 == 0) {
+    //                         pdf.addPage()
+    //                         pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+    //                             theme: 'plain',
+    //                             startY: 60,
+    //                             showHeader: 'firstPage',
+    //                             margin: {right: 107},
+    //                             drawRow: function (row, data) {
+    //                                 if(row.index > 0){
+    //                                     row.height = row.height * 1.2
+    //                                 }
+    //                             },
+    //                             columnStyles: tab2ColumnStyle,
+    //                         });
+    //                     } else {
+    //                         pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+    //                             theme: 'plain',
+    //                             startY: pdf.autoTable.previous.finalY+10,
+    //                             showHeader: 'firstPage',
+    //                             margin: {right: 107},
+    //                             drawRow: function (row, data) {
+    //                                 if(row.index > 0){
+    //                                     row.height = row.height * 1.2
+    //                                 }
+    //                             },
+    //                             columnStyles: tab2ColumnStyle,
+    //                         });
+    //                     }
+    //                 }
+                    
+    //             }
+    //             let endOfBen = pdf.autoTable.previous.finalY
+    //             console.log('endofBen', endOfBen)
+    //             // write Houshold Member
+    //             if (endOfBen < 483.1) {
+    //                 pdf.autoTable(["Household Member List"], [""], {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY + 40,
+    //                     styles : {fontSize: 13}
+    //                 });
+    //                 console.log('endHeadhou', pdf.autoTable.previous.finalY - 8 )
+    //                 pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY - 8,
+    //                     showHeader: 'firstPage',
+    //                     margin: {right: 107},
+    //                     drawRow: function (row, data) {
+    //                         if(row.index > 0){
+    //                             row.height = row.height * 1.2
+    //                         }
+    //                     },
+    //                     columnStyles: tab2ColumnStyle,
+    //                 });
+    //                 console.log('endhou', pdf.autoTable.previous.finalY)
+    //             } 
+    //             if (endOfBen > 483.1) {
+    //                 pdf.addPage();
+    //                 pdf.autoTable(["Household Member List"], [""], {
+    //                     theme: 'plain',
+    //                     startY: 60,
+    //                     styles : {fontSize: 13}
+    //                 });
+    //                 pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY - 8,
+    //                     showHeader: 'firstPage',
+    //                     margin: {right: 107},
+    //                     drawRow: function (row, data) {
+    //                         if(row.index > 0){
+    //                             row.height = row.height * 1.2
+    //                         }
+    //                     },
+    //                     columnStyles: tab2ColumnStyle,
+    //                 });
+    //                 console.log('endhou', pdf.autoTable.previous.finalY)
+    //             }
+    //             let endOfMainApplicant = pdf.autoTable.previous.finalY
+    //             for (let i=1; i<6; i ++){
+    //                 if (pdf.autoTable.previous.finalY + 146 > 680){
+    //                     pdf.addPage()
+    //                     pdf.autoTable([`Householed Member - 1`, '', '', '', '', ''], getData('Hou', data), {
+    //                         theme: 'plain',
+    //                         startY: 60,
+    //                         showHeader: 'firstPage',
+    //                         margin: {right: 107},
+    //                         drawRow: function (row, data) {
+    //                             if(row.index > 0){
+    //                                 row.height = row.height * 1.2
+    //                             }
+    //                         },
+    //                         columnStyles: tab2ColumnStyle,
+    //                     });
+    //                     console.log(`endHouitem${i}`, pdf.autoTable.previous.finalY )
+    //                 } else {
+    //                     pdf.autoTable([`Householed Member - 1`, '', '', '', '', ''], getData('Hou', data), {
+    //                         theme: 'plain',
+    //                         startY: pdf.autoTable.previous.finalY + 20,
+    //                         showHeader: 'firstPage',
+    //                         margin: {right: 107},
+    //                         drawRow: function (row, data) {
+    //                             if(row.index > 0){
+    //                                 row.height = row.height * 1.2
+    //                             }
+    //                         },
+    //                         columnStyles: tab2ColumnStyle,
+    //                     });
+    //                     console.log(`endHouitem${i}`, pdf.autoTable.previous.finalY )
+    //                 }
+    //             }
+    //             const DeclarationColumns = [{title:"", dataKey: "number"},{title: "", dataKey:"text"}]
+    //             const MediaCoverageColumns = [{title:"", dataKey: "number"},{title: "", dataKey:"text"}]
+    //             pdf.addPage();
+    //                 pdf.autoTable(["Agreement"], [""], {
+    //                     theme: 'plain',
+    //                     startY: 60,
+    //                     styles : {fontSize: 13}
+    //                 });
+    //                 pdf.autoTable(["Declaration of consent"], [], {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY-8,
+    //                 })
+    //                 pdf.autoTable(DeclarationColumns, getData("Declaration",null), {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY-15,
+    //                     bodyStyles: {valign: 'top'},
+    //                     styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+    //                     columnStyles: {text: {columnWidth: 'auto'}},
+    //                     drawRow: function (row, data) {
+    //                         row.height = row.height * 1.2
+    //                     },
+    //                 })
+    //                 pdf.autoTable(["MEDIA COVERAGE"], [], {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY + 20,
+    //                     drawRow: function (row, data) {
+    //                         row.height = row.height * 1.2
+    //                     },
+    //                 })
+    //                 pdf.autoTable(MediaCoverageColumns, getData("MediaCoverage",null), {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY-15,
+    //                     bodyStyles: {valign: 'top'},
+    //                     styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+    //                     columnStyles: {text: {columnWidth: 'auto'}},
+    //                     drawRow: function (row, data) {
+    //                         row.height = row.height * 1.2
+    //                     },
+    //                 })
+    //                 pdf.autoTable(["", "I Agree and Submit", ""], [], {
+    //                     theme: 'plain',
+    //                     startY: pdf.autoTable.previous.finalY + 40,
+    //                     drawRow: function (row, data) {
+    //                         row.height = row.height * 1.2
+    //                     },
+    //                 })
+                
+
+    //             pdf.save('Test.pdf');
+    //         }, margins);
+    // });
+}
+
+export function getData(type, data) {
+    let newData = []
+    if (type == "Bene") {
+        newData.push(
+            ["Name", ":", data.Full_Name__c, "NRIC", ":", data.ID_Number__c],
+            ["Email", ":", data.Email_Address__c, "Date of Birth", ":", data.Date_of_Birth__c],
+            ["School", ":", data.Current_School__c, "Current Level", ":", data.Current_Level__c],
+            ["Stream", ":", data.Stream__c, "Applaying to", ":", data.Applying_to__c],
+        );
+    }
+    if (type == "Hou") {
+        newData.push(
+            ["Name", ":", data.Full_Name__c, "NRIC", ":", data.ID_Number__c],
+            ["Date of Birth", ":", data.Date_of_Birth__c, "Relationship to Applicant", ":", data.Relationship_to_Applicant__c, ],
+            ["Gross Monthly Income", ":", data.Monthly_Gross_Income__c, "Employment Status", ":", data.Employment_Status__c],
+            ["Occupation", ":", data.Occupation__c, "Company", ":", data.Company__c],
+            ["Employment Start Date", ":", data.Employment_Start_Date__c, "Employment End Date", ":", data.Employment_End_Date__c],
+        );
+    }
+    if (type == "Declaration"){
+        newData.push(
+            {number: "      1.", text: "I, (Parent’s/Guardian’s name) *, I/C No (Parent’s/Guardian’s I/C No) *, declare that [my child/children/ward (s)]\ is/are currently NOT receiving The Straits Times School Pocket Money Fund (STSPMF) from any other STSPMF disbursing agency/school and have not applied for STSPMF at another disbursing agency/school."
+            },
+            {number: "      2.", text: "I declare that [beneficiaries] is/are NOT receiving other similar monthly pocket money schemes excluding MOE FAS."
+            },
+            {number: "      3.", text: "I acknowledge that for the purpose of facilitating my application for the STSPMF, that is administered by the STSPMF through disbursing agencies and schools,"
+            },
+            {number: "        ", text: "a) any and all agencies and schools that have any of my prior financial assistance or social assistance records \
+     may share the relevant information with STSPMF."
+            },
+            {number: "        ", text: "b) that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any \
+        agency or persons authorised by The Straits Times School Pocket Money Fund for the purpose of rendering \
+    me or assessing my eligibility for financial or other assistance in future occasions; or for research studies \
+          in which I, as a specific individual, shall not be identified; or for any other purpose prescribed or permitted \
+         under Singapore law.."
+            },
+            {number: "      4.", text: "I acknowledge that the information I have provided is accurate. I understand that [my/ my child / my children / my ward(s)*] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery."      
+            },
+            {number: "      5.", text: "I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school."      
+            },
+            {number: "      6.", text: "I am aware that the STSPMF assistance is given for the benefit of [my child/ children/ ward(s)], for use as pocket money in school."      
+            },
+        )
+    }
+    if (type == "MediaCoverage") {
+        newData.push(
+            {number: "        ", text: "I am aware that the STSPMF assistance is given for the benefit of [my child/ children/ ward(s)], for use as pocket money in school."},
+        )
+    }
+    return newData
 }
