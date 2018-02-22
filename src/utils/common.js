@@ -366,6 +366,8 @@ export function generatePdf(data){
                     startY: 60,
                     styles : {fontSize: 13, textColor: (77, 77, 77)}
                 })
+                pdf.setLineWidth(1.5)
+                pdf.line(20, pdf.autoTable.previous.finalY-10, 600, pdf.autoTable.previous.finalY-10)
                 pdf.autoTable(PersonalDetailColumns, getData("PersonalDetail", data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY - 5,
@@ -377,6 +379,8 @@ export function generatePdf(data){
                     },
                     columnStyles: tab2ColumnStyle,
                 })
+                pdf.setLineWidth(1.5)
+                pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
                 pdf.autoTable(AddressColumns, getData("Address", data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 20,
@@ -390,6 +394,8 @@ export function generatePdf(data){
                     },
                     columnStyles: tab2ColumnStyle,
                 });
+                pdf.setLineWidth(1.5)
+                pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
                 pdf.autoTable(["Personal Contact", '', '', '', '', ''], getData("Contact", data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 20,
@@ -401,6 +407,11 @@ export function generatePdf(data){
                             row.height = row.height * 1.5
                         }
                     },
+                    // addPageContent: function() {
+                    //     pdf.setLineWidth(1)
+                    //     pdf.line(20, 10, 200, 10);
+                        
+                    // },
                     columnStyles: tab2ColumnStyle,
                 });
                 pdf.addPage()
@@ -412,9 +423,11 @@ export function generatePdf(data){
                 });
                 for (let i=0; i < data.Ben.length; i++){
                     if(i == 0){
+                        pdf.setLineWidth(1.5)
+                        pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
                         pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
                             theme: 'plain',
-                            startY: pdf.autoTable.previous.finalY - 8,
+                            startY: pdf.autoTable.previous.finalY - 10,
                             showHeader: 'firstPage',
                             margin: {right: 107},
                             styles: {textColor: (77, 77, 77)},
@@ -427,6 +440,8 @@ export function generatePdf(data){
                         });
                     }
                     if (i !== 0 && i < 4){
+                        pdf.setLineWidth(1.5)
+                        pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
                         pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY+10,
@@ -484,9 +499,11 @@ export function generatePdf(data){
                         startY: pdf.autoTable.previous.finalY + 40,
                         styles : {fontSize: 13, textColor: (77, 77, 77),}
                     });
+                    pdf.setLineWidth(1.5)
+                    pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
                     pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
                         theme: 'plain',
-                        startY: pdf.autoTable.previous.finalY - 8,
+                        startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
                         styles: {textColor: (77, 77, 77)},
@@ -505,9 +522,11 @@ export function generatePdf(data){
                         startY: 60,
                         styles : {fontSize: 13, textColor: (77, 77, 77)},
                     });
+                    pdf.setLineWidth(1.5)
+                    pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
                     pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
                         theme: 'plain',
-                        startY: pdf.autoTable.previous.finalY - 8,
+                        startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
                         styles: {textColor: (77, 77, 77)},
@@ -551,6 +570,8 @@ export function generatePdf(data){
                             startY: endOfMainApplicant + 20 ,
                             styles : {fontSize: 13, textColor: (77, 77, 77)}
                         });
+                        pdf.setLineWidth(1.5)
+                        pdf.line(20, pdf.autoTable.previous.finalY - 20, 600, pdf.autoTable.previous.finalY - 20)
                         pdf.autoTable(['', '', '', '', '', ''], getData('Reason', data), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY - 35,
@@ -591,6 +612,8 @@ export function generatePdf(data){
                             columnStyles: tab2ColumnStyle,
                         });
                     } else {
+                        pdf.setLineWidth(1.5)
+                        pdf.line(20, pdf.autoTable.previous.finalY + 10, 600, pdf.autoTable.previous.finalY + 10)
                         pdf.autoTable([`Householed Member - ${i+1}`, '', '', '', '', ''], getData('Hou', data.Hou[i].data), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY + 20,
@@ -644,7 +667,6 @@ export function generatePdf(data){
                     styles: {overflow: 'linebreak', columnWidth: 'wrap'},
                     columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}},
                     drawRow: function (row, data) {
-                        console.log('row', row)
                         row.height = row.height * 1.2
                     },
                 })
@@ -662,13 +684,13 @@ export function generatePdf(data){
                             });
                         }
                     },
-                    addPageContent: function() {
-                        pdf.addImage(images[0].elem, images[0].x, images[0].y, 15, 15);
-                        pdf.setFontType("bold");
-                        pdf.setFontSize(13);
-                        pdf.setTextColor(77, 77, 77);
-                        pdf.text("I Aggree and Submit", images[0].x + 25, images[0].y + 12);
-                    }
+                    // addPageContent: function() {
+                    //     // pdf.addImage(images[0].elem, images[0].x, images[0].y, 15, 15);
+                    //     // pdf.setFontType("bold");
+                    //     // pdf.setFontSize(13);
+                    //     // pdf.setTextColor(77, 77, 77);
+                    //     // pdf.text("I Aggree and Submit", images[0].x + 25, images[0].y + 12);
+                    // }
                 })
                 pdf.save('SPMF_Application_Form.pdf');
             }, margins);

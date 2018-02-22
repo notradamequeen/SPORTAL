@@ -29,6 +29,7 @@ import Tab2 from './tab2';
 import Tab3 from './tab3';
 import Tab4 from './tab4';
 import Tab5 from './tab5';
+import Success from './success';
 import $ from 'jquery';
 import swal from 'sweetalert';
 import Iframe from './iframe';
@@ -187,22 +188,18 @@ class Registration extends React.Component {
             Hou: [{attachment:{}}],
             isLoading: true,
             fullUrl: '',
-            iSubmited: false,
+            isSubmitted: false,
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
         this.submitApp                  = this.submitApp.bind(this);
         this.changeState                = this.changeState.bind(this);
-        this.onSelect                   = this.onSelect.bind(this);
         this.save                       = this.save.bind(this);
         this.update                     = this.update.bind(this);
         this.retrieve                   = this.retrieve.bind(this);
     }
-
     componentDidMount() {
         this.props.getSalesforceToken(() => {
-            
-            this.props.getSchoolList();
         }).then(() => {
             Promise.all([this.props.getPostalCodeRecord(()=>{}), this.props.getSchoolList(()=>{})]).then(()=>{
                 const postalCodeOption = []
@@ -270,13 +267,11 @@ class Registration extends React.Component {
         });
         
     }
-
     componentWillUnmount() {
         window.removeEventListener("beforeunload", function (event) {
             console.log(event);
         })
     }
-    
     onClickNext() {
         // generatePdf(this.state);
         const { steps, currentStep , tabIndex} = this.state;
@@ -325,9 +320,6 @@ class Registration extends React.Component {
             currentStep: currentStep - 1,
             tabIndex: tabIndex - 1
         });
-    }
-    onSelect() {
-        
     }
     changeState(name, val){
         this.setState({
@@ -388,7 +380,6 @@ class Registration extends React.Component {
         return fetch(this.state.fullUrl, fetchConfig).then((response) => response.json());
     }
     submitApp(){
-        this.changeState({iSubmited: true});
         let personData = {
             Applying_to__c: this.state.Applying_to__c,
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
@@ -535,6 +526,7 @@ class Registration extends React.Component {
             }
         }); /* end of submit to SF process */
         generatePdf(this.state)
+        this.changeState({isSubmitted: true});
         return true;
     }
 
@@ -558,73 +550,81 @@ class Registration extends React.Component {
                 buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100" disabled>Next</button>;
             }
           }
-        return ( 
-            <div className="container body" id="printed">
-                <div className="col-md-12" id="logoHeader">
-                    <div className="col-md-3">
-                    <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
+        if (!this.state.isSubmitted){
+            return ( 
+                <div className="container body" id="printed">
+                    <div className="col-md-12" id="logoHeader">
+                        <div className="col-md-3">
+                        <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
+                        </div>
+                        <div className="col-md-9 header-title">
+                            <br /><br />
+                            <h3 style={{ color:"#186b8e"}}>STSPMF Application Form</h3>
+                        </div>
                     </div>
-                    <div className="col-md-9 header-title">
-                        <br /><br /><br /><br />
-                        <h4>STSPMF Application Form</h4>
-                    </div>
-                </div>
-                {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
-                    <div className="" id="AppForm">
-                        <Stepper steps={ steps } activeStep={ currentStep } />
-                        
-                        <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
-                        <TabList style={{ display: "none" }}>
-                            <Tab>Title 1</Tab>
-                            <Tab>Title 2</Tab>
-                            <Tab>Title 3</Tab>
-                            <Tab>Title 4</Tab>
-                            <Tab>Title 5</Tab>
-                        </TabList>
-                        <div id="PrintedForm">
-                            <TabPanel>
-                                <Tab1 
-                                    changeState={this.changeState}
-                                    data={this.state}
+                    {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
+                        <div className="" id="AppForm">
+                            <Stepper steps={ steps } activeStep={ currentStep } />
+                            
+                            <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
+                            <TabList style={{ display: "none" }}>
+                                <Tab>Title 1</Tab>
+                                <Tab>Title 2</Tab>
+                                <Tab>Title 3</Tab>
+                                <Tab>Title 4</Tab>
+                                <Tab>Title 5</Tab>
+                            </TabList>
+                            <div id="PrintedForm">
+                                <TabPanel>
+                                    <Tab1 
+                                        changeState={this.changeState}
+                                        data={this.state}
+                                        />
+                                </TabPanel>
+                                <TabPanel>
+                                    <Tab2 
+                                        changeState={this.changeState}
+                                        data={this.state}
                                     />
-                            </TabPanel>
-                            <TabPanel>
-                                <Tab2 
-                                    changeState={this.changeState}
-                                    data={this.state}
-                                />
-                            </TabPanel>
-                            <TabPanel>
-                                <Tab3 
-                                    changeState={this.changeState}
-                                    data={this.state}
-                                />
-                            </TabPanel>
-                            <TabPanel>
-                                <Tab4 
-                                    changeState={this.changeState}
-                                    data={this.state}
-                                />
-                            </TabPanel>
-                            <TabPanel>
-                                <Tab5 
-                                    submitApp={this.submitApp}
-                                    data={this.state}
-                                />
-                            </TabPanel>
+                                </TabPanel>
+                                <TabPanel>
+                                    <Tab3 
+                                        changeState={this.changeState}
+                                        data={this.state}
+                                    />
+                                </TabPanel>
+                                <TabPanel>
+                                    <Tab4 
+                                        changeState={this.changeState}
+                                        data={this.state}
+                                    />
+                                </TabPanel>
+                                <TabPanel>
+                                    <Tab5 
+                                        submitApp={this.submitApp}
+                                        data={this.state}
+                                    />
+                                </TabPanel>
+                            </div>
+                            </Tabs>
+                        
+                            <br />
+                            <div className="text-center">
+                                {buttonprev}
+                                {buttonnext}
+                            </div>
                         </div>
-                        </Tabs>
-                    
-                        <br />
-                        <div className="text-center">
-                            {buttonprev}
-                            {buttonnext}
-                        </div>
-                    </div>
-                }
-                <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
-            </div>
-        );
+                    }
+                    <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
+                </div>
+            );
+        }
+        else {
+            return (
+                <Success/>
+            )
+        }
+        
     }
  }
 
