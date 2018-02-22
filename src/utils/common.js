@@ -292,8 +292,8 @@ export function getBase64FromImageUrl(src, outputFormat) {
 }
   
 export function generatePdf(data){
-    const img1 = getBase64FromImageUrl(`http://localhost:8080${require('../assets/img/spmf_pdf.jpg')}`)
-    const img2 = getBase64FromImageUrl(`http://localhost:8080${require('../assets/img/check.jpg')}`)
+    const img1 = getBase64FromImageUrl(`${spmfUrl}${require('../assets/img/spmf_pdf.jpg')}`)
+    const img2 = getBase64FromImageUrl(`${spmfUrl}${require('../assets/img/check.jpg')}`)
     Promise.all([img1, img2]).then((url)=>{
         let eligibilityColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
         let docColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
