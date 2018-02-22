@@ -260,7 +260,7 @@ class Tab3 extends React.Component {
                                         className="form-control"
                                         required>
                                         <option value="">---Please Select Current School---</option>
-                                        {school_list.map((school_opt) => {
+                                        {props.data.schoolList.map((school_opt) => {
                                             return(
                                                 <option key={school_opt.value} value={school_opt.value}>{school_opt.label}</option>
                                             )
@@ -297,7 +297,7 @@ class Tab3 extends React.Component {
                                         onChange={update}
                                         required >
                                         <option value="">---Please Select Applying to---</option>
-                                        {school_list.map((school_opt) => {
+                                        {props.data.schoolList.map((school_opt) => {
                                             return(
                                             <option key={`at${school_opt.value}`} value={school_opt.value}>{school_opt.label}</option>
                                             )

@@ -29,7 +29,7 @@ class Tab2 extends React.Component {
             otherRace: false,
             otherTF: false,
             msList: [],
-            flatTypeList: [],
+            flatTypeList: this.props.data.flatTypeList,
             selectedMS: null,
             nationList: [],
             selectedNation: {},
@@ -155,38 +155,6 @@ class Tab2 extends React.Component {
         });
         this.state.postal_code = postalCodeOption
 
-        getPersonField(this.props.salesforce.token).then((json) => {
-            const fields = json.fields;
-            fields.sort((a, b) => {
-                if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
-                if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
-                return 0;
-            });
-            fields.map((item) => {
-                if (item.name == "Marital_Status__c") {
-                    this.state.msList = item.picklistValues                    
-                }
-                if (item.name == "Nationality__c") {
-                    this.state.nationList = item.picklistValues                    
-                }
-            });
-        });
-
-        getApplicationField(this.props.salesforce.token).then((resjson)=> {
-            console.log(resjson)
-            const appFields = resjson.fields;
-            appFields.sort((a, b) => {
-                if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
-                if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
-                return 0;
-            });
-            appFields.map((item) => {
-                if (item.name == "Flat_Type__c") {
-                    this.state.flatTypeList = item.picklistValues                 
-                }
-            });
-            console.log(this.state.flatTypeList)
-        })
     }
     render() {
         return (
@@ -245,7 +213,7 @@ class Tab2 extends React.Component {
                                 ref="Marital_Status__c" 
                                 id="Marital_Status__c" 
                                 onChange={this.ms_handleChange}
-                                options={this.state.msList}
+                                options={this.props.data.msList}
                                 placeholder="please select marital status"
                                 value={this.state.selectedMS}
                                 required />
@@ -276,7 +244,7 @@ class Tab2 extends React.Component {
                                 ref="Nationality__c" 
                                 id="Nationality__c" 
                                 onChange={this.nation_handleChange}
-                                options={this.state.nationList}
+                                options={this.props.data.nationList}
                                 placeholder="please select marital status"
                                 value={this.state.selectedNation}
                                 required />
@@ -330,7 +298,7 @@ class Tab2 extends React.Component {
                                 ref="postal_code" 
                                 id="postalCode" 
                                 onChange={this.pc_handleChange}
-                                options={this.state.postal_code}
+                                options={this.props.data.postal_code}
                                 placeholder="please select postal code"
                                 value={this.state.selectedPC}
                                 required />
@@ -365,7 +333,7 @@ class Tab2 extends React.Component {
                                 id="Flat_Type__c" 
                                 name="Flat_Type__c"
                                 aria-invalid="false"
-                                options={this.state.flatTypeList}
+                                options={this.props.data.flatTypeList}
                                 value={this.state.selectedFlatType}
                                 onChange={this.flatType_handleChange} />
                         </div>
@@ -389,17 +357,6 @@ class Tab2 extends React.Component {
                                 placeholder="242"
                                 value={this.state.selectedAddress.Country__c}
                                 onChange={this.handelAddressChange} />
-                            {/* <select name="Country__c" id="Country__c" className="form-control" >
-                                <option value="Singapore"> Singapore </option>
-                                <option value="Albania"> Albania </option>
-                                <option value="Algeria"> Algeria </option>
-                                <option value="American Samoa"> American Samoa </option>
-                                <option value="Andorra"> Andorra </option>
-                                <option value="Angola"> Angola </option>
-                                <option value="Anguilla"> Anguilla </option>
-                                <option value="Antarctica"> Antarctica </option>
-                                <option value="...">...</option>
-                            </select> */}
                         </div>
                     </div>
                 </div>

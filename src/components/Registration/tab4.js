@@ -39,7 +39,7 @@ class Tab4 extends React.Component {
     }
 
     handleInputChange(event) {
-        const value = event.target.value
+        let value = event.target.value
         if (event.target.name == 'ID_Number__c'){
             const isValidId = value !== '' ? validateNRIC(value) : true;
             if(!isValidId) {
@@ -48,6 +48,9 @@ class Tab4 extends React.Component {
                 document.getElementById("nric_error0").innerHTML = ""
             }
             this.props.data.isValidMainNric = isValidId;
+        }
+        if (event.target.id.indexOf('check') !== -1){
+            value = !this.props.data[event.target.name]
         }
         this.props.changeState([event.target.name], value);
         console.log('step4', this.props.data)
@@ -85,9 +88,6 @@ class Tab4 extends React.Component {
         });
         this.props.data.Hou.push({
             data: {
-                Date_of_Birth__c:'',
-                Employment_Start_Date__c: '',
-                Employment_End_Date__c: '',
             },
             attachment: {},
         })
@@ -245,7 +245,8 @@ class Tab4 extends React.Component {
                                     {i == 0 ? 
                                         <DatePicker
                                             name="Date_of_Birth__c"
-                                            selected={moment(props.data.Date_of_Birth__c)}
+                                            selected={props.data.Date_of_Birth__c !== '' ?
+                                                moment(props.data.Date_of_Birth__c) : ''}
                                             dateFormat="DD/MM/YYYY"
                                             onChange={handleDOBChange} 
                                             placeholderText="Date of Birth"
@@ -256,7 +257,7 @@ class Tab4 extends React.Component {
                                         <DatePicker
                                             name="Date_of_Birth__c"
                                             selected={
-                                                props.data.Hou[i].data.Date_of_Birth__c !== '' ?
+                                                props.data.Hou[i].data.Date_of_Birth__c ?
                                                 moment(props.data.Hou[i].data.Date_of_Birth__c) : ''
                                             }
                                             dateFormat="DD/MM/YYYY"
@@ -392,7 +393,8 @@ class Tab4 extends React.Component {
                                     {i == 0 ? 
                                         <DatePicker
                                             name="Employment_Start_Date__c"
-                                            selected={moment(props.data.Employment_Start_Date__c)}
+                                            selected={props.data.Employment_Start_Date__c!=='' ?
+                                                moment(props.data.Employment_Start_Date__c) : ''}
                                             id={`Hou${i}[Employment_Start_Date__c]`}
                                             dateFormat="DD/MM/YYYY"
                                             onChange={handleStartDateChange} 
@@ -404,7 +406,7 @@ class Tab4 extends React.Component {
                                         <DatePicker
                                             name="Employment_Start_Date__c"
                                             selected={
-                                                props.data.Hou[i].data.Employment_Start_Date__c !== '' ?
+                                                props.data.Hou[i].data.Employment_Start_Date__c ?
                                                 moment(props.data.Hou[i].data.Employment_Start_Date__c) : ''
                                             }
                                             id={`Hou${i}[Employment_Start_Date__c]`}
@@ -433,7 +435,8 @@ class Tab4 extends React.Component {
                                     {i == 0 ? 
                                         <DatePicker
                                             name="Employment_End_Date__c"
-                                            selected={moment(props.data.Employment_End_Date__c)}
+                                            selected={props.data.Employment_End_Date__c !== '' ?
+                                                moment(props.data.Employment_End_Date__c) : ''}
                                             id={`Hou${i}[Employment_End_Date__c]`}
                                             dateFormat="DD/MM/YYYY"
                                             onChange={handleEndDateChange} 
@@ -445,7 +448,7 @@ class Tab4 extends React.Component {
                                         <DatePicker
                                             name="Employment_End_Date__c"
                                             selected={
-                                                props.data.Hou[i].data.Employment_End_Date__c !== '' ? 
+                                                props.data.Hou[i].data.Employment_End_Date__c ? 
                                                 moment(props.data.Hou[i].data.Employment_End_Date__c) : ''
                                             }
                                             id={`Hou${i}[Employment_End_Date__c]`}
@@ -504,11 +507,11 @@ class Tab4 extends React.Component {
                                 <div className="col-md-4">
                                     <label className="custom-option">
                                     <input
-                                        onChange={update}
+                                        onChange={updateMain}
                                         id="checkbox-able-1"
                                         type="checkbox"
-                                        value="Alcoholism"
-                                        name="reason[]"
+                                        value={true}
+                                        name="Alcoholism__c"
                                         disabled={state.houCount > 1 ? true : false} /> 
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -520,8 +523,8 @@ class Tab4 extends React.Component {
                                         onChange={updateMain}
                                         id="checkbox-able-2"
                                         type="checkbox"
-                                        value="Cultural or personal belief"
-                                        name="reason[]"
+                                        // value="Cultural or personal belief"
+                                        name="Cultural_or_personal_belief__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -533,8 +536,8 @@ class Tab4 extends React.Component {
                                         onChange={updateMain}
                                         id="checkbox-able-3"
                                         type="checkbox"
-                                        value="Social Visit Pass"
-                                        name="reason[]"
+                                        // value="Social Visit Pass"
+                                        name="Social_Visit_Pass__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -547,7 +550,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-1"
                                         type="checkbox"
                                         value="Chronic illness"
-                                        name="reason[]"
+                                        name="Chronic_Illness__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -560,7 +563,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-2"
                                         type="checkbox"
                                         value="Gambling addiction"
-                                        name="reason[]"
+                                        name="Gambling_Addiction__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -573,7 +576,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-3"
                                         type="checkbox"
                                         value="Temporarily unfit for work"
-                                        name="reason[]"
+                                        name="Temporarily_unfit_for_work__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -586,7 +589,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-3"
                                         type="checkbox"
                                         value="Disability"
-                                        name="reason[]"
+                                        name="Disability__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -599,7 +602,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-3"
                                         type="checkbox"
                                         value="Low education"
-                                        name="reason[]"
+                                        name="Low_Education__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -612,7 +615,7 @@ class Tab4 extends React.Component {
                                         id="checkbox-able-3"
                                         type="checkbox"
                                         value="Drug addiction"
-                                        name="reason[]"
+                                        name="Drug_Addiction__c"
                                         disabled={state.houCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
@@ -624,7 +627,7 @@ class Tab4 extends React.Component {
                             <div className="col-md-4">
                                 <label>Another Reason</label>
                                 <input
-                                    onChange={update}
+                                    onChange={updateMain}
                                     name="Other_Reason_Description__c"
                                     type="text"
                                     className="form-control"

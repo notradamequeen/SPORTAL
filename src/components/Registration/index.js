@@ -86,6 +86,7 @@ class Registration extends React.Component {
             isValidBenEmail: ['true'],
             isValidBenNric: ['', ],
             isValidHouNric: ['',],
+            schoolList: [],
             //data
             check1: '',
             check2: '',
@@ -107,7 +108,7 @@ class Registration extends React.Component {
             Chronic_Illness__c: false,
             City__c: '',
             Country__c: '',
-            Cultural_or_personal_belief__c: '',
+            Cultural_or_personal_belief__c: false,
             Date_of_Application__c: getCurrentDate(),
             Declaration_Completed__c: '',
             Disability__c: false,
@@ -117,9 +118,9 @@ class Registration extends React.Component {
             Fail_Flat_Type__c: '',
             Fail_Per_Cap_Income__c: '',
             Flat_Type__c: '',
-            Gambling_Addiction__c: '',
+            Gambling_Addiction__c: false,
             Home_Ownership__c: '',
-            Low_Education__c: '',
+            Low_Education__c: false,
             Media_Coverage_consent__c: '',
             No_of_Bene__c: '',
             No_of_dependent_youth_children__c: '',
@@ -128,12 +129,13 @@ class Registration extends React.Component {
             Other_Source_of_Income__c: '',
             Other_Source_of_Income_Amount__c: '',
             Postal__c: '',
+            Other_Reason_Description__c: '',
             Reason_s_for_Single_No_income_earner__c: '',
             Related_Account__c: '',
-            Social_Visit_Pass__c: '',
+            Social_Visit_Pass__c: false,
             Source_of_Application__c: '',
             Street__c: '',
-            Temporarily_unfit_for_work__c: '',
+            Temporarily_unfit_for_work__c: false,
             Total_income_earners__c: '',
             Total_Monthly_Gross_Income__c: '',
             Total_number_of_household_members__c: '',
@@ -181,18 +183,11 @@ class Registration extends React.Component {
             Religion__c: '',
             Remarks__c: '',
             Stream__c: '',
-            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}}, 
-            {data:{Date_of_Birth__c: '', }, attachment:{}},
-            {data:{Date_of_Birth__c: '', }, attachment:{}}, 
-            {data:{Date_of_Birth__c: '', }, attachment:{}}, 
-            {data:{Date_of_Birth__c: '', }, attachment:{}}, {data:{Date_of_Birth__c: '', }, attachment:{}},
-            {data:{Date_of_Birth__c: '', }, attachment:{}}
-            ],
-            BenAttachments:[],
+            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}},],
             Hou: [{attachment:{}}],
-            HouAttachments: [],
             isLoading: true,
             fullUrl: '',
+            iSubmited: false,
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
@@ -206,10 +201,26 @@ class Registration extends React.Component {
 
     componentDidMount() {
         this.props.getSalesforceToken(() => {
-            this.props.getPostalCodeRecord();
+            
             this.props.getSchoolList();
         }).then(() => {
-            this.setState({ isLoading: false })
+            Promise.all([this.props.getPostalCodeRecord(()=>{}), this.props.getSchoolList(()=>{})]).then(()=>{
+                const postalCodeOption = []
+                this.props.salesforce.postalCodeRecord.fields.records.map((pc_list, idx) => {
+                postalCodeOption.push({
+                    type:"postal_code",
+                    key: idx,
+                    value: pc_list.Name,
+                    label: pc_list.Name});
+                });
+                this.state.postal_code = postalCodeOption
+
+                const schoolList = []
+                this.props.salesforce.schoolList.fields.records.map((field) => {
+                    schoolList.push({type:"school_list", value: field.Id, label: field.Name })
+                })
+                this.state.schoolList = schoolList
+            }) 
             this.retrieve('Person__c/describe').then((json)=>{
                 const fields = json.fields
                 fields.sort((a, b) => {
@@ -233,9 +244,29 @@ class Registration extends React.Component {
                     if (item.name == "Stream__c") {
                         this.state.streamList = item.picklistValues;
                     }
-    
+                    if (item.name == "Marital_Status__c") {
+                        this.state.msList = item.picklistValues                    
+                    }
+                    if (item.name == "Nationality__c") {
+                        this.state.nationList = item.picklistValues                    
+                    }
                 });
             });
+            this.retrieve('Application__c/describe').then((json)=>{
+                const appFields = json.fields
+                appFields.sort((a, b) => {
+                    if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
+                    if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
+                    return 0;
+                });
+                appFields.map((appField) => {
+                    if (appField.name == "Flat_Type__c") {
+                        this.state.flatTypeList = appField.picklistValues                 
+                    }
+                });
+            });
+            console.log(this.retrieve('Application__c/a0o5D0000000M8I').then(json=>json))
+            this.setState({isLoading: false})
         });
         
     }
@@ -247,7 +278,6 @@ class Registration extends React.Component {
     }
     
     onClickNext() {
-        // generatePdf(this.state)
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
             const isValid = validation(currentStep+1, this.state);
@@ -302,7 +332,6 @@ class Registration extends React.Component {
         this.setState({
             [name]: val
         });
-        //console.log(this.state[name])
     }
     retrieve(sobjects) {
         const SF_VERSION = 'v20.0';
@@ -327,7 +356,6 @@ class Registration extends React.Component {
         if (salesforceToken !== null){
             this.setState( {fullUrl : `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`})
         };
-        const fullUrl = fullUrl;
         const fetchConfig = {
             method: 'POST',
             headers: {
@@ -359,18 +387,15 @@ class Registration extends React.Component {
         return fetch(this.state.fullUrl, fetchConfig).then((response) => response.json());
     }
     submitApp(){
-        generatePdf(this.state)
-        var personData = {
+        this.changeState({iSubmited: true});
+        let personData = {
             Applying_to__c: this.state.Applying_to__c,
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
             Applying_to_Level_Year__c: this.state.Applying_to_Level_Year__c,
             Company__c: this.state.Company__c,
             Current_Level__c: this.state.Current_Level__c,
             Current_School__c: this.state.Current_Level__c,
-            Date_of_Birth__c: this.state.Date_of_Birth__c,
             Email_Address__c: this.state.Email_Address__c,
-            Employment_End_Date__c: this.state.Employment_End_Date__c,
-            Employment_Start_Date__c: this.state.Employment_Start_Date__c,
             Employment_Status__c: this.state.Employment_Status__c,
             Fail_Standard_Criteria__c: this.state.Fail_Standard_Criteria__c,	
             Full_Name__c: this.state.Full_Name__c,
@@ -394,21 +419,35 @@ class Registration extends React.Component {
             Remarks__c: this.state.Remarks__c,
             Stream__c: this.state.Stream__c,
         };
+        if ( this.state.Date_of_Birth__c !== ''){
+            personData.Date_of_Birth__c = this.state.Date_of_Birth__c
+        }
+        if (this.state.Employment_End_Date__c !== '') {
+            personData.Employment_End_Date__c = this.state.Employment_End_Date__c
+        }
+        if (this.state.Employment_Start_Date__c !== ''){
+            personData.Employment_Start_Date__c = this.state.Employment_Start_Date__c
+        }
         const applicationData = {
             Alcoholism__c: this.state.Alcoholism__c,
             Applicant__c: this.state.Applicant__c,
             Application_Status__c: this.state.Application_Status__c,
             Application_Type__c: this.state.Application_Type__c,
             City__c: this.state.City__c,
+            Chronic_Illness__c: this.state.Chronic_Illness__c,
             Country__c: this.state.Country__c,
+            Cultural_or_personal_belief__c: this.state.Cultural_or_personal_belief__c,
             Date_of_Application__c: this.state.Date_of_Application__c,
             Disability__c: this.state.Disability__c,
             Fail_Flat_Type__c: this.state.Fail_Flat_Type__c,
             Fail_Per_Cap_Income__c: true,
             Flat_Type__c: this.state.Fail_Type_c,
             Full_Name__c: this.state.Full_Name__c,
+            Gambling_Addiction__c: this.state.Gambling_Addiction__c,
             Home_Ownership__c: this.state.Home_Ownership__c,
+            Low_Education__c: this.state.Low_Education__c,
             No_of_dependent_youth_children__c: this.state.No_of_dependent_youth_children__c,
+            Other_Reason_Description__c: this.state.Other_Reason_Description__c,
             Other_Source_of_Income__c: this.state.Other_Source_of_Income__c,
             Other_Source_of_Income_Amount__c: this.state.Other_Source_of_Income_Amount__c,
             Postal__c: this.state.Postal__c,
@@ -417,79 +456,84 @@ class Registration extends React.Component {
             Social_Visit_Pass__c: this.Social_Visit_Pass__c,
             Source_of_Application__c: this.state.Source_of_Application__c,
             Street__c: this.state.Street__c,
+            Temporarily_unfit_for_work__c: this.state.Temporarily_unfit_for_work__c,
             Unit_Number__c: this.state.Unit_Number__c,
         }
         const salesforceToken = this.props.salesforce.token;
         saveObject('Application__c', applicationData, salesforceToken).then((json1) => {
             const applicationId = json1.id
+            console.log(json1)
             personData.Application__c = applicationId
             console.log('personData', personData)
             console.log('appRes', json1)
-            saveObject('Person__c', personData, salesforceToken).then((json2) => {
-                console.log('updateRes', json2)
-                const personId = json2.id
-                const dataToUpdate = {Applicant__c: personId}
-                console.log('dataappUpdate', dataToUpdate)
-                updateObject('Application__c', applicationId, dataToUpdate, salesforceToken).then(
-                    (json3) => {
-                        console.log(json3)
-                })
-                if (this.state.Hou[0].attachment.file1 !== undefined) {
-                    console.log(personId)
-                    this.state.Hou[0].attachment.file1.parentId = personId
-                        this.save('Attachment', this.state.Hou[0].attachment.file1).then((resAttach)=>{
-                            console.log('personAttachfile1', resAttach)
-                        }).catch((err) => { alert(err) })
-                }
-                if (this.state.Hou[0].attachment.file2 !== undefined) {
-                    this.state.Hou[0].attachment.file2.parentId = personId
-                        this.save('Attachment', this.state.Hou[0].attachment.file2).then((resAttach)=>{
-                            console.log('personAttachfile2', resAttach)
-                        }).catch((err) => { alert(err) })
-                }
-            }); /* end Of save Main Applicant */
-            /*  save BenData */
-            this.state.Ben.map((benData) => {
-                benData.data.Application__c = applicationId
-                benData.data.RecordTypeId = '0125D0000008awgQAA'
-                this.save('Person__c', benData.data).then((resBen)=>{
-                    const benId = resBen.id
-                    if (benData.attachment.Name !== undefined){
-                        benData.attachment.parentId = benId
-                        console.log('benesave', resBen)
-                        this.save('Attachment', benData.attachment).then((resBenAttach)=>{
-                            console.log('beneattach', resBenAttach)
-                        }).catch((err) => { alert(err) })
-                    }
-                }).catch((err)=>{
-                    console.log(err)
-                })
-            }); /* end of save BenData */
-            /* save HouData */
-            this.state.Hou.map((houData, idx) => {
-                if(idx !== 0){
-                    console.log(houData);
-                    houData.data.Application__c = applicationId
-                    this.save('Person__c', houData.data).then((resHou)=>{
-                        const personHouId = resHou.id
-                        if (houData.attachment.file1 !== undefined) {
-                            houData.attachment.file1.parentId = personHouId
-                            this.save('Attachment', houData.attachment.file1).then((resHouAttach)=>{
-                                console.log('houattach', resHouAttach)
-                            }).catch((err) => { alert(err) })
-                        }
-                        if (houData.attachment.file2 !== undefined) {
-                            houData.attachment.file2.parentId = personHouId
-                            this.save('Attachment', houData.attachment.file2).then((resHouAttach)=>{
-                                console.log('houattach', resHouAttach)
-                            }).catch((err) => { alert(err) })
-                        }
-                    }).catch((err) => {
-                        console.log(err);
+            if (applicationId !== undefined) {
+                saveObject('Person__c', personData, salesforceToken).then((json2) => {
+                    console.log('updateRes', json2)
+                    const personId = json2.id
+                    const dataToUpdate = {Applicant__c: personId}
+                    console.log('dataappUpdate', dataToUpdate)
+                    updateObject('Application__c', applicationId, dataToUpdate, salesforceToken).then(
+                        (json3) => {
+                            console.log(json3)
                     })
-                }    
-            }); /*  end of save HouData */
+                    if (this.state.Hou[0].attachment.file1 !== undefined) {
+                        console.log(personId)
+                        this.state.Hou[0].attachment.file1.parentId = personId
+                            this.save('Attachment', this.state.Hou[0].attachment.file1).then((resAttach)=>{
+                                console.log('personAttachfile1', resAttach)
+                            }).catch((err) => { alert(err) })
+                    }
+                    if (this.state.Hou[0].attachment.file2 !== undefined) {
+                        this.state.Hou[0].attachment.file2.parentId = personId
+                            this.save('Attachment', this.state.Hou[0].attachment.file2).then((resAttach)=>{
+                                console.log('personAttachfile2', resAttach)
+                            }).catch((err) => { alert(err) })
+                    }
+                }); /* end Of save Main Applicant */
+                /*  save BenData */
+                this.state.Ben.map((benData) => {
+                    benData.data.Application__c = applicationId
+                    benData.data.RecordTypeId = '0125D0000008awgQAA'
+                    this.save('Person__c', benData.data).then((resBen)=>{
+                        const benId = resBen.id
+                        if (benData.attachment.Name !== undefined){
+                            benData.attachment.parentId = benId
+                            console.log('benesave', resBen)
+                            this.save('Attachment', benData.attachment).then((resBenAttach)=>{
+                                console.log('beneattach', resBenAttach)
+                            }).catch((err) => { alert(err) })
+                        }
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
+                }); /* end of save BenData */
+                /* save HouData */
+                this.state.Hou.map((houData, idx) => {
+                    if(idx !== 0){
+                        console.log(houData);
+                        houData.data.Application__c = applicationId
+                        this.save('Person__c', houData.data).then((resHou)=>{
+                            const personHouId = resHou.id
+                            if (houData.attachment.file1 !== undefined) {
+                                houData.attachment.file1.parentId = personHouId
+                                this.save('Attachment', houData.attachment.file1).then((resHouAttach)=>{
+                                    console.log('houattach', resHouAttach)
+                                }).catch((err) => { alert(err) })
+                            }
+                            if (houData.attachment.file2 !== undefined) {
+                                houData.attachment.file2.parentId = personHouId
+                                this.save('Attachment', houData.attachment.file2).then((resHouAttach)=>{
+                                    console.log('houattach', resHouAttach)
+                                }).catch((err) => { alert(err) })
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                    }    
+                }); /*  end of save HouData */
+            }
         }); /* end of submit to SF process */
+        generatePdf(this.state)
         return true;
     }
 
@@ -562,7 +606,10 @@ class Registration extends React.Component {
                                 />
                             </TabPanel>
                             <TabPanel>
-                                <Tab5 submitApp={this.submitApp}/>
+                                <Tab5 
+                                    submitApp={this.submitApp}
+                                    data={this.state}
+                                />
                             </TabPanel>
                         </div>
                         </Tabs>
