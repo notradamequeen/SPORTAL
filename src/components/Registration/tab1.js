@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import { getPostalCodeRecord, getPersonField } from '../../actions/salesforces';
 
 import 'react-datepicker/dist/react-datepicker.css';
 

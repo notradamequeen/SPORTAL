@@ -37,7 +37,7 @@ class Login extends React.Component {
 
 
     render() {
-        if (this.props.user !== null) return <Redirect to="/" />;
+        if (this.props.user !== null) return <Redirect to="portal" />;
         return (
             <div>
                 <a className="hiddenanchor" id="signup">signup</a>
@@ -83,8 +83,8 @@ class Login extends React.Component {
                                     <div className="clearfix" />
                                     <br />
                                     <div>
-                                        <h1><i className="fa fa-paw" /> React Firebase Boilerplate!</h1>
-                                        <p>&copy; 2017 Eko Purnomo, using gantella Bootstrap 3 template.</p>
+                                        <h1><i className="fa fa-heart" /> STSPMF</h1>
+                                        <p>&copy; 2017 STSPMF.com.</p>
                                     </div>
                                 </div>
                             </form>

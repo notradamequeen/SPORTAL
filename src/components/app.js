@@ -15,6 +15,7 @@ import Home from './Home';
 import Profile from './Profile';
 import Contact from './Contact';
 import Registration from './Registration';
+import Dashboard from './Portal';
 
 
 const CPrivateRoute = props => (
@@ -47,12 +48,13 @@ const PrivateRoute = connect(privateRouteToProps)(CPrivateRoute);
 
 const AllRoutes = () => (
     <Router>
-        <div className="registrationForm">
+        <div>
             <Switch>
                 <Route exact path="/" component={Registration} />
                 <PrivateRoute exact path="/profile" component={Profile} />
                 <PrivateRoute exact path="/contact" component={Contact} />
                 <Route exact path="/login" component={Login} />
+                <Route exact path="/portal" component={Dashboard} />
                 <Route
                     render={(props) => {
                         window.location = `/404.html?from=${props.location.pathname}`;

@@ -192,6 +192,7 @@ class Registration extends React.Component {
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
+        this.onSelect                   = this.onSelect.bind(this);
         this.submitApp                  = this.submitApp.bind(this);
         this.changeState                = this.changeState.bind(this);
         this.save                       = this.save.bind(this);
@@ -320,6 +321,9 @@ class Registration extends React.Component {
             currentStep: currentStep - 1,
             tabIndex: tabIndex - 1
         });
+    }
+    onSelect() {
+
     }
     changeState(name, val){
         this.setState({
@@ -551,7 +555,8 @@ class Registration extends React.Component {
             }
           }
         if (!this.state.isSubmitted){
-            return ( 
+            return (
+            <div className="registrationForm">
                 <div className="container body" id="printed">
                     <div className="col-md-12" id="logoHeader">
                         <div className="col-md-3">
@@ -617,6 +622,7 @@ class Registration extends React.Component {
                     }
                     <iframe id="ifmcontentstoprint" style={{height: "0px", width: "0px", position: "absolute", pageBreakAfter:"always"}}></iframe>
                 </div>
+            </div>
             );
         }
         else {
