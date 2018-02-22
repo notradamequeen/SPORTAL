@@ -14,7 +14,6 @@
   },
   "keywords": [
     "React",
-    "Firebase",
     "Redux",
     "ReactRouter"
   ],
@@ -26,7 +25,6 @@
   "homepage": "https://github.com/purnomoeko/react-firebase-boilerplate#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "firebase": "^4.6.1",
     "gentelella": "^1.4.0",
     "html-webpack-plugin": "^2.30.1",
     "jquery": "^3.3.1",

@@ -1,4 +1,4 @@
-import FireBaseTools, { firebaseDb } from './firebaseTools';
+// import FireBaseTools, { firebaseDb } from './firebaseTools';
 import {
     LOGIN_WITH_PROVIDER_FIREBASE,
     REGISTER_FIREBASE_USER,

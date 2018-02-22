@@ -52,8 +52,13 @@ module.exports = (options) => {
         ],
     };
     if (options.isProduction) {
-      //  config.plugins.push(new Webpack.optimize.UglifyJsPlugin());
+        config.plugins.push(new Webpack.optimize.UglifyJsPlugin());
     } else {
+        config.output = Object.assign({
+            devtoolLineToLine: true,
+            sourceMapFilename: "./bundle.js.map",
+            pathinfo: true,
+        }, config.output);
         config.devServer = {
             proxy: {
                 '/**': {
