@@ -49,42 +49,43 @@ class Tab1 extends React.Component {
 
     render() {
         return (
-            <div className="col-md-12">
-        <p><b>Eligibility Criteria</b></p>
-        <ul className="ulnone">
-                <li>
-                    <input type="checkbox" name="check4" id="check4" defaultChecked={this.props.data.check4} onChange={this.handleInputChange} />
-                     Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)</li>
-                <li>
-                    <input type="checkbox" name="check5" id="check5" defaultChecked={this.props.data.check5} onChange={this.handleInputChange} />
-                     Family is living in a 4-room HDB flat or smaller</li>
-                <li>
-                    <input type="checkbox" name="check6" id="check6" defaultChecked={this.props.data.check6} onChange={this.handleInputChange} />
-                     Family has a gross per capita income (PCI) of $625/ month or less</li>
-                <li>
-                    <input type="checkbox" name="check7" id="check7" defaultChecked={this.props.data.check7} onChange={this.handleInputChange} /> 
-                     Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme</li>
-                <li>
-                    <input type="checkbox" name="check8" id="check8" defaultChecked={this.props.data.check8} onChange={this.handleInputChange} /> 
-                     Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme</li>
-                <li>
-                    <input type="checkbox" name="check9" id="check9" defaultChecked={this.props.data.check9} onChange={this.handleInputChange} /> 
-                     Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education. </li>
-                <li>
-                    <input type="checkbox" name="check10" id="check10" defaultChecked={this.props.data.check10} onChange={this.handleInputChange} />  
-                     Student is 20 years or younger at point of application </li>
-            </ul>
-        <p><b>All completed STSPMF application forms must be attached with the relevant documents listed below:</b></p>
-        <ul className="ulnone">
-            <li>
-                <input type="checkbox" name="check1" id="check1" defaultChecked={this.props.data.check1} onChange={this.handleInputChange} />   
-                 Photocopy of student(s)’s NRIC / birth certificate </li>
-            <li>
-                <input type="checkbox" name="check2" id="check2" defaultChecked={this.props.data.check2} onChange={this.handleInputChange} /> 
-                 Photocopy of both parents’/ guardian’s NRIC / passport</li>
-        </ul>
-        <p className="red">STSPMF reserves the right to reject the application if any of the supporting documents is not submitted</p>
-    </div>)
+            <div className="col-md-12 print">
+                <p><b>Eligibility Criteria</b></p>
+                <ul className="ulnone">
+                    <li>
+                        <input type="checkbox" name="check4" id="check4" defaultChecked={this.props.data.check4} onChange={this.handleInputChange} />
+                        Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)</li>
+                    <li>
+                        <input type="checkbox" name="check5" id="check5" defaultChecked={this.props.data.check5} onChange={this.handleInputChange} />
+                        Family is living in a 4-room HDB flat or smaller</li>
+                    <li>
+                        <input type="checkbox" name="check6" id="check6" defaultChecked={this.props.data.check6} onChange={this.handleInputChange} />
+                        Family has a gross per capita income (PCI) of $625/ month or less</li>
+                    <li>
+                        <input type="checkbox" name="check7" id="check7" defaultChecked={this.props.data.check7} onChange={this.handleInputChange} /> 
+                        Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme</li>
+                    <li>
+                        <input type="checkbox" name="check8" id="check8" defaultChecked={this.props.data.check8} onChange={this.handleInputChange} /> 
+                        Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme</li>
+                    <li>
+                        <input type="checkbox" name="check9" id="check9" defaultChecked={this.props.data.check9} onChange={this.handleInputChange} /> 
+                        Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education. </li>
+                    <li>
+                        <input type="checkbox" name="check10" id="check10" defaultChecked={this.props.data.check10} onChange={this.handleInputChange} />  
+                        Student is 20 years or younger at point of application </li>
+                </ul>
+                <p><b>All completed STSPMF application forms must be attached with the relevant documents listed below:</b></p>
+                <ul className="ulnone">
+                    <li>
+                        <input type="checkbox" name="check1" id="check1" defaultChecked={this.props.data.check1} onChange={this.handleInputChange} />   
+                        Photocopy of student(s)’s NRIC / birth certificate </li>
+                    <li>
+                        <input type="checkbox" name="check2" id="check2" defaultChecked={this.props.data.check2} onChange={this.handleInputChange} /> 
+                        Photocopy of both parents’/ guardian’s NRIC / passport</li>
+                </ul>
+                <p className="red">STSPMF reserves the right to reject the application if any of the supporting documents is not submitted</p>
+            </div>
+        )
     }
 }
 

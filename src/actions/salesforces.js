@@ -4,7 +4,7 @@ import {
     q_RECORD_TYPE
 } from './query';
 import { sfRequestSync, sfRequest } from '../utils/common';
-const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'http://13.229.173.240/sf/';
+const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'http://spmf.interaktiv.sg/sf/';
 const SF_VERSION = 'v20.0';
 
 export function getSalesforceToken(callback) {
@@ -34,35 +34,87 @@ export function getSalesforceToken(callback) {
 }
 
 
-export const getPostalCodeRecord = () => (
-    (dispatch, getState) => {
-        // if (getState().currentUser === null) return;
+export function getPostalCodeRecord(callback) {
+    return async (dispatch, getState) => {
+        let fullUrl = ''
         const salesforceToken = getState().salesforce.token;
-        const postalCodeRecords = getState().salesforce.postalCodeRecords;
-        sfRequest(null, {
+        if(salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_POSTAL_CODE_RECORD)}`   
+        }
+        const fetchConfig = {
             method: 'GET',
-            url: salesforceToken.instanceUrl,
-            id: 'describe',
-            accessToken: salesforceToken.accessToken,
-            query: q_POSTAL_CODE_RECORD,
-        },dispatch, 'POSTAL_CODE_RECORD')
+            headers: {
+                Authorization: `Bearer ${salesforceToken.accessToken}`,
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+            timeout: 5000,
+        };
+        const json = await fetch(fullUrl, fetchConfig).then(response => response.json()).catch((err) => {
+                                dispatch({ type: 'TOGGLE_LOADING' });
+                                setTimeout(() => null, 0);
+                                swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
+                            }).then(responseData => {
+                                dispatch({ type: 'TOGGLE_LOADING' });
+                                if (responseData.length > 0) {
+                                    if (responseData[0].errorCode) {
+                                        swal('Error occured', `An Error occured "${responseData[0].errorCode} - ${responseData[0].message} - ${sobject}".`);
+                                    } else {
+                                        dispatch({
+                                            payload: responseData,
+                                            type: 'POSTAL_CODE_RECORD',
+                                        });
+                                    }
+                                } else {
+                                    dispatch({
+                                        payload: responseData,
+                                        type: 'POSTAL_CODE_RECORD',
+                                    });
+                                }
+                            });
     }
-);
+}
 
-export const getSchoolList = () => (
-    (dispatch, getState) => {
-        // if (getState().currentUser === null) return;
+export function getSchoolList(callback) {
+    return async (dispatch, getState) => {
+        let fullUrl = ''
         const salesforceToken = getState().salesforce.token;
-        const schoolList = getState().salesforce.schoolList;
-        sfRequest(null, {
+        if(salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_SCHOLL_LIST)}`   
+        }
+        const fetchConfig = {
             method: 'GET',
-            url: salesforceToken.instanceUrl,
-            id: 'describe',
-            accessToken: salesforceToken.accessToken,
-            query: q_SCHOLL_LIST,
-        },dispatch, 'SCHOOL_LIST')
+            headers: {
+                Authorization: `Bearer ${salesforceToken.accessToken}`,
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+            timeout: 5000,
+        };
+        await fetch(fullUrl, fetchConfig).then(response => response.json()).catch((err) => {
+            dispatch({ type: 'TOGGLE_LOADING' });
+            setTimeout(() => null, 0);
+            swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
+        }).then(responseData => {
+            dispatch({ type: 'TOGGLE_LOADING' });
+            if (responseData.length > 0) {
+                if (responseData[0].errorCode) {
+                    swal('Error occured', `An Error occured "${responseData[0].errorCode} - ${responseData[0].message} - ${sobject}".`);
+                } else {
+                    dispatch({
+                        payload: responseData,
+                        type: 'SCHOOL_LIST',
+                    });
+                }
+            } else {
+                dispatch({
+                    payload: responseData,
+                    type: 'SCHOOL_LIST',
+                });
+            }
+        });
     }
-);
+}
 
 export const getRecordType = () => (
     (dispatch, getState) => {
