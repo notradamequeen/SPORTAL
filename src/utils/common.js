@@ -518,6 +518,8 @@ export function generatePdf(data){
                         },
                         columnStyles: tab2ColumnStyle,
                     });
+                    pdf.line(10, pdf.autoTable.previous.finalY + 10, 200, pdf.autoTable.previous.finalY)
+                    pdf.setLineWidth(0.5);
                 }
                 let endOfMainApplicant = pdf.autoTable.previous.finalY
                 // Reason Reason/s for not having an income earner / Having one income earner
@@ -642,6 +644,7 @@ export function generatePdf(data){
                     styles: {overflow: 'linebreak', columnWidth: 'wrap'},
                     columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}},
                     drawRow: function (row, data) {
+                        console.log('row', row)
                         row.height = row.height * 1.2
                     },
                 })

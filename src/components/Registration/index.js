@@ -278,6 +278,7 @@ class Registration extends React.Component {
     }
     
     onClickNext() {
+        // generatePdf(this.state);
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
             const isValid = validation(currentStep+1, this.state);
