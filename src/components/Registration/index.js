@@ -34,7 +34,7 @@ import $ from 'jquery';
 import swal from 'sweetalert';
 import Iframe from './iframe';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { error } from '@firebase/database/dist/esm/src/core/util/util';
+
 
 
 class Registration extends React.Component {
