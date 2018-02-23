@@ -48,8 +48,17 @@ module.exports = (options) => {
             ],
         },
         plugins: [
-            new HtmlWebpackPlugin({ template: './src/index.html', title: options.title || 'App', isProduction: options.isProduction }),
-            new HtmlWebpackPlugin({ template: './src/404.html', filename: '404.html' }),
+            new HtmlWebpackPlugin({ 
+                template: './src/index.html',
+                title: options.title || 'App',
+                favicon: './src/assets/img/favicon.ico',
+                isProduction: options.isProduction 
+            }),
+            new HtmlWebpackPlugin({
+                template: './src/404.html',
+                favicon: './src/assets/img/favicon.ico',
+                filename: '404.html'
+            }),
         ],
     };
     if (options.isProduction) {

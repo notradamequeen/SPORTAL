@@ -49,6 +49,9 @@ class Tab4 extends React.Component {
             }
             this.props.data.isValidMainNric = isValidId;
         }
+        if (event.target.name == 'Employment_Status__c'){
+            this.props.data.HouStatusEmployement[0] = event.target.value;
+        }
         if (event.target.id.indexOf('check') !== -1){
             value = !this.props.data[event.target.name]
         }
@@ -91,6 +94,7 @@ class Tab4 extends React.Component {
             },
             attachment: {},
         })
+        this.props.data.HouStatusEmployement.push('');
         this.props.data.isValidHouNric.push('');
     }
     UpdateHou(event){
@@ -105,6 +109,9 @@ class Tab4 extends React.Component {
                 document.getElementById(`hou_nric_error${houIdx}`).innerHTML = '';
             }
             this.props.data.isValidHouNric = isValidNric.toString()
+        }
+        if(event.target.name === 'Employment_Status__c'){
+            this.props.data.HouStatusEmployement[houIdx] = event.target.value;
         }
         this.setState({ 
             Hou: HouList
@@ -139,14 +146,23 @@ class Tab4 extends React.Component {
         const handleEndDateChange = this.handleEndDateChange.bind(this)
         const state = this.state
         const props = this.props
+        const EarnerCount = props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
+        if (EarnerCount > 1) {
+            Array.apply(1, Array(8)).map((val, num) => {
+                console.log(document.getElementById(`checkbox-able-${num+1}`));
+                // document.getElementById(`checkbox-able-${num+1}`).removeAttribute("checked");
+                let fieldName = document.getElementById(`checkbox-able-${num+1}`).getAttribute("name")
+                props.data[fieldName] = false;
+            })
+        }
+        
         return (
             <div className="col-md-12 print" id="Tab4">
-                <h5 className="info-text">Main Applicant</h5>
                 {Array.apply(0, Array(this.state.houCount)).map(function (x, i) {
                     return (
                         <div className="fullh" key={i.toString()}>
                             <div className="row ">
-                            <p>Member - 1</p>
+                            <p>{i == 0 ? 'Main Applicant' : 'Member - ' + i.toString() }</p>
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Name <small>(required)</small></label>
@@ -159,6 +175,7 @@ class Tab4 extends React.Component {
                                             className="form-control"
                                             placeholder="Fullname"
                                             value={props.data.Full_Name__c}
+                                            disabled
                                         /> :
                                         <input
                                             onChange={update}
@@ -185,6 +202,7 @@ class Tab4 extends React.Component {
                                             placeholder="NRIC "
                                             maxLength="9"
                                             value={props.data.ID_Number__c}
+                                            disabled
                                         /><br/>
                                         <span id="nric_error0" style={{color: "red"}}></span></div> :
                                         <div>
@@ -194,7 +212,7 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[ID_Number__c]`}
                                             type="text"
                                             className="form-control"
-                                            maxlength="9"
+                                            maxLength="9"
                                             placeholder="NRIC "
                                         /><br/>
                                         <span id={`hou_nric_error${i}`} style={{color: "red"}}></span>
@@ -213,6 +231,7 @@ class Tab4 extends React.Component {
                                             className="form-control relation1"
                                             onChange={updateMain}
                                             value={props.data.Relationship_to_Applicant__c}
+                                            disabled
                                         >
                                             {props.data.relationList.map((rel) => {
                                                 return (
@@ -226,6 +245,7 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[Relationship_to_Applicant__c]`} 
                                             className="form-control relation1"
                                             onChange={update}
+                                            value={props.data.Hou[i].data.Relationship_to_Applicant__c ? props.data.Hou[i].data.Relationship_to_Applicant__c : 'Son'}
                                         >
                                             {props.data.relationList.map((rel) => {
                                                 return (
@@ -234,7 +254,6 @@ class Tab4 extends React.Component {
                                             })}
                                         </select>
                                     }
-                                    
                                 </div>
                             </div>
                         </div>
@@ -253,6 +272,7 @@ class Tab4 extends React.Component {
                                             className="form-control fullw"
                                             showYearDropdown
                                             showMonthDropdown
+                                            disabled
                                         /> :
                                         <DatePicker
                                             name="Date_of_Birth__c"
@@ -286,7 +306,10 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[Monthly_Gross_Income__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Montly Income" 
+                                            placeholder="Montly Income"
+                                            value = {props.data.Employment_Status__c == 'Unemployed' ? 0 : 
+                                                props.data.Monthly_Gross_Income__c}
+                                            disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
                                         /> :
                                         <input
                                             onChange={update}
@@ -295,6 +318,9 @@ class Tab4 extends React.Component {
                                             type="text"
                                             className="form-control"
                                             placeholder="Montly Income"
+                                            value = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? 0 : 
+                                                props.data.Hou[i].data.Monthly_Gross_Income__c}
+                                            disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
                                         />
                                     }
                                     
@@ -310,8 +336,10 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[Employment_Status__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Employment Status" 
+                                            value={props.data.Employment_Status__c}
+                                            placeholder="Employment Status"
                                         > 
+                                            <option value=''></option>
                                             {props.data.employStatusList.map((emStat)=>{
                                                 return (
                                                     <option key={emStat.value} value={emStat.value}>{emStat.label}</option>
@@ -324,7 +352,8 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[Employment_Status__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Employment Status" 
+                                            placeholder="Employment Status"
+                                            value={props.data.Hou[i].data.Employment_Status__c ? props.data.Hou[i].data.Employment_Status__c : 'Self Employed'}
                                         >
                                             {props.data.employStatusList.map((emStat)=>{
                                                     return (
@@ -333,7 +362,6 @@ class Tab4 extends React.Component {
                                             })}
                                         </select>
                                     }
-                                    
                                 </div>
                             </div>
                         </div>
@@ -358,8 +386,7 @@ class Tab4 extends React.Component {
                                             className="form-control"
                                             placeholder="Occupation__c" 
                                         />
-                                    }
-                                    
+                                    }  
                                 </div>
                             </div>
                             <div className="col-sm-4">
@@ -512,7 +539,8 @@ class Tab4 extends React.Component {
                                         type="checkbox"
                                         value={true}
                                         name="Alcoholism__c"
-                                        disabled={state.houCount > 1 ? true : false} /> 
+                                        checked={props.data.Alcoholism__c}
+                                        disabled={EarnerCount > 1 ? true : false} /> 
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-1">Alcoholism</label>
@@ -525,7 +553,8 @@ class Tab4 extends React.Component {
                                         type="checkbox"
                                         // value="Cultural or personal belief"
                                         name="Cultural_or_personal_belief__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Cultural_or_personal_belief__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-2">Cultural or personal belief</label>
@@ -538,7 +567,8 @@ class Tab4 extends React.Component {
                                         type="checkbox"
                                         // value="Social Visit Pass"
                                         name="Social_Visit_Pass__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Social_Visit_Pass__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-3">Social Visit Pass</label>
@@ -547,11 +577,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-1"
+                                        id="checkbox-able-4"
                                         type="checkbox"
                                         value="Chronic illness"
                                         name="Chronic_Illness__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Chronic_Illness__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-1">Chronic illness</label>
@@ -560,11 +591,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-2"
+                                        id="checkbox-able-5"
                                         type="checkbox"
                                         value="Gambling addiction"
                                         name="Gambling_Addiction__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Gambling_Addiction__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-2">Gambling addiction</label>
@@ -573,11 +605,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-3"
+                                        id="checkbox-able-6"
                                         type="checkbox"
                                         value="Temporarily unfit for work"
                                         name="Temporarily_unfit_for_work__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Temporarily_unfit_for_work__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-3">Temporarily unfit for work</label>
@@ -586,11 +619,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-3"
+                                        id="checkbox-able-7"
                                         type="checkbox"
                                         value="Disability"
                                         name="Disability__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Disability__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-3">Disability</label>
@@ -599,11 +633,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-3"
+                                        id="checkbox-able-8"
                                         type="checkbox"
                                         value="Low education"
                                         name="Low_Education__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Low_Education__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-3">Low education</label>
@@ -612,11 +647,12 @@ class Tab4 extends React.Component {
                                     <label className="custom-option">
                                     <input
                                         onChange={updateMain}
-                                        id="checkbox-able-3"
+                                        id="checkbox-able-9"
                                         type="checkbox"
                                         value="Drug addiction"
                                         name="Drug_Addiction__c"
-                                        disabled={state.houCount > 1 ? true : false} />
+                                        checked={props.data.Drug_Addiction__c}
+                                        disabled={EarnerCount > 1 ? true : false} />
                                     <span className="button-checkbox"></span>
                                     </label>
                                     <label htmlFor="checkbox-able-3">Drug addiction</label>
@@ -632,7 +668,7 @@ class Tab4 extends React.Component {
                                     type="text"
                                     className="form-control"
                                     placeholder="Please Specify if exist"
-                                    disabled={state.houCount > 1 ? true : false} />
+                                    disabled={EarnerCount > 1 ? true : false} />
                             </div>
                         </div>
                     </div>

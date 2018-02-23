@@ -154,13 +154,13 @@ class Registration extends React.Component {
             Email_Address__c: '',
             Employment_End_Date__c: '',
             Employment_Start_Date__c: '',
-            Employment_Status__c: '',
+            Employment_Status__c: 'Self Employed',
             Fail_Standard_Criteria__c: '',	
             Fail_Flat_Type__c: '',
             Full_Name__c: '',
             Gender__c: 'male',
             Home_Phone__c: '',
-            ID_Number__c: '123456',
+            ID_Number__c: '',
             ID_Type__c: 'NRIC',
             Main_Applicant__c: true,
             Marital_Status__c: 'Single',
@@ -186,9 +186,10 @@ class Registration extends React.Component {
             Stream__c: '',
             Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}},],
             Hou: [{attachment:{}}],
+            HouStatusEmployement: ['',],
             isLoading: true,
             fullUrl: '',
-            isSubmitted: false,
+            isSubmitted: true,
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
@@ -274,7 +275,7 @@ class Registration extends React.Component {
         })
     }
     onClickNext() {
-        // generatePdf(this.state);
+        generatePdf(this.state);
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
             const isValid = validation(currentStep+1, this.state);
@@ -302,12 +303,12 @@ class Registration extends React.Component {
             if(!isValid){
                 swal('cannot move to next step, please fill all required fields');
             }
-            if(validNric && validFormat && isValid){
+            // if(validNric && validFormat && isValid){
                 this.setState({
                     currentStep: currentStep + 1,
                     tabIndex: tabIndex + 1
                 });
-            }
+            // }
         } else {
             this.setState({
                 currentStep: currentStep + 1,
@@ -408,7 +409,8 @@ class Registration extends React.Component {
             Other_Marital_Status__c: this.state.Other_Marital_Status__c,
             Other_Nationality__c: this.state.Other_Nationality__c,
             Other_Race__c: this.state.Other_Race__c,
-            Other_Religion__c: this.state.Other_Religion__c,	
+            Other_Religion__c: this.state.Other_Religion__c,
+            PDPA_Consent__c: this.state.PDPA_Consent__c ? this.state.PDPA_Consent__c : false,	
             Race__c: this.state.Race__c,
             Relationship_to_Applicant__c: this.state.Relationship_to_Applicant__c,	
             Religion__c: this.state.Religion__c,
@@ -529,7 +531,7 @@ class Registration extends React.Component {
                 }); /*  end of save HouData */
             }
         }); /* end of submit to SF process */
-        generatePdf(this.state)
+        // generatePdf(this.state)
         this.changeState({isSubmitted: true});
         return true;
     }
@@ -559,12 +561,12 @@ class Registration extends React.Component {
             <div className="registrationForm">
                 <div className="container body" id="printed">
                     <div className="col-md-12" id="logoHeader">
-                        <div className="col-md-3">
+                        <div className="col-md-2">
                         <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
                         </div>
-                        <div className="col-md-9 header-title">
+                        <div className="col-md-10">
                             <br /><br />
-                            <h3 style={{ color:"#186b8e"}}>STSPMF Application Form</h3>
+                            <h3 style={{ color:"#186b8e"}}>&nbsp;&nbsp;STSPMF Application Form</h3>
                         </div>
                     </div>
                     {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
@@ -605,7 +607,8 @@ class Registration extends React.Component {
                                     />
                                 </TabPanel>
                                 <TabPanel>
-                                    <Tab5 
+                                    <Tab5
+                                        changeState={this.changeState}
                                         submitApp={this.submitApp}
                                         data={this.state}
                                     />
@@ -627,7 +630,7 @@ class Registration extends React.Component {
         }
         else {
             return (
-                <Success/>
+                <Success data={this.state}/>
             )
         }
         

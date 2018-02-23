@@ -148,7 +148,6 @@ class Tab3 extends React.Component {
         })
     }
 
-
     render() {
         const that = this
         const update = this.UpdateBen.bind(this);
@@ -161,12 +160,14 @@ class Tab3 extends React.Component {
         const props = this.props
         return (
             <div className="col-md-12 print" id="tab3">
+                <br />
                 <h5 className="info-text"> Beneficiaries List</h5>
             {Array.apply(0, Array(this.state.bencount)).map(function (x, i) {
                 return (
                     <div className="full" key={i.toString()}>
                         <div className="row">
                             <p>Beneficiary - {(i+1)}</p>
+                            {/* Full Name */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>Name <small style={{color: "red"}}>(required)</small></label>
@@ -181,6 +182,7 @@ class Tab3 extends React.Component {
                                         />
                                 </div>
                             </div>
+                            {/* NRIC */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>NRIC <small style={{color: "red"}}>(required)</small> </label>
@@ -196,6 +198,7 @@ class Tab3 extends React.Component {
                                         <span id={`ben_nric_error${i}`} style={{ color: "red"}}></span>
                                 </div>
                             </div>
+                            {/* Date of Birth */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>Date of Birth <small style={{color: "red"}}>(required)</small></label>
@@ -215,6 +218,28 @@ class Tab3 extends React.Component {
                                         />
                                 </div>
                             </div>
+                            {/* Race */}
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Race <small style={{color: "red"}}>(required)</small></label>
+                                    <select
+                                        onChange={update}
+                                        name="Race__c"
+                                        id={`Ben${i}[Race__c]`}
+                                        className="form-control"
+                                    >
+                                        <option value=''></option>
+                                        {props.data.raceList !== undefined && props.data.raceList.map((option) => {
+                                            return (
+                                                <option key={option.value} value={option.value}>{option.label}</option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            {/* Current Level */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>Current level <small style={{color: "red"}}>(required)</small></label>
@@ -233,22 +258,7 @@ class Tab3 extends React.Component {
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <div className="form-group">
-                                    <label>Email <small style={{color: "red"}}>(required)</small></label>
-                                        <input
-                                            onChange={update}
-                                            name="Email_Address__c"
-                                            id={`Ben${i}[Email_Address__c]`}
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Email"
-                                        />
-                                        <span id={`ben_email_error${i}`} style={{ color: "red"}}></span>
-                                </div>
-                            </div>
+                            {/* Current School */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>School <small style={{color: "red"}}>(required)</small></label>
@@ -268,6 +278,7 @@ class Tab3 extends React.Component {
                                     </select>
                                 </div>
                             </div>
+                            {/* Stream */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>Stream</label>
@@ -286,6 +297,7 @@ class Tab3 extends React.Component {
                                     </select>
                                 </div>
                             </div>
+                            {/* Applying To */}
                             <div className="col-sm-3">
                                 <div className="form-group">
                                     <label>Applying to <small style={{color: "red"}}>(required)</small></label>
@@ -307,8 +319,25 @@ class Tab3 extends React.Component {
                             </div>
                         </div>
                         <div className="row">
+                            {/* Email */}
                             <div className="col-sm-3">
                                 <div className="form-group">
+                                    <label>Email <small style={{color: "red"}}>(required)</small></label>
+                                        <input
+                                            onChange={update}
+                                            name="Email_Address__c"
+                                            id={`Ben${i}[Email_Address__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Email"
+                                        />
+                                        <span id={`ben_email_error${i}`} style={{ color: "red"}}></span>
+                                </div>
+                            </div>
+                            {/* Upload NRIC */}
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label></label>
                                     <input
                                         onChange={that.uploadBen}
                                         type="file"
@@ -318,8 +347,10 @@ class Tab3 extends React.Component {
                                     <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
                                 </div>
                             </div>
+                            {/* Graduating this year */}
                             <div className="col-sm-3">
                                 <div className="form-group">
+                                    <br/>
                                     <input
                                         onChange={update}
                                         type="checkbox"

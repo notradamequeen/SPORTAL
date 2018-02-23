@@ -160,6 +160,7 @@ class Tab2 extends React.Component {
         return (
             <div className="col-md-12 print">
                 <div className="row">
+                    <br />
                     <p className="ptitle">Personal Details</p>
                     <div className="col-sm-6">
                         <div className="form-group">
@@ -324,6 +325,17 @@ class Tab2 extends React.Component {
                                 placeholder="242"
                                 value={this.state.selectedAddress.Block__c}
                                 onChange={this.handelAddressChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Unit Number</label>
+                            <input
+                                id="Unit_Number__c"
+                                name="Unit_Number__c"
+                                type="text"
+                                className="form-control"
+                                placeholder="242"
+                                value={this.props.data.Unit_Number__c ? this.props.data.Unit_Number__c : ''}
+                                onChange={this.handleInputChange} />
                         </div>
                     </div>
                     <div className="col-sm-6">

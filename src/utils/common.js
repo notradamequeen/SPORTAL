@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 require('jspdf-autotable');
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'gentelella/build/css/custom.min.css';
+// import { isValidElement } from '../../../Library/Caches/typescript/2.6/node_modules/@types/react';
 
 const SF_VERSION = 'v20.0';
 const RegexList = {
@@ -173,7 +174,7 @@ export function validation(step, data){
     }
     if (step == 3) {
         requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Current_Level__c',
-                            'Current_School__c', 'Applying_to__c'
+                            'Current_School__c', 'Applying_to__c', 'Race__c', 'Email_Address__c'
                         ];
         validFields = data.Ben.map((dataBen) => {
             if (dataBen.data[requiredField[0]] !== '' && dataBen.data[requiredField[0]] !== undefined && 
@@ -181,7 +182,10 @@ export function validation(step, data){
                 dataBen.data[requiredField[2]] !== '' && dataBen.data[requiredField[2]] !== undefined &&
                 dataBen.data[requiredField[3]] !== '' && dataBen.data[requiredField[3]] !== undefined &&
                 dataBen.data[requiredField[4]] !== '' && dataBen.data[requiredField[4]] !== undefined &&
-                dataBen.data[requiredField[5]] !== '' && dataBen.data[requiredField[5]] !== undefined
+                dataBen.data[requiredField[5]] !== '' && dataBen.data[requiredField[5]] !== undefined &&
+                dataBen.data[requiredField[6]] !== '' && dataBen.data[requiredField[6]] !== undefined &&
+                dataBen.data[requiredField[7]] !== '' && dataBen.data[requiredField[7]] !== undefined &&
+                dataBen.attachment.Body !== undefined 
             ){
                 return 'true' 
             } else {
@@ -194,23 +198,67 @@ export function validation(step, data){
         return isValid
     }
     if (step == 4) {
-        requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Relationship_to_Applicant__c',
-                            'Gross_Monthly_Income__c', 'Employment_Status__c', 'Occupation__c'
-                        ];
-        if(data.Full_Name__c !== '' && data.ID_Number__c !== '' && data.Date_of_Birth__c !== '' &&
-            data.Relationship_to_Applicant__c !== '' && data.Monthly_Gross_Income__c !== ''
-        ) {
-            isValid = true
+        const EarnerCount = data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
+        let validReason = true
+        if(EarnerCount <= 1) {
+            const reasonField = ['Alcoholism__c', "Chronic_Illness__c", "Cultural_or_personal_belief__c", "Disability__c",
+                            "Drug_Addiction__c", "Gambling_Addiction__c", "Low_Education__c", "Social_Visit_Pass__c", 
+                            "Temporarily_unfit_for_work__c", "Other_Reason_Description__c"]
+            if (data[reasonField[0]] === false && data[reasonField[1]] === false && data[reasonField[2]] === false &&
+                data[reasonField[3]] === false && data[reasonField[4]] === false && data[reasonField[5]] === false &&
+                data[reasonField[6]] === false && data[reasonField[7]] === false && data[reasonField[8]] === false &&
+                data[reasonField[9]] === ''
+            ) {
+                validReason = false;
+            }
         }
+        if (data.Employment_Status__c !== "Unemployed"){
+            if (data.Full_Name__c !== '' && data.ID_Number__c !== '' && data.Date_of_Birth__c !== '' &&
+                data.Relationship_to_Applicant__c !== '' && data.Monthly_Gross_Income__c !== '' && 
+                data.Employment_Status__c !== '' && data.Occupation__c !== '' && data.Company__c !== '' &&
+                data.Employment_Start_Date__c !== ''){
+                    isValid = true  
+                }
+        }
+        if(data.Employment_Status__c === "Unemployed") {
+            if (data.Full_Name__c !== '' && data.ID_Number__c !== '' && data.Date_of_Birth__c !== '' &&
+                data.Relationship_to_Applicant__c !== '' && data.Employment_Status__c !== '') {
+                    isValid = true
+                }
+            console.log('houunemp', isValid, validReason)
+        }
+        console.log('hou1valid', isValid)
         validFields = data.Hou.map((dataHou, idx) => {
             if (idx > 0) {
-                if(dataHou.data.Monthly_Gross_Income__c === '' || dataHou.data.Monthly_Gross_Income__c === undefined) {
-                    return 'false'
+                if (dataHou.data.Employment_Status__c !== "Unemployed"){
+                    if (dataHou.data.Full_Name__c !== '' && dataHou.data.Full_Name__c !== undefined && 
+                        dataHou.data.ID_Number__c !== '' && dataHou.data.ID_Number__c !== undefined && 
+                        dataHou.data.Date_of_Birth__c !== '' && dataHou.data.Date_of_Birth__c !== undefined &&
+                        dataHou.data.Relationship_to_Applicant__c !== '' && dataHou.data.Relationship_to_Applicant__c !==undefined && 
+                        dataHou.data.Monthly_Gross_Income__c !== '' && dataHou.data.Monthly_Gross_Income__c !== undefined &&
+                        dataHou.data.Employment_Status__c !== '' && dataHou.data.Employment_Status__c !== undefined &&
+                        dataHou.data.Occupation__c !== '' && dataHou.data.Occupation__c !== undefined && 
+                        dataHou.data.Company__c !== '' && dataHou.data.Company__c !== undefined &&
+                        dataHou.data.Employment_Start_Date__c !== '' && dataHou.data.Employment_Start_Date__c !== undefined){
+                        return 'true'
+                    } else {
+                        return 'false'
+                    }
                 }
-                return 'true'
+                if(dataHou.data.Employment_Status__c === "Unemployed") {
+                    if (dataHou.data.Full_Name__c !== '' && dataHou.data.Full_Name__c !== undefined &&
+                        dataHou.data.ID_Number__c !== '' && dataHou.data.ID_Number__c !== undefined && 
+                        dataHou.data.Date_of_Birth__c !== '' && dataHou.data.Date_of_Birth__c !== undefined &&
+                        dataHou.data.Relationship_to_Applicant__c !== '' && dataHou.data.Relationship_to_Applicant__c !== undefined &&
+                        dataHou.data.Employment_Status__c !== '' && dataHou.data.Employment_Status__c !== undefined) {
+                        return 'true'
+                    } else {
+                        return 'false'
+                    }
+                }
             }  
         });
-        if(validFields.includes('false')){
+        if(!validReason || validFields.includes('false')){
             isValid = false
         }
         return isValid
@@ -300,12 +348,12 @@ export function generatePdf(data){
         let PersonalDetailColumns = ["Personal Details", '', '', '', '', ''];
         let AddressColumns = ["Address", '', '', '', '', ''];
         let tab2ColumnStyle = {
-            0: {columnWidth: 120, textColor: (77, 77, 77)},
+            0: {columnWidth: 'auto', textColor: (77, 77, 77)},
             1: {columnWidth: 20, textColor: (77, 77, 77)},
-            2: {columnWidth: 120, textColor: (77, 77, 77)},
-            3: {columnWidth: 120, textColor: (77, 77, 77)},
+            2: {columnWidth: 'auto', textColor: (77, 77, 77)},
+            3: {columnWidth: 'auto', textColor: (77, 77, 77)},
             4: {columnWidth:20, textColor: (77, 77, 77)},
-            5: {columnWidth: 120, textColor: (77, 77, 77)}
+            5: {columnWidth: 'auto', textColor: (77, 77, 77)}
         };
         let source = document.createElement('DIV')
         let x = document.createElement("IMG");
@@ -425,12 +473,12 @@ export function generatePdf(data){
                     if(i == 0){
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
-                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY - 10,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {textColor: (77, 77, 77)},
+                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                             drawRow: function (row, data) {
                                 if(row.index > 0){
                                     row.height = row.height * 1.2
@@ -442,12 +490,12 @@ export function generatePdf(data){
                     if (i !== 0 && i < 4){
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
-                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY+10,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {textColor: (77, 77, 77)},
+                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                             drawRow: function (row, data) {
                                 if(row.index > 0){
                                     row.height = row.height * 1.2
@@ -459,12 +507,12 @@ export function generatePdf(data){
                     if (i > 3) {
                         if ((i+1) % 5 == 0) {
                             pdf.addPage()
-                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
                                 theme: 'plain',
                                 startY: 60,
                                 showHeader: 'firstPage',
                                 margin: {right: 107},
-                                styles: {textColor: (77, 77, 77)},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                                 drawRow: function (row, data) {
                                     if(row.index > 0){
                                         row.height = row.height * 1.2
@@ -473,12 +521,12 @@ export function generatePdf(data){
                                 columnStyles: tab2ColumnStyle,
                             });
                         } else {
-                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i].data), {
+                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
                                 theme: 'plain',
                                 startY: pdf.autoTable.previous.finalY+10,
                                 showHeader: 'firstPage',
                                 margin: {right: 107},
-                                styles: {textColor: (77, 77, 77)},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                                 drawRow: function (row, data) {
                                     if(row.index > 0){
                                         row.height = row.height * 1.2
@@ -501,12 +549,12 @@ export function generatePdf(data){
                     });
                     pdf.setLineWidth(1.5)
                     pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
-                    pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
+                    pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', {data: data, attachment: data.Hou[0].attachment}), {
                         theme: 'plain',
                         startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
-                        styles: {textColor: (77, 77, 77)},
+                        styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                         drawRow: function (row, data) {
                             if(row.index > 0){
                                 row.height = row.height * 1.2
@@ -524,12 +572,12 @@ export function generatePdf(data){
                     });
                     pdf.setLineWidth(1.5)
                     pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
-                    pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', data), {
+                    pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', {data: data, attachment: data.Hou[0].attachment}), {
                         theme: 'plain',
                         startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
-                        styles: {textColor: (77, 77, 77)},
+                        styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                         drawRow: function (row, data) {
                             if(row.index > 0){
                                 row.height = row.height * 1.2
@@ -592,18 +640,17 @@ export function generatePdf(data){
                                 5: {columnWidth: 120, textColor: (77, 77, 77)}
                             },
                         });
-                    }
-                    
+                    }  
                 }
                 for (let i=1; i< data.Hou.length; i ++){
                     if (pdf.autoTable.previous.finalY + 146 > 680){
                         pdf.addPage()
-                        pdf.autoTable([`Householed Member - ${i + 1}`, '', '', '', '', ''], getData('Hou', data.Hou[i].data), {
+                        pdf.autoTable([`Householed Member - ${i + 1}`, '', '', '', '', ''], getData('Hou', data.Hou[i]), {
                             theme: 'plain',
                             startY: 60,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {textColor: (77, 77, 77)},
+                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                             drawRow: function (row, data) {
                                 if(row.index > 0){
                                     row.height = row.height * 1.2
@@ -614,12 +661,12 @@ export function generatePdf(data){
                     } else {
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY + 10, 600, pdf.autoTable.previous.finalY + 10)
-                        pdf.autoTable([`Householed Member - ${i+1}`, '', '', '', '', ''], getData('Hou', data.Hou[i].data), {
+                        pdf.autoTable([`Householed Member - ${i+1}`, '', '', '', '', ''], getData('Hou', data.Hou[i]), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY + 20,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {textColor: (77, 77, 77)},
+                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
                             drawRow: function (row, data) {
                                 if(row.index > 0){
                                     row.height = row.height * 1.2
@@ -675,22 +722,6 @@ export function generatePdf(data){
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 30,
                     bodyStyles: {rowHeight: 30},
-                    drawCell: function(cell, opts) {
-                        if (opts.column.dataKey === 1) {
-                            images.push({
-                            elem: url[1],
-                            x: cell.textPos.x,
-                            y: cell.textPos.y
-                            });
-                        }
-                    },
-                    // addPageContent: function() {
-                    //     // pdf.addImage(images[0].elem, images[0].x, images[0].y, 15, 15);
-                    //     // pdf.setFontType("bold");
-                    //     // pdf.setFontSize(13);
-                    //     // pdf.setTextColor(77, 77, 77);
-                    //     // pdf.text("I Aggree and Submit", images[0].x + 25, images[0].y + 12);
-                    // }
                 })
                 pdf.save('SPMF_Application_Form.pdf');
             }, margins);
@@ -733,6 +764,7 @@ export function getData(type, data) {
             ["Postal Code", ":", data.Postal__c, "Type Of Flat", ":", data.Flat_Type__c],
             ["Street Name", ":", data.Street_Name__c, "Other Type of Flat", ":", data.Other_Flat_Type__c],
             ["Block Number", ":", data.Block_Number__c, "Country", ":", data.Country__c],
+            ["Unit Number", ":", data.Unit_Number__c]
         )
     }
     if (type == "Contact") {
@@ -744,19 +776,21 @@ export function getData(type, data) {
     }
     if (type == "Bene") {
         newData.push(
-            ["Name", ":", data.Full_Name__c, "NRIC", ":", data.ID_Number__c],
-            ["Email", ":", data.Email_Address__c, "Date of Birth", ":", data.Date_of_Birth__c],
-            ["School", ":", data.Current_School__c, "Current Level", ":", data.Current_Level__c],
-            ["Stream", ":", data.Stream__c, "Applaying to", ":", data.Applying_to__c],
+            ["Name", ":", data.data.Full_Name__c, "NRIC", ":", data.data.ID_Number__c],
+            ["Date of Birth", ":", data.data.Date_of_Birth__c, "Race", ":", data.data.Race__c],
+            ["School", ":", data.data.Current_School__c, "Current Level", ":", data.data.Current_Level__c],
+            ["Stream", ":", data.data.Stream__c, "Applaying to", ":", data.data.Applying_to__c],
+            ["Email", ":", data.data.Email_Address__c, "NRIC Uploaded File", ":", data.attachment.Name]
         );
     }
     if (type == "Hou") {
         newData.push(
-            ["Name", ":", data.Full_Name__c, "NRIC", ":", data.ID_Number__c],
-            ["Date of Birth", ":", data.Date_of_Birth__c, "Relationship to Applicant", ":", data.Relationship_to_Applicant__c, ],
-            ["Gross Monthly Income", ":", data.Monthly_Gross_Income__c, "Employment Status", ":", data.Employment_Status__c],
-            ["Occupation", ":", data.Occupation__c, "Company", ":", data.Company__c],
-            ["Employment Start Date", ":", data.Employment_Start_Date__c, "Employment End Date", ":", data.Employment_End_Date__c],
+            ["Name", ":", data.data.Full_Name__c, "NRIC", ":", data.data.ID_Number__c],
+            ["Date of Birth", ":", data.data.Date_of_Birth__c, "Relationship to Applicant", ":", data.data.Relationship_to_Applicant__c, ],
+            ["Gross Monthly Income", ":", data.data.Monthly_Gross_Income__c, "Employment Status", ":", data.data.Employment_Status__c],
+            ["Occupation", ":", data.data.Occupation__c, "Company", ":", data.data.Company__c],
+            ["Employment Start Date", ":", data.data.Employment_Start_Date__c, "Employment End Date", ":", data.data.Employment_End_Date__c],
+            ["NRIC Uploaded File", ":", data.attachment.file1 ? data.attachment.file1.Name : '', "Income Statement Receipt", ":", data.attachment.file2 ? data.attachment.file2.Name : '']
         );
     }
     if (type == "Declaration"){

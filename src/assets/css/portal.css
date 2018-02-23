@@ -1,0 +1,79 @@
+.body {
+    background-color: white;
+    /* #f7f5f2; */
+}
+.x_panel {
+    padding: 5 10 5 10;
+    border-radius: 15px;
+}
+.sidenav {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 22%; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #fff; /* White */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 10px;
+}
+.content-title {
+    padding-left: 22%;
+    height: 100%;
+    font-size: 1.6em;
+}
+.content-page {
+    padding-left: 23%;
+    height: 100%;
+    font-size: 1.6em;
+}
+/* The navigation menu links */
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 15px;
+    color: #818181;
+    display: normal;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav .menu-item:hover {
+    color: #dd6f25;
+}
+.menu-item a {
+    font-size: 1.3em;
+}
+a .menu-item:hover {
+    color: #dd6f25;
+}
+
+/* .profile_pic {
+    align-content: center;
+} */
+
+.profile-box img.img-prof {
+    display: block; /*for the img inside your div */ 
+    margin: 0 auto;
+}
+
+hr {
+    height: 2px;
+    color: #818181;
+}
+.icon-big {
+    padding-left: 60px;
+    padding-top: 10px;
+}
+.numbers {
+    padding-right: 60px;
+    padding-top: 20px;
+}
+.numbers p {
+    font-size: 0.8em;
+    text-align: right;
+}
+
+p.normal {
+    font-size: 0.7em;
+    text-align: center;
+}

@@ -1,0 +1,36 @@
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.4); /* IE */
+  -moz-transform: scale(1.4); /* FF */
+  -webkit-transform: scale(1.4); /* Safari and Chrome */
+  -o-transform: scale(1.4); /* Opera */
+  padding: 10px;
+}
+
+.registrationForm {
+    font-size: 1.15em;
+}
+#succeedPage {
+    font-size: 1.11em;
+}
+#succeedPage hr{
+    border: 1px dashed #818181;
+    border-style: none none dashed; 
+    color: #fff; 
+    background-color: #fff;
+    width: 100%;
+}
+
+ol.alphabet {
+    list-style-type: lower-alpha;
+}
+ul.noneul {
+    list-style-type: none;
+}
+button.btn.download {
+    background-color: #186b8e;
+    border-radius: 20px;
+    color: #fff;
+    height: 40px;
+}

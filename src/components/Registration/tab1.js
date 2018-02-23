@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
+import '../../assets/css/form-style.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class Tab1 extends React.Component {
@@ -49,10 +50,17 @@ class Tab1 extends React.Component {
     render() {
         return (
             <div className="col-md-12 print">
+                <br />
+                <p> * This form takes about 10 - 12 minutes to complete. Please ensure that you have the below documents scanned and ready for upload.</p>
                 <p><b>Eligibility Criteria</b></p>
                 <ul className="ulnone">
                     <li>
-                        <input type="checkbox" name="check4" id="check4" defaultChecked={this.props.data.check4} onChange={this.handleInputChange} />
+                        <input 
+                            type="checkbox"
+                            name="check4" 
+                            id="check4"
+                            defaultChecked={this.props.data.check4}
+                            onChange={this.handleInputChange} />
                         Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)</li>
                     <li>
                         <input type="checkbox" name="check5" id="check5" defaultChecked={this.props.data.check5} onChange={this.handleInputChange} />
