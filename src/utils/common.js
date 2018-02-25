@@ -345,15 +345,13 @@ export function generatePdf(data){
     Promise.all([img1, img2]).then((url)=>{
         let eligibilityColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
         let docColumns = [{title: "   ", dataKey:'title'}, {title: "", dataKey:'text'}]
-        let PersonalDetailColumns = ["Personal Details", '', '', '', '', ''];
-        let AddressColumns = ["Address", '', '', '', '', ''];
+        let PersonalDetailColumns = ["Personal Details", '', '', ''];
+        let AddressColumns = ["Address", '', '', ''];
         let tab2ColumnStyle = {
-            0: {columnWidth: 'auto', textColor: (77, 77, 77)},
-            1: {columnWidth: 20, textColor: (77, 77, 77)},
-            2: {columnWidth: 'auto', textColor: (77, 77, 77)},
-            3: {columnWidth: 'auto', textColor: (77, 77, 77)},
-            4: {columnWidth:20, textColor: (77, 77, 77)},
-            5: {columnWidth: 'auto', textColor: (77, 77, 77)}
+            0: {columnWidth: 125, textColor: (77, 77, 77), fontSize: 11},
+            1: {columnWidth: 140, textColor: [5, 112, 148], fontSize: 11},
+            2: {columnWidth: 125, textColor: (77, 77, 77), fontSize: 11},
+            3: {columnWidth: 140, textColor: [5, 112, 148], fontSize: 11}
         };
         let source = document.createElement('DIV')
         let x = document.createElement("IMG");
@@ -380,14 +378,14 @@ export function generatePdf(data){
                 pdf.autoTable(["Eligibility Criteria"], [], {
                     theme: 'plain',
                     startY: 200,
-                    styles: { textColor: (77, 77, 77) }
+                    styles: { fontSize: 13, textColor: [5, 112, 148] }
                 })
                 let a = 0;
                 pdf.autoTable(eligibilityColumns, getData("Eligibility", null), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY-15,
                     bodyStyles: {valign: 'top'},
-                    styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                    styles: { fontSize: 11, overflow: 'linebreak', columnWidth: 'wrap'},
                     columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}, title: {textColor: (77, 77, 77)} },
                     drawRow: function (row, data) {
                         row.height = row.height * 1.2
@@ -396,7 +394,7 @@ export function generatePdf(data){
                 pdf.autoTable(["All completed STSPMF application forms must be attached with the relevant documents listed below:"], [], {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 20,
-                    styles: {textColor: (77, 77, 77)},
+                    styles: { fontSize: 13, textColor: [5, 112, 148] },
                     drawRow: function (row, data) {
                         row.height = row.height * 1.2
                     },
@@ -405,25 +403,28 @@ export function generatePdf(data){
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY-15,
                     bodyStyles: {valign: 'top'},
-                    styles: {overflow: 'linebreak', columnWidth: 'wrap'},
+                    styles: { fontSize:11, overflow: 'linebreak', columnWidth: 'wrap'},
                     columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}},
                 })
                 pdf.addPage()
                 pdf.autoTable(["Application Profile"], [""], {
                     theme: 'plain',
                     startY: 60,
-                    styles : {fontSize: 13, textColor: (77, 77, 77)}
+                    styles : {fontSize: 13, textColor: [5, 112, 148]}
                 })
                 pdf.setLineWidth(1.5)
                 pdf.line(20, pdf.autoTable.previous.finalY-10, 600, pdf.autoTable.previous.finalY-10)
                 pdf.autoTable(PersonalDetailColumns, getData("PersonalDetail", data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY - 5,
-                    styles: {textColor: (77, 77, 77)},
+                    showHeader: 'firstPage',
+                    margin: {right: 107},
+                    styles: { fontSize: 11, textColor: (77, 77, 77)},
                     drawRow: function (row, data) {
-                        if(row.index > 0){
-                            row.height = row.height * 1.5
-                        }
+                        row.height = row.height * 1.3
+                    },
+                    drawHeaderRow: function(cell, data){
+                        cell.height = cell.height * 1.5
                     },
                     columnStyles: tab2ColumnStyle,
                 })
@@ -434,103 +435,107 @@ export function generatePdf(data){
                     startY: pdf.autoTable.previous.finalY + 20,
                     showHeader: 'firstPage',
                     margin: {right: 107},
-                    styles: {textColor: (77, 77, 77)},
+                    styles: { fontSize: 11, textColor: (77, 77, 77)},
                     drawRow: function (row, data) {
-                        if(row.index > 0){
-                            row.height = row.height * 1.5
-                        }
+                        row.height = row.height * 1.3
+                    },
+                    drawHeaderRow: function(cell, data){
+                        cell.height = cell.height * 1.5
                     },
                     columnStyles: tab2ColumnStyle,
                 });
                 pdf.setLineWidth(1.5)
                 pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
-                pdf.autoTable(["Personal Contact", '', '', '', '', ''], getData("Contact", data), {
+                pdf.autoTable(["Personal Contact", '', '', ''], getData("Contact", data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 20,
                     showHeader: 'firstPage',
                     margin: {right: 107},
-                    styles: {textColor: (77, 77, 77)},
+                    styles: { fontSize: 11, textColor: (77, 77, 77)},
                     drawRow: function (row, data) {
-                        if(row.index > 0){
-                            row.height = row.height * 1.5
-                        }
+                        row.height = row.height * 1.3
                     },
-                    // addPageContent: function() {
-                    //     pdf.setLineWidth(1)
-                    //     pdf.line(20, 10, 200, 10);
-                        
-                    // },
+                    drawHeaderRow: function(cell, data){
+                        cell.height = cell.height * 1.5
+                    },
                     columnStyles: tab2ColumnStyle,
+                    headerStyles: {rowHeight: 20}
                 });
                 pdf.addPage()
                 // write Beneficiary
                 pdf.autoTable(["Beneficiary List"], [""], {
                     theme: 'plain',
                     startY: 60,
-                    styles : {fontSize: 13, textColor: (77, 77, 77)}
+                    styles : {fontSize: 13, textColor: [5, 112, 148]}
                 });
                 for (let i=0; i < data.Ben.length; i++){
                     if(i == 0){
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
-                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
+                        pdf.autoTable([`Beneficiary ${i+1}`, '', '', ''], getData('Bene', data.Ben[i], data), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY - 10,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                            styles: { overflow: 'linebreak', fontSize: 11, columnWidth: 'wrap', textColor: (77, 77, 77) },
                             drawRow: function (row, data) {
-                                if(row.index > 0){
-                                    row.height = row.height * 1.2
-                                }
+                                row.height = row.height * 1.1
+                            },
+                            drawHeaderRow: function(cell, data){
+                                cell.height = cell.height * 1.2
                             },
                             columnStyles: tab2ColumnStyle,
                         });
                     }
-                    if (i !== 0 && i < 4){
+                    if (i !== 0 && i < 3){
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY+5, 600, pdf.autoTable.previous.finalY+5)
-                        pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
+                        pdf.autoTable([`Beneficiary ${i+1}`, '', '', ''], getData('Bene', data.Ben[i], data), {
                             theme: 'plain',
                             startY: pdf.autoTable.previous.finalY+10,
                             showHeader: 'firstPage',
                             margin: {right: 107},
-                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                            styles: { overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77) },
                             drawRow: function (row, data) {
-                                if(row.index > 0){
-                                    row.height = row.height * 1.2
-                                }
+                                row.height = row.height * 1.1
+                            },
+                            drawHeaderRow: function(cell, data){
+                                cell.height = cell.height * 1.2
                             },
                             columnStyles: tab2ColumnStyle,
                         });
                     }
-                    if (i > 3) {
-                        if ((i+1) % 5 == 0) {
+                    if (i > 2) {
+                        if (i % 3  == 0) {
                             pdf.addPage()
-                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
+                            pdf.autoTable([`Beneficiary ${i+1}`, '', '', ''], getData('Bene', data.Ben[i], data), {
                                 theme: 'plain',
                                 startY: 60,
                                 showHeader: 'firstPage',
                                 margin: {right: 107},
-                                styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
                                 drawRow: function (row, data) {
-                                    if(row.index > 0){
-                                        row.height = row.height * 1.2
-                                    }
+                                    row.height = row.height * 1.1
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
                                 },
                                 columnStyles: tab2ColumnStyle,
                             });
                         } else {
-                            pdf.autoTable([`Beneficiary - ${i+1}`, '', '', '', '', ''], getData('Bene', data.Ben[i]), {
+                            pdf.autoTable([`Beneficiary ${i+1}`, '', '', ''], getData('Bene', data.Ben[i], data), {
                                 theme: 'plain',
                                 startY: pdf.autoTable.previous.finalY+10,
                                 showHeader: 'firstPage',
                                 margin: {right: 107},
-                                styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize:11, textColor: (77, 77, 77)},
                                 drawRow: function (row, data) {
                                     if(row.index > 0){
-                                        row.height = row.height * 1.2
+                                        row.height = row.height * 1.1
                                     }
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
                                 },
                                 columnStyles: tab2ColumnStyle,
                             });
@@ -539,36 +544,39 @@ export function generatePdf(data){
                     
                 }
                 let endOfBen = pdf.autoTable.previous.finalY
-                // write Houshold Member
-                if (endOfBen < 483.1) {
-                    console.log("houpdf")
+                // write Houshold Main Applicant
+                // same page with last bene
+                if (endOfBen < 445) {
+                    console.log("houpdf",pdf.autoTable.previous.finalY )
                     pdf.autoTable(["Household Member List"], [""], {
                         theme: 'plain',
-                        startY: pdf.autoTable.previous.finalY + 40,
-                        styles : {fontSize: 13, textColor: (77, 77, 77),}
+                        startY: pdf.autoTable.previous.finalY + 20,
+                        styles : {fontSize: 13, textColor: [5, 112, 148],}
                     });
                     pdf.setLineWidth(1.5)
                     pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
-                    pdf.autoTable([`Main Applicant`, '', '', '', '', ''], getData('Hou', {data: data, attachment: data.Hou[0].attachment}), {
+                    pdf.autoTable([`Main Applicant`, '', '', ''], getData('Hou', {data: data, attachment: data.Hou[0].attachment}), {
                         theme: 'plain',
                         startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
-                        styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                        styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
                         drawRow: function (row, data) {
-                            if(row.index > 0){
-                                row.height = row.height * 1.2
-                            }
+                            row.height = row.height * 1.1
+                        },
+                        drawHeaderRow: function(cell, data){
+                            cell.height = cell.height * 1.2
                         },
                         columnStyles: tab2ColumnStyle,
                     });
                 } 
-                if (endOfBen > 483.1) {
+                // new page
+                if (endOfBen > 445.12) {
                     pdf.addPage();
                     pdf.autoTable(["Household Member List"], [""], {
                         theme: 'plain',
                         startY: 60,
-                        styles : {fontSize: 13, textColor: (77, 77, 77)},
+                        styles : {fontSize: 13, textColor: [5, 112, 148]},
                     });
                     pdf.setLineWidth(1.5)
                     pdf.line(20, pdf.autoTable.previous.finalY-18, 600, pdf.autoTable.previous.finalY-18)
@@ -577,46 +585,101 @@ export function generatePdf(data){
                         startY: pdf.autoTable.previous.finalY - 10,
                         showHeader: 'firstPage',
                         margin: {right: 107},
-                        styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
+                        styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
                         drawRow: function (row, data) {
-                            if(row.index > 0){
-                                row.height = row.height * 1.2
-                            }
+                            row.height = row.height * 1.2
+                        },
+                        drawHeaderRow: function(cell, data){
+                            cell.height = cell.height * 1.4
                         },
                         columnStyles: tab2ColumnStyle,
                     });
-                    pdf.line(10, pdf.autoTable.previous.finalY + 10, 200, pdf.autoTable.previous.finalY)
-                    pdf.setLineWidth(0.5);
                 }
-                let endOfMainApplicant = pdf.autoTable.previous.finalY
+                // write hou member
+                for (let i=1; i< data.Hou.length; i ++){
+                    if (i == data.Hou.length-1) {
+                        if (pdf.autoTable.previous.finalY + 146 > 615){
+                            pdf.addPage()
+                            pdf.autoTable([`Member ${i + 1}`, '', '', ''], getData('Hou', data.Hou[i]), {
+                                theme: 'plain',
+                                startY: 60,
+                                showHeader: 'firstPage',
+                                margin: {right: 107},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
+                                drawRow: function (row, data) {
+                                    row.height = row.height * 1.1
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
+                                },
+                                columnStyles: tab2ColumnStyle,
+                            });
+                        } else {
+                            pdf.setLineWidth(1.5)
+                            pdf.line(20, pdf.autoTable.previous.finalY + 10, 600, pdf.autoTable.previous.finalY + 10)
+                            pdf.autoTable([`Member ${i+1}`, '', '', ''], getData('Hou', data.Hou[i]), {
+                                theme: 'plain',
+                                startY: pdf.autoTable.previous.finalY + 20,
+                                showHeader: 'firstPage',
+                                margin: {right: 107},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
+                                drawRow: function (row, data) {
+                                    row.height = row.height * 1.1
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
+                                },
+                                columnStyles: tab2ColumnStyle,
+                            });
+                        }
+                    }
+                    else {
+                        if (pdf.autoTable.previous.finalY + 215 > 689){
+                            pdf.addPage()
+                            pdf.autoTable([`Member ${i + 1}`, '', '', ''], getData('Hou', data.Hou[i]), {
+                                theme: 'plain',
+                                startY: 60,
+                                showHeader: 'firstPage',
+                                margin: {right: 107},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
+                                drawRow: function (row, data) {
+                                    row.height = row.height * 1.1
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
+                                },
+                                columnStyles: tab2ColumnStyle,
+                            });
+                        } else {
+                            pdf.setLineWidth(1.5)
+                            pdf.line(20, pdf.autoTable.previous.finalY + 10, 600, pdf.autoTable.previous.finalY + 10)
+                            pdf.autoTable([`Member ${i+1}`, '', '', ''], getData('Hou', data.Hou[i]), {
+                                theme: 'plain',
+                                startY: pdf.autoTable.previous.finalY + 20,
+                                showHeader: 'firstPage',
+                                margin: {right: 107},
+                                styles: {overflow: 'linebreak', columnWidth: 'wrap', fontSize: 11, textColor: (77, 77, 77)},
+                                drawRow: function (row, data) {
+                                    row.height = row.height * 1.1
+                                },
+                                drawHeaderRow: function(cell, data){
+                                    cell.height = cell.height * 1.2
+                                },
+                                columnStyles: tab2ColumnStyle,
+                            });
+                        }
+                    }
+                    
+                    console.log(i, pdf.autoTable.previous.finalY)
+                }
+
                 // Reason Reason/s for not having an income earner / Having one income earner
-                if (data.Hou.length == 1) {
-                    if (endOfMainApplicant > 720){
-                        pdf.addPage();
+                if (data.HouStatusEmployement.filter(i => i !== 'Unemployed').length <= 1) {
+                    if (pdf.autoTable.previous.finalY  < 720){
                         pdf.autoTable(["Reason Reason/s for not having an income earner / Having one income earner"], [""], {
                             theme: 'plain',
-                            startY: 60,
-                            styles : {fontSize: 13, textColor: (77, 77, 77)}
-                        });
-                        pdf.autoTable(['', '', '', '', '', ''], getData('Reason', data), {
-                            theme: 'plain',
-                            startY: pdf.autoTable.previous.finalY - 8,
-                            showHeader: 'firstPage',
-                            margin: {right: 107},
-                            styles: {textColor: (77, 77, 77), fontSize: 11},
-                            drawRow: function (row, data) {
-                                if(row.index > 0){
-                                    row.height = row.height * 1.2
-                                }
-                            },
-                            columnStyles: tab2ColumnStyle,
-                        });
-                    } 
-                    if (endOfMainApplicant  < 720){
-                        pdf.autoTable(["Reason Reason/s for not having an income earner / Having one income earner"], [""], {
-                            theme: 'plain',
-                            startY: endOfMainApplicant + 20 ,
-                            styles : {fontSize: 13, textColor: (77, 77, 77)}
+                            startY: pdf.autoTable.previous.finalY + 20 ,
+                            styles : {fontSize: 13, textColor: [5, 112, 148]}
                         });
                         pdf.setLineWidth(1.5)
                         pdf.line(20, pdf.autoTable.previous.finalY - 20, 600, pdf.autoTable.previous.finalY - 20)
@@ -630,11 +693,11 @@ export function generatePdf(data){
                                     row.height = row.height * 1.2
                                 }
                             },
-                            styles: {fontSize: 11},
+                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77), fontSize: 11},
                             columnStyles: {
                                 0: {columnWidth: 40, textColor: (77, 77, 77)},
                                 1: {columnWidth: 20, textColor: (77, 77, 77)},
-                                2: {columnWidth: 120, textColor: (77, 77, 77)},
+                                2: {columnWidth: 'auto', textColor: [5, 112, 148]},
                                 3: {columnWidth: 120, textColor: (77, 77, 77)},
                                 4: {columnWidth:20, textColor: (77, 77, 77)},
                                 5: {columnWidth: 120, textColor: (77, 77, 77)}
@@ -642,93 +705,61 @@ export function generatePdf(data){
                         });
                     }  
                 }
-                for (let i=1; i< data.Hou.length; i ++){
-                    if (pdf.autoTable.previous.finalY + 146 > 680){
-                        pdf.addPage()
-                        pdf.autoTable([`Householed Member - ${i + 1}`, '', '', '', '', ''], getData('Hou', data.Hou[i]), {
-                            theme: 'plain',
-                            startY: 60,
-                            showHeader: 'firstPage',
-                            margin: {right: 107},
-                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
-                            drawRow: function (row, data) {
-                                if(row.index > 0){
-                                    row.height = row.height * 1.2
-                                }
-                            },
-                            columnStyles: tab2ColumnStyle,
-                        });
-                    } else {
-                        pdf.setLineWidth(1.5)
-                        pdf.line(20, pdf.autoTable.previous.finalY + 10, 600, pdf.autoTable.previous.finalY + 10)
-                        pdf.autoTable([`Householed Member - ${i+1}`, '', '', '', '', ''], getData('Hou', data.Hou[i]), {
-                            theme: 'plain',
-                            startY: pdf.autoTable.previous.finalY + 20,
-                            showHeader: 'firstPage',
-                            margin: {right: 107},
-                            styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77)},
-                            drawRow: function (row, data) {
-                                if(row.index > 0){
-                                    row.height = row.height * 1.2
-                                }
-                            },
-                            columnStyles: tab2ColumnStyle,
-                        });
-                    }
-                }
+
                 const DeclarationColumns = [{title:"", dataKey: "number"},{title: "", dataKey:"text"}]
                 const MediaCoverageColumns = [{title:"", dataKey: "number"},{title: "", dataKey:"text"}]
+                // new Page Agreement
                 pdf.addPage();
+                // Agreement Title
                 pdf.autoTable(["Agreement"], [""], {
                     theme: 'plain',
                     startY: 60,
-                    styles : {fontSize: 13, textColor: (77, 77, 77)}
+                    styles : {fontSize: 13, textColor: [5, 112, 148]}
                 });
+                // Declaration of content title
                 pdf.autoTable(["Declaration of consent"], [], {
                     styles: { textColor: 45,},
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY-8,
+                    styles : {fontSize: 13, textColor: [5, 112, 148]}
                 })
+                // Declaration of content title content
                 pdf.autoTable(DeclarationColumns, getData("Declaration",data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY-15,
                     bodyStyles: {valign: 'top'},
-                    styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: 45,},
-                    columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}},
+                    styles: {overflow: 'linebreak', columnWidth: 'wrap', textColor: (77, 77, 77), fontSize: 11},
+                    columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77), fonstSize: 11}},
                     drawRow: function (row, data) {
                         row.height = row.height * 1.2
                     },
                 })
+                // Media COverage title
                 pdf.autoTable(["MEDIA COVERAGE"], [], {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY + 20,
-                    styles: {textColor: (77, 77, 77)},
+                    styles: { fontSize: 13, textColor: [5, 112, 148]},
                     drawRow: function (row, data) {
                         row.height = row.height * 1.2
                     },
                 })
+                // Media Coverage Content
                 pdf.autoTable(MediaCoverageColumns, getData("MediaCoverage",data), {
                     theme: 'plain',
                     startY: pdf.autoTable.previous.finalY-15,
                     bodyStyles: {valign: 'top'},
                     styles: {overflow: 'linebreak', columnWidth: 'wrap'},
-                    columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77)}},
+                    columnStyles: {text: {columnWidth: 'auto', textColor: (77, 77, 77), fontSize: 11}},
                     drawRow: function (row, data) {
                         row.height = row.height * 1.2
                     },
-                })
-                let images = []
-                pdf.autoTable(["", "", ""], ["", "", ""], {
-                    theme: 'plain',
-                    startY: pdf.autoTable.previous.finalY + 30,
-                    bodyStyles: {rowHeight: 30},
                 })
                 pdf.save('SPMF_Application_Form.pdf');
             }, margins);
     });
 }
 
-export function getData(type, data) {
+export function getData(type, data, datamap=null) {
     let newData = []
     if (type == "Eligibility") {
         newData.push(
@@ -749,48 +780,48 @@ export function getData(type, data) {
     }
     if (type == "PersonalDetail"){
         newData.push(
-            [""],
-            ["Full Name", ":", data.Full_Name__c, "Gender", ":", data.Gender__c],
-            ["ID Type", ":", "NRIC", "Nationality", ":", data.Nationality__c],
-            ["ID Number", ":", data.ID_Number__c, "Other Nationality", ":", data.Other_Nationality__c],
-            ["Date of Birth", ":", data.Date_of_Birth__c, "Race", ":", data.Race__c],
-            ["Marital Status", ":", data.Marital_Status__c, "Other Race", ":", data.Other_Race__c],
-            ["Other Marital Status", ":", data.Other_Marital_Status__c],
+            // [""],
+            ["Full Name", data.Full_Name__c, "Gender", data.Gender__c],
+            ["ID Type", "NRIC", "Nationality", data.Nationality__c],
+            ["ID Number", data.ID_Number__c, "Other Nationality", data.Other_Nationality__c],
+            ["Date of Birth", data.Date_of_Birth__c, "Race", data.Race__c],
+            ["Marital Status", data.Marital_Status__c, "Other Race", data.Other_Race__c],
+            ["Other Marital Status", data.Other_Marital_Status__c],
         )
     }
     if(type == "Address"){
         newData.push(
-            [""],
-            ["Postal Code", ":", data.Postal__c, "Type Of Flat", ":", data.Flat_Type__c],
-            ["Street Name", ":", data.Street_Name__c, "Other Type of Flat", ":", data.Other_Flat_Type__c],
-            ["Block Number", ":", data.Block_Number__c, "Country", ":", data.Country__c],
-            ["Unit Number", ":", data.Unit_Number__c]
+            // [""],
+            ["Postal Code", data.Postal__c, "Type Of Flat", data.Flat_Type__c],
+            ["Street Name", data.Street_Name__c, "Other Type of Flat", data.Other_Flat_Type__c],
+            ["Block Number", data.Block_Number__c, "Country", data.Country__c],
+            ["Unit Number", data.Unit_Number__c]
         )
     }
     if (type == "Contact") {
         newData.push(
-            [""],
-            ["Home Phone", ":", data.Home_Phone__c, "Mobile Phone", ":", data.Mobile_Phone__c],
-            ["Email Address", ":", data.Email_Address__c]
+            // [""],
+            ["Home Phone", data.Home_Phone__c, "Mobile Phone", data.Mobile_Phone__c],
+            ["Email Address", data.Email_Address__c]
         )
     }
     if (type == "Bene") {
         newData.push(
-            ["Name", ":", data.data.Full_Name__c, "NRIC", ":", data.data.ID_Number__c],
-            ["Date of Birth", ":", data.data.Date_of_Birth__c, "Race", ":", data.data.Race__c],
-            ["School", ":", data.data.Current_School__c, "Current Level", ":", data.data.Current_Level__c],
-            ["Stream", ":", data.data.Stream__c, "Applaying to", ":", data.data.Applying_to__c],
-            ["Email", ":", data.data.Email_Address__c, "NRIC Uploaded File", ":", data.attachment.Name]
+            ["Name", data.data.Full_Name__c, "NRIC", data.data.ID_Number__c],
+            ["Date of Birth", data.data.Date_of_Birth__c, "Race", data.data.Race__c],
+            ["School", datamap.schoolMap[data.data.Current_School__c], "Current Level", data.data.Current_Level__c],
+            ["Stream", data.data.Stream__c, "Applaying to", datamap.schoolMap[data.data.Applying_to__c]],
+            ["Email", data.data.Email_Address__c, "NRIC Uploaded File", data.attachment.Name]
         );
     }
     if (type == "Hou") {
         newData.push(
-            ["Name", ":", data.data.Full_Name__c, "NRIC", ":", data.data.ID_Number__c],
-            ["Date of Birth", ":", data.data.Date_of_Birth__c, "Relationship to Applicant", ":", data.data.Relationship_to_Applicant__c, ],
-            ["Gross Monthly Income", ":", data.data.Monthly_Gross_Income__c, "Employment Status", ":", data.data.Employment_Status__c],
-            ["Occupation", ":", data.data.Occupation__c, "Company", ":", data.data.Company__c],
-            ["Employment Start Date", ":", data.data.Employment_Start_Date__c, "Employment End Date", ":", data.data.Employment_End_Date__c],
-            ["NRIC Uploaded File", ":", data.attachment.file1 ? data.attachment.file1.Name : '', "Income Statement Receipt", ":", data.attachment.file2 ? data.attachment.file2.Name : '']
+            ["Name", data.data.Full_Name__c, "NRIC", data.data.ID_Number__c],
+            ["Date of Birth", data.data.Date_of_Birth__c, "Relationship to Applicant", data.data.Relationship_to_Applicant__c, ],
+            ["Gross Monthly Income", data.data.Monthly_Gross_Income__c, "Employment Status", data.data.Employment_Status__c],
+            ["Occupation", data.data.Occupation__c, "Company", data.data.Company__c],
+            ["Employment Start Date", data.data.Employment_Start_Date__c, "Employment End Date", data.data.Employment_End_Date__c],
+            ["NRIC Uploaded File", data.attachment.file1 ? data.attachment.file1.Name : '', "Income Statement Receipt", data.attachment.file2 ? data.attachment.file2.Name : '']
         );
     }
     if (type == "Declaration"){
@@ -830,7 +861,7 @@ export function getData(type, data) {
     if (type == "Reason"){
         data.Alcoholism__c && newData.push(["", "-","Alcoholism"])
         data.Chronic_Illness__c && newData.push(['', "-","Choronic Illness"])
-        data.Cultural_or_personal_belief__c && newData.push(["-","Choronic Illness"])
+        data.Cultural_or_personal_belief__c && newData.push(['', "-","Cultural or Personal Beliefe"])
         data.Disability__c && newData.push(['', "-","Disability"])
         data.Drug_Addiction__c && newData.push(['', "-","Drug Addiction"])
         data.Gambling_Addiction__c && newData.push(['', "-","Gambling Addiction"])

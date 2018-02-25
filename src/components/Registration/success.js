@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import '../../assets/css/form-style.css';
 import {generatePdf} from '../../utils/common';
+
+import '../../assets/css/form-style.css';
 
 class Success extends React.Component {
 
@@ -12,6 +13,7 @@ class Success extends React.Component {
         this.state = {
             dob: '',
             beneficiaries: [],
+            reason: [],
         }
         this.generateFormPdf = this.generateFormPdf.bind(this)
     }
@@ -21,6 +23,20 @@ class Success extends React.Component {
             beneficiaries.push(benData.data.Full_Name__c);
         })
         this.setState({beneficiaries})
+
+        if(this.props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length <= 1) {
+            this.props.data.Alcoholism__c && this.state.reason.push("Alcoholism");
+            this.props.data.Chronic_Illness__c && this.state.reason.push("Chronic Illness");
+            this.props.data.Cultural_or_personal_belief__c && this.state.reason.push("Cultural or personal belief");
+            this.props.data.Disability__c && this.state.reason.push("Disability");
+            this.props.data.Drug_Addiction__c && this.state.reason.push("Drug Addiction");
+            this.props.data.Gambling_Addiction__c && this.state.reason.push("Gambling Addiction");
+            this.props.data.Low_Education__c && this.state.reason.push("Low Education");
+            this.props.data.Social_Visit_Pass__c && this.state.reason.push("Social Visit Pass");
+            this.props.data.Temporarily_unfit_for_work__c && this.state.reason.push("Temporarily Unit of Work");
+            this.props.data.Other_Reason_Description__c !== '' && this.state.reason.push(this.props.data.Other_Reason_Description__c);
+        }
+        console.log('successreason', this.state)
     }
     generateFormPdf() {
         generatePdf(this.props.data);
@@ -28,20 +44,19 @@ class Success extends React.Component {
     render() {
         const props = this.props.data
         return (
-            <div className="registrationForm">
             <div className="container body" id="succeedPage">
                 <div className="col-md-12" id="logoHeader">
                     <div className="col-md-2">
                     <img src={require('../../assets/img/spmf_logo.jpg')} width="150px"/>
                     </div>
                     <div className="col-md-10">
-                        <br /><br /><br /><br />
-                        <h4>STSPMF Application Form</h4>
+                        <br /><br />
+                        <h3 style={{ color:"#0590ba"}}>&nbsp;&nbsp;STSPMF Application Form</h3>
                     </div>
                 </div>
                 {/* Tab 1 Content */}
                 <div className="col-md-12" style={{ marginTop: "40px"}}>
-                    <p><b>Eligibility Criteria</b></p>
+                    <h4 className="info-text">Eligibility Criteria</h4>
                     <ul className="ulnone">
                         <li>
                             <input 
@@ -73,7 +88,8 @@ class Success extends React.Component {
                             <input type="checkbox" name="check10" id="check10" checked />  
                             Student is 20 years or younger at point of application </li>
                     </ul>
-                    <p><b>All completed STSPMF application forms must be attached with the relevant documents listed below:</b></p>
+                    <hr />
+                    <h4 className="info-text">All completed STSPMF application forms must be attached with the relevant documents listed below:</h4>
                     <ul className="ulnone">
                         <li>
                             <input type="checkbox" name="check1" id="check1" checked />   
@@ -88,6 +104,7 @@ class Success extends React.Component {
                 </div>
                 {/* Tab 2 Content */}
                 <div className="col-md-12 print">
+                    <h4 className="info-text">Application Profile</h4>
                     <br />
                     <p><b>Personal Details</b></p>
                     {/* Row 1 */}
@@ -100,7 +117,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Full_Name__c}</p>
+                                <p className="filled">{props.Full_Name__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -111,7 +128,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Gender__c}</p>
+                                <p className="filled">{props.Gender__c}</p>
                             </div>
                         </div>
                     </div>
@@ -125,7 +142,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.ID_Number__c}</p>
+                                <p className="filled">{props.ID_Number__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -136,7 +153,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Nationality__c}</p>
+                                <p className="filled">{props.Nationality__c}</p>
                             </div>
                         </div>
                     </div>
@@ -150,7 +167,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Date_of_Birth__c}</p>
+                                <p className="filled">{props.Date_of_Birth__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -161,7 +178,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Race__c}</p>
+                                <p className="filled">{props.Race__c}</p>
                             </div>
                         </div>
                     </div>
@@ -175,7 +192,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Marital_Status__c}</p>
+                                <p className="filled">{props.Marital_Status__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -186,7 +203,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Other_Race__c}</p>
+                                <p className="filled">{props.Other_Race__c}</p>
                             </div>
                         </div>
                     </div>
@@ -200,7 +217,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Other_Marital_Status__c}</p>
+                                <p className="filled">{props.Other_Marital_Status__c}</p>
                             </div>
                         </div>
                     </div>
@@ -216,7 +233,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Postal__c}</p>
+                                <p className="filled">{props.Postal__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -227,7 +244,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Flat_Type__c}</p>
+                                <p className="filled">{props.Flat_Type__c}</p>
                             </div>
                         </div>
                     </div>
@@ -241,7 +258,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Street__c}</p>
+                                <p className="filled">{props.Street__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -252,7 +269,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Other_Flat_Type__c}</p>
+                                <p className="filled">{props.Other_Flat_Type__c}</p>
                             </div>
                         </div>
                     </div>
@@ -266,7 +283,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Block__c}</p>
+                                <p className="filled">{props.Block__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -277,7 +294,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Country__c}</p>
+                                <p className="filled">{props.Country__c}</p>
                             </div>
                         </div>
                     </div>
@@ -291,7 +308,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Unit_Number__c}</p>
+                                <p className="filled">{props.Unit_Number__c}</p>
                             </div>
                         </div>
                     </div>
@@ -307,7 +324,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Home_Phone__c}</p>
+                                <p className="filled">{props.Home_Phone__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -318,7 +335,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Mobile_Phone__c}</p>
+                                <p className="filled">{props.Mobile_Phone__c}</p>
                             </div>
                         </div>
                     </div>
@@ -332,7 +349,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Email_Address__c}</p>
+                                <p className="filled">{props.Email_Address__c}</p>
                             </div>
                         </div>
                     </div>
@@ -342,137 +359,140 @@ class Success extends React.Component {
                 {/* Tab 3 Content */}
                 <div className="col-md-12">
                     <br />
-                    <h4>Beneficiary List</h4>
+                    <h4 className="info-text">Beneficiary List</h4>
                     {props.Ben.map((benData, benIdx) => {
-                        <div>
-                            <p><b> Beneficiary - {benIdx}</b></p>
-                            {/* Name - NRIC */}
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Name</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
+                        return(
+                            <div>
+                                <br />
+                                <p><b> Beneficiary - {benIdx+1}</b></p>
+                                {/* Name - NRIC */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Name</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Full_Name__c}</p>
+                                        </div>
                                     </div>
                                     <div className="col-sm-6">
-                                        <p>{benData.data.Full_Name__c}</p>
+                                        <div className="col-sm-5">
+                                            <p>NRIC</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.ID_Number__c}</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>NRIC</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
+                                {/* Date of Birth - Race */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Date of Birth</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Date_of_Birth__c}</p>
+                                        </div>
                                     </div>
                                     <div className="col-sm-6">
-                                        <p>{benData.data.ID_Number__c}</p>
+                                        <div className="col-sm-5">
+                                            <p>Race</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Race__c}</p>
+                                        </div>
                                     </div>
                                 </div>
+                                {/* Current Level - School */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Current Level</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Current_Level__c}</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>School</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{props.schoolMap[benData.data.Current_School__c]}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Stream - Applying to */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Stream</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Stream__c}</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Applying to</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{props.schoolMap[benData.data.Applying_to__c]}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Email - UploadedFile */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Email</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Email_Address__c}</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>NRIC file</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.attachment.Name}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Graduating this year */}
                             </div>
-                            {/* Date of Birth - Race */}
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Date of Birth</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Date_of_Birth__c}</p>
-                                    </div>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Race</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Race__c}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Current Level - School */}
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Current Level</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Current_Level__c}</p>
-                                    </div>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>School</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Current_School__c}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Stream - Applying to */}
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Stream</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Stream__c}</p>
-                                    </div>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Applying to</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Applying_to__c}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Email - UploadedFile */}
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>Email</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.data.Email_Address__c}</p>
-                                    </div>
-                                </div>
-                                <div className="col-sm-6">
-                                    <div className="col-sm-5">
-                                        <p>NRIC file</p>
-                                    </div>
-                                    <div className="col-sm-1">
-                                        :
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <p>{benData.attachment.Name}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Graduating this year */}
-                        </div>
+                        )
                     })}
                     <br/>
                     <hr />
@@ -480,7 +500,7 @@ class Success extends React.Component {
                 {/* Tab 4 Content */}
                 <div className="col-md-12">
                     <br />
-                    <h4>Household Member List</h4>
+                    <h4 className="info-text">Household Member List</h4>
                     <br />
                     <p><b>Main Applicant</b></p>
                     <div className="row">
@@ -495,7 +515,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Full_Name__c}</p>
+                                <p className="filled">{props.Full_Name__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -531,7 +551,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Relationship_to_Applicant__c}</p>
+                                <p className="filled">{props.Relationship_to_Applicant__c}</p>
                             </div>
                         </div>
                     </div>
@@ -545,7 +565,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Gross_Monthly_Income__c}</p>
+                                <p className="filled">{props.Gross_Monthly_Income__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -556,7 +576,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Employment_Status__c}</p>
+                                <p className="filled">{props.Employment_Status__c}</p>
                             </div>
                         </div>
                     </div>
@@ -570,7 +590,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Occupation__c}</p>
+                                <p className="filled">{props.Occupation__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -581,7 +601,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Company__c}</p>
+                                <p className="filled">{props.Company__c}</p>
                             </div>
                         </div>
                     </div>
@@ -595,7 +615,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Employment_Start_Date__c}</p>
+                                <p className="filled">{props.Employment_Start_Date__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -606,7 +626,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Employment_End_Date__c}</p>
+                                <p className="filled">{props.Employment_End_Date__c}</p>
                             </div>
                         </div>
                     </div>
@@ -620,7 +640,7 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Hou[0].attachment.file1 ? props.Hou[0].attachment.file1.Name : ''}</p>
+                                <p className="filled">{props.Hou[0].attachment.file1 ? props.Hou[0].attachment.file1.Name : ''}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -631,170 +651,184 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Hou[0].attachment.file2 ? props.Hou[0].attachment.file2.Name : ''}</p>
+                                <p className="filled">{props.Hou[0].attachment.file2 ? props.Hou[0].attachment.file2.Name : ''}</p>
                             </div>
                         </div>
                     </div>
                     {props.Hou.map((houData, houIdx) => {
                         if (houIdx > 0) {
-                            <div>
-                                <br />
-                                <p><b>Member - {houIdx}</b></p>
-                                <div className="row">
+                            return(
+                                <div>
+                                    <br />
+                                    <p><b>Member - {houIdx + 1}</b></p>
+                                    <div className="row">
+                                    </div>
+                                    {/* Hou Name - NRIC */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Name</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Full_Name__c}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>NRIC</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Full_Name__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Hou Date of Birth - Relationship to Applicant */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Date of Birth</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Date_of_Birth__c}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Relationship to Applicant</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Relationship_to_Applicant__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Hou - Gross Monthly Income - Employment Status */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Gross Monthly Income</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Gross_Monthly_Income__c}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Employment Status</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Employment_Status__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Hou Occupation - Company */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Occupation</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Occupation__c ? houData.data.Occupation__c : ''}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Company</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Company__c ? houData.data.Company__c : ''}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Employment Start Date - Employment End Date */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Employment Start Date</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Employment_Start_Date__c ? houData.data.Employment_Start_Date__c : ''}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Employment End Date</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Employment_End_Date__c ? houData.data.Employment_End_Date__c : ''}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Uploaded File */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>NRIC Uploaded File</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.attachment.file1 ? houData.attachment.file1.Name : ''}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Income Statement Receipt </p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.attachment.file2 ? houData.attachment.file2.Name : ''}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                {/* Hou Name - NRIC */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Name</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Full_Name__c}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>NRIC</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Full_Name__c}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Hou Date of Birth - Relationship to Applicant */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Date of Birth</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Date_of_Birth__c}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Relationship to Applicant</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Relationship_to_Applicant__c}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Hou - Gross Monthly Income - Employment Status */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Gross Monthly Income</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Gross_Monthly_Income__c}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Employment Status</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Employment_Status__c}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Hou Occupation - Company */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Occupation</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Occupation__c ? houData.data.Occupation__c : ''}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Company</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Company__c ? houData.data.Company__c : ''}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Employment Start Date - Employment End Date */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Employment Start Date</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Employment_Start_Date__c ? houData.data.Employment_Start_Date__c : ''}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Employment End Date</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.data.Employment_End_Date__c ? houData.data.Employment_End_Date__c : ''}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Uploaded File */}
-                                <div className="row">
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>NRIC Uploaded File</p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.attachment.file1 ? houData.attachment.file1.Name : ''}</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="col-sm-5">
-                                            <p>Income Statement Receipt </p>
-                                        </div>
-                                        <div className="col-sm-1">
-                                            :
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <p>{houData.attachment.file2 ? houData.attachment.file2.Name : ''}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            );
                         }   
                     })}
+                    <br/>
+                    <hr />
+                    <div className="row">
+                        <h4 className="info-text">Reason/s for not having an income earner / Having one income earner:</h4>
+                        <ul>
+                            {this.state.reason.map((reasonItem) => {
+                                return(
+                                    <li className="filled">{reasonItem}</li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                     <br/>
                     <hr />
                 </div>
@@ -802,7 +836,7 @@ class Success extends React.Component {
                 <div className="col-md-12">
                     <div className="row">
                         <br />
-                        <h4 className="">Declaration of consent</h4>
+                        <h4 className="info-text">Declaration of consent</h4>
                         <ol>
                             <li> I, <span className="span_name"></span> {props.Full_Name__c}, I/C No <span className="span_nric"></span> {props.ID_Number__c}, declare that [my child/children/ward (s)] is/are currently NOT receiving The Straits Times School Pocket Money Fund (STSPMF) from any other STSPMF disbursing agency/school and have not applied for STSPMF at another disbursing agency/school.</li>
                             <li> 1.	I declare that {this.state.beneficiaries.toString()} is/are NOT receiving other similar monthly pocket money schemes excluding MOE FAS.</li>
@@ -815,14 +849,14 @@ class Success extends React.Component {
                             {/* </p> */}
                             <li> I acknowledge that the information I have provided is accurate. I understand that [my children / my ward(s)] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery. 
                                 </li>
-                            <li> I am aware that the <span className="red">disbursing agency and/or STSPMF </span>has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.</li>
+                            <li> I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.</li>
                             <li> I am aware that the STSPMF assistance is given for the benefit of [children/ ward(s)], for use as pocket money in school.
                                 </li>
                             
                         </ol>
                     </div>
                     <div className="row">
-                        <h4 className="">MEDIA COVERAGE </h4>
+                        <h4 className="info-text">MEDIA COVERAGE </h4>
                         <ul className="noneul">
                             <li>This section seeks the consent of the STSPMF applicant to be featured and interviewed for articles on STSPMF. I, {props.Full_Name__c}, NRIC No {props.ID_Number__c}, to my Family/me being featured.</li>
                         </ul>
@@ -833,10 +867,9 @@ class Success extends React.Component {
                 <div className="col-md-12">
                     <br/><br />
                     <center>
-                        <button className="btn download" onClick={this.generateFormPdf}> Download File </button>
+                        <button className="btn" onClick={this.generateFormPdf}> Download File </button>
                     </center>
                 </div>
-            </div>
             </div>
         )
     }

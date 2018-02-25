@@ -147,10 +147,10 @@ class Tab4 extends React.Component {
         const state = this.state
         const props = this.props
         const EarnerCount = props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
+        props.data.EarnerCount = props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
         if (EarnerCount > 1) {
             Array.apply(1, Array(8)).map((val, num) => {
                 console.log(document.getElementById(`checkbox-able-${num+1}`));
-                // document.getElementById(`checkbox-able-${num+1}`).removeAttribute("checked");
                 let fieldName = document.getElementById(`checkbox-able-${num+1}`).getAttribute("name")
                 props.data[fieldName] = false;
             })
@@ -162,7 +162,8 @@ class Tab4 extends React.Component {
                     return (
                         <div className="fullh" key={i.toString()}>
                             <div className="row ">
-                            <p>{i == 0 ? 'Main Applicant' : 'Member - ' + i.toString() }</p>
+                            <br />
+                            <p><b>{i == 0 ? 'Main Applicant' : 'Member - ' + i.toString() }</b></p>
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Name <small>(required)</small></label>
@@ -228,7 +229,7 @@ class Tab4 extends React.Component {
                                         <select
                                             name="Relationship_to_Applicant__c"
                                             id="Hou[0][Relationship_to_Applicant__c]" 
-                                            className="form-control relation1"
+                                            className="form-control relation1 select"
                                             onChange={updateMain}
                                             value={props.data.Relationship_to_Applicant__c}
                                             disabled
@@ -243,7 +244,7 @@ class Tab4 extends React.Component {
                                         <select
                                             name="Relationship_to_Applicant__c"
                                             id={`Hou${i}[Relationship_to_Applicant__c]`} 
-                                            className="form-control relation1"
+                                            className="form-control relation1 select"
                                             onChange={update}
                                             value={props.data.Hou[i].data.Relationship_to_Applicant__c ? props.data.Hou[i].data.Relationship_to_Applicant__c : 'Son'}
                                         >
@@ -335,7 +336,7 @@ class Tab4 extends React.Component {
                                             name="Employment_Status__c"
                                             id={`Hou${i}[Employment_Status__c]`}
                                             type="text"
-                                            className="form-control"
+                                            className="form-control select"
                                             value={props.data.Employment_Status__c}
                                             placeholder="Employment Status"
                                         > 
@@ -351,7 +352,7 @@ class Tab4 extends React.Component {
                                             name="Employment_Status__c"
                                             id={`Hou${i}[Employment_Status__c]`}
                                             type="text"
-                                            className="form-control"
+                                            className="form-control select"
                                             placeholder="Employment Status"
                                             value={props.data.Hou[i].data.Employment_Status__c ? props.data.Hou[i].data.Employment_Status__c : 'Self Employed'}
                                         >
@@ -494,30 +495,43 @@ class Tab4 extends React.Component {
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <input
-                                        onChange={that.uploadHouFile}
-                                        type="file"
-                                        name="file1"
-                                        className="form-control-file"
-                                        id={`Hou${i}[nric_fin_file]`}
-                                        aria-describedby="fh1" />
-                                    <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format: jpg, png, pdf only </small>
+                                    <br />
+                                    <label className="fileContainer">
+                                        Choose File
+                                        <input
+                                            onChange={that.uploadHouFile}
+                                            type="file"
+                                            name="file1"
+                                            className="form-control-file"
+                                            id={`Hou${i}[nric_fin_file]`}
+                                            aria-describedby="fh1" />
+                                    </label>&nbsp;<span id={`file1Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    <br />
+                                    <label>
+                                        <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format: jpg, png, pdf only </small>
+                                    </label>
                                 </div>
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <input
-                                        onChange={that.uploadHouFile}
-                                        name="file2"
-                                        type="file"
-                                        className="form-control-file"
-                                        id={`Hou${i}[income_receipt_file]`}
-                                        aria-describedby="gh1" />
-                                    <small id="gh1" className="form-text text-muted">Income Statement Receipt,  format: jpg, png, pdf only </small>
+                                    <br/>
+                                    <label className="fileContainer">
+                                        Choose File
+                                        <input
+                                            onChange={that.uploadHouFile}
+                                            name="file2"
+                                            type="file"
+                                            className="form-control-file"
+                                            id={`Hou${i}[income_receipt_file]`}
+                                            aria-describedby="gh1" />
+                                    </label>&nbsp;<span id={`file1Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    <br/>
+                                    <label>
+                                        <small id="gh1" className="form-text text-muted">Income Statement Receipt,  format: jpg, png, pdf only </small>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        <hr />
                     </div>
                 )
                 })}
@@ -526,10 +540,11 @@ class Tab4 extends React.Component {
                     <button onClick={this.addCount} className="btn btn-primary">Add more household member</button>
                 </center>
                 <br />
+                <hr />
                 <div className="row">	
                     <div className="col-sm-12">
                         <div className="form-group">
-                            <label>Reason/s for not having an income earner / Having one income earner:</label>
+                            <h4 className="info-text">Reason/s for not having an income earner / Having one income earner:</h4>
                             <div className="row col-md-12">
                                 <div className="col-md-4">
                                     <label className="custom-option">

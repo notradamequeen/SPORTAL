@@ -33,7 +33,7 @@ class Tab5 extends React.Component {
             <div className="col-md-12 print">
                 <div className="row">
                     <br />
-                    <h5 className="">Declaration of consent</h5>
+                    <h4 className="info-text">Declaration of consent</h4>
                     <div className="col-sm-10 col-sm-offset-1">
                         <p>1. I, <span className="span_name"></span> {this.props.data.Full_Name__c}, I/C No <span className="span_nric"></span> {this.props.data.ID_Number__c}, declare that [my child/children/ward (s)] is/are currently NOT receiving The Straits Times School Pocket Money Fund (STSPMF) from any other STSPMF disbursing agency/school and have not applied for STSPMF at another disbursing agency/school.</p>
                         <p>2. 1.	I declare that {this.state.beneficiaries.toString()} is/are NOT receiving other similar monthly pocket money schemes excluding MOE FAS.
@@ -46,14 +46,15 @@ class Tab5 extends React.Component {
                         {/* </p> */}
                         <p>4. I acknowledge that the information I have provided is accurate. I understand that [my children / my ward(s)] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery. 
                             </p>
-                        <p>5. I am aware that the <span className="red">disbursing agency and/or STSPMF </span>has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.</p>
+                        <p>5. I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.</p>
                         <p>6. I am aware that the STSPMF assistance is given for the benefit of [children/ ward(s)], for use as pocket money in school.
                             </p>
                         
                     </div>
                 </div> 
+                <hr />
                 <div className="row">
-                    <h5 className="">MEDIA COVERAGE </h5>
+                    <h4 className="info-text">MEDIA COVERAGE </h4>
                     <div className="col-sm-10 col-sm-offset-1">
                         <p>This section seeks the consent of the STSPMF applicant to be featured and interviewed for articles on STSPMF. I, {this.props.data.Full_Name__c}, NRIC No {this.props.data.ID_Number__c}, to my Family/me being featured.</p>
                     </div>

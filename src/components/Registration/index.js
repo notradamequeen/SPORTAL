@@ -34,7 +34,7 @@ import $ from 'jquery';
 import swal from 'sweetalert';
 import Iframe from './iframe';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
+import '../../assets/css/form-style.css';
 
 
 class Registration extends React.Component {
@@ -88,6 +88,7 @@ class Registration extends React.Component {
             isValidBenNric: ['', ],
             isValidHouNric: ['',],
             schoolList: [],
+            schoolMap: {},
             //data
             check1: '',
             check2: '',
@@ -134,7 +135,7 @@ class Registration extends React.Component {
             Reason_s_for_Single_No_income_earner__c: '',
             Related_Account__c: '',
             Social_Visit_Pass__c: false,
-            Source_of_Application__c: '',
+            Source_of_Application__c: 'SPMF_Website',
             Street__c: '',
             Temporarily_unfit_for_work__c: false,
             Total_income_earners__c: '',
@@ -142,14 +143,14 @@ class Registration extends React.Component {
             Total_number_of_household_members__c: '',
             Unit_Number__c: '',
             // Person
-            Applying_to__c: '',
+            Applying_to__c: '0015D0000053q5WQAQ',
             Applying_to_Education_Level__c: '',
             Applying_to_Level_Year__c: '',
             City__c: '',
             Company__c: '',
             Country__c: 'Singapore',
             Current_Level__c: '',
-            Current_School__c: '',
+            Current_School__c: '0015D0000053q5WQAQ',
             Date_of_Birth__c: '',
             Email_Address__c: '',
             Employment_End_Date__c: '',
@@ -184,12 +185,12 @@ class Registration extends React.Component {
             Religion__c: '',
             Remarks__c: '',
             Stream__c: '',
-            Ben: [{data:{Date_of_Birth__c: '', }, attachment:{}},],
+            Ben: [{data:{Date_of_Birth__c: ''}, attachment:{}}],
             Hou: [{attachment:{}}],
             HouStatusEmployement: ['',],
             isLoading: true,
             fullUrl: '',
-            isSubmitted: true,
+            isSubmitted: false,
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
@@ -215,10 +216,16 @@ class Registration extends React.Component {
                 this.state.postal_code = postalCodeOption
 
                 const schoolList = []
+                const levelSchoolMap = []
+                const schoolMap = {}
                 this.props.salesforce.schoolList.fields.records.map((field) => {
-                    schoolList.push({type:"school_list", value: field.Id, label: field.Name })
+                    schoolList.push({type: field.Partner_SubType__c, value: field.Id, label: field.Name })
+                    levelSchoolMap.push({[field.Name] : field.Partner_SubType__c})
+                    schoolMap[field.Id] = field.Name
                 })
                 this.state.schoolList = schoolList
+                this.state.levelSchoolMap = levelSchoolMap
+                this.setState({schoolMap: schoolMap});
             }) 
             this.retrieve('Person__c/describe').then((json)=>{
                 const fields = json.fields
@@ -264,10 +271,17 @@ class Registration extends React.Component {
                     }
                 });
             });
-            console.log(this.retrieve('Application__c/a0o5D0000000M8I').then(json=>json))
+            console.log(this.retrieve('Application__c/describe').then(json=>{
+                const appFields = json.fields
+                appFields.sort((a, b) => {
+                    if (a.label.toUpperCase() < b.label.toUpperCase()) return -1;
+                    if (a.label.toUpperCase() > b.label.toUpperCase()) return 1;
+                    return 0;
+                });
+                return appFields
+            }))
             this.setState({isLoading: false})
-        });
-        
+        });   
     }
     componentWillUnmount() {
         window.removeEventListener("beforeunload", function (event) {
@@ -275,7 +289,6 @@ class Registration extends React.Component {
         })
     }
     onClickNext() {
-        generatePdf(this.state);
         const { steps, currentStep , tabIndex} = this.state;
         if (currentStep > 0) {
             const isValid = validation(currentStep+1, this.state);
@@ -303,12 +316,12 @@ class Registration extends React.Component {
             if(!isValid){
                 swal('cannot move to next step, please fill all required fields');
             }
-            // if(validNric && validFormat && isValid){
+            if(validNric && validFormat && isValid){
                 this.setState({
                     currentStep: currentStep + 1,
                     tabIndex: tabIndex + 1
                 });
-            // }
+            }
         } else {
             this.setState({
                 currentStep: currentStep + 1,
@@ -530,9 +543,10 @@ class Registration extends React.Component {
                     }    
                 }); /*  end of save HouData */
             }
+        }).then(()=>{
+            this.setState({isSubmitted: true});
         }); /* end of submit to SF process */
-        // generatePdf(this.state)
-        this.changeState({isSubmitted: true});
+        
         return true;
     }
 
@@ -550,10 +564,10 @@ class Registration extends React.Component {
             buttonnext = '';
           } else {
             if(this.state.check1 == 'on' && this.state.check2 == 'on' &&  this.state.check4 == 'on' &&  this.state.check5 == 'on' &&  this.state.check6 == 'on' &&  this.state.check7 == 'on' &&  this.state.check8 == 'on' &&  this.state.check9 == 'on' &&  this.state.check10 == 'on' ){
-                buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100">Next</button>;
+                buttonnext = <button onClick={ this.onClickNext } className="btn step">Next</button>;
             }
             else{
-                buttonnext = <button onClick={ this.onClickNext } className="btn btn-success btn-100" disabled>Next</button>;
+                buttonnext = <button onClick={ this.onClickNext } className="btn" disabled>Next</button>;
             }
           }
         if (!this.state.isSubmitted){
@@ -566,12 +580,26 @@ class Registration extends React.Component {
                         </div>
                         <div className="col-md-10">
                             <br /><br />
-                            <h3 style={{ color:"#186b8e"}}>&nbsp;&nbsp;STSPMF Application Form</h3>
+                            <h3 style={{ color:"#0590ba"}}>&nbsp;&nbsp;STSPMF Application Form</h3>
                         </div>
                     </div>
                     {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
                         <div className="" id="AppForm">
-                            <Stepper steps={ steps } activeStep={ currentStep } />
+                            <div className="col-md-12 stepper">
+                                <Stepper 
+                                    steps={ steps }
+                                    activeStep={ currentStep }
+                                    completeColor="white"
+                                    completeTitleColor="white"
+                                    // circleFontSize={18}
+                                    circleFontColor="#1bb4e2"
+                                    activeColor="white"
+                                    activeTitleColor="white"
+                                    completeBarColor="white"
+                                    // size={40}
+                                    // titleFontSize={18}
+                                />
+                            </div>
                             
                             <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel={true} onSelect={this.onSelect}>
                             <TabList style={{ display: "none" }}>
@@ -618,6 +646,7 @@ class Registration extends React.Component {
                         
                             <br />
                             <div className="text-center">
+                                <br />
                                 {buttonprev}
                                 {buttonnext}
                             </div>
@@ -630,7 +659,9 @@ class Registration extends React.Component {
         }
         else {
             return (
-                <Success data={this.state}/>
+                <div className="registrationForm">
+                    <Success data={this.state}/>
+                </div>
             )
         }
         

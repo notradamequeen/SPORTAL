@@ -7,7 +7,7 @@ import moment from 'moment';
 import $ from 'jquery';
 import Select from 'react-select';
 import { getBase64, regexValidate, validateNRIC, validation } from '../../utils/common'
-
+import '../../assets/css/form-style.css';
 import 'react-select/dist/react-select.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -26,6 +26,7 @@ class Tab3 extends React.Component {
             Ben:[{data:{}, attachment: {}}],
             isValidEmailFormat: [],
             isValidBenNric: [],
+            curLevelBySchool: [],
         }
         this.handleInputChange                = this.handleInputChange.bind(this);
         this.handleDOBChange                  = this.handleDOBChange.bind(this);
@@ -125,6 +126,44 @@ class Tab3 extends React.Component {
             this.state.isValidBenNric[benIdx] = isValidNric.toString()
             this.props.data.isValidBenNric = this.state.isValidBenNric
         }
+        if ( event.target.name.indexOf("Current_School") !== -1) {
+            this.props.data.schoolList.map((item) =>{
+                if(item.value == event.target.value){
+                    const subtype = item.type
+                    if (subtype == "Primary School")
+                        this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
+                        if(clItem.value.includes("Primary")){
+                            return {value: clItem.value, label: clItem.label}
+                        }
+                    })
+                    if (subtype == "Secondary School")
+                        this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
+                        if(clItem.value.includes("Secondary")){
+                            return {value: clItem.value, label: clItem.label}
+                        }
+                    })
+                    if (subtype == "ITE")
+                        this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
+                        if(clItem.value.includes("NITEC")){
+                            return {value: clItem.value, label: clItem.label}
+                        }
+                    })
+                    if (subtype == "Polytechnic")
+                        this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
+                        if(clItem.value.includes("Polytechnic")){
+                            return {value: clItem.value, label: clItem.label}
+                        }
+                    })
+                    if (subtype == "Junior College")
+                        this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
+                        if(clItem.value.includes("JC")){
+                            return {value: clItem.value, label: clItem.label}
+                        }
+                    })
+                    console.log(this.state)
+                }
+            })
+        }
         
         BenList[benIdx]['data'][event.target.name] = value
         this.setState({ 
@@ -136,7 +175,8 @@ class Tab3 extends React.Component {
 
     uploadBen(event){
         const file = event.target.files[0]
-        let ben = this.props.data.Ben[Number(event.target.id.match(/\d+/)[0])]
+        let benId = Number(event.target.id.match(/\d+/)[0])
+        let ben = this.props.data.Ben[benId]
         let attachment = {
             Name : 'Nric_Fin_'+file.name.replace(' ', '_'),
             Body : file,
@@ -146,6 +186,8 @@ class Tab3 extends React.Component {
             attachment.Body = encodedFile.split(',')[1]
             ben['attachment'] = attachment
         })
+        document.getElementById(`fileName${benId}`).innerHTML = file.name;
+        console.log('span', document.getElementById("fileName"))
     }
 
     render() {
@@ -161,7 +203,8 @@ class Tab3 extends React.Component {
         return (
             <div className="col-md-12 print" id="tab3">
                 <br />
-                <h5 className="info-text"> Beneficiaries List</h5>
+                <h4 className="info-text"> Beneficiaries List</h4>
+                <br />
             {Array.apply(0, Array(this.state.bencount)).map(function (x, i) {
                 return (
                     <div className="full" key={i.toString()}>
@@ -226,7 +269,7 @@ class Tab3 extends React.Component {
                                         onChange={update}
                                         name="Race__c"
                                         id={`Ben${i}[Race__c]`}
-                                        className="form-control"
+                                        className="form-control select"
                                     >
                                         <option value=''></option>
                                         {props.data.raceList !== undefined && props.data.raceList.map((option) => {
@@ -239,25 +282,6 @@ class Tab3 extends React.Component {
                             </div>
                         </div>
                         <div className="row">
-                            {/* Current Level */}
-                            <div className="col-sm-3">
-                                <div className="form-group">
-                                    <label>Current level <small style={{color: "red"}}>(required)</small></label>
-                                    <select
-                                        onChange={update}
-                                        name="Current_Level__c"
-                                        id={`Ben${i}[Current_Level__c]`}
-                                        className="form-control"
-                                    >
-                                        <option value=''></option>
-                                        {props.data.currLevelList !== undefined && props.data.currLevelList.map((option) => {
-                                            return (
-                                                <option key={option.value} value={option.value}>{option.label}</option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                            </div>
                             {/* Current School */}
                             <div className="col-sm-3">
                                 <div className="form-group">
@@ -267,13 +291,36 @@ class Tab3 extends React.Component {
                                         ref="Ben[{i}][Current_School__c]" 
                                         id={`Ben${i}[Current_School__c]`}
                                         onChange={update}
-                                        className="form-control"
+                                        className="form-control select"
                                         required>
                                         <option value="">---Please Select Current School---</option>
                                         {props.data.schoolList.map((school_opt) => {
                                             return(
-                                                <option key={school_opt.value} value={school_opt.value}>{school_opt.label}</option>
+                                                <option 
+                                                    key={school_opt.value}
+                                                    value={school_opt.value}
+                                                    subtype={school_opt.type}
+                                                >{school_opt.label}</option>
                                             )
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                            {/* Current Level */}
+                            <div className="col-sm-3">
+                                <div className="form-group">
+                                    <label>Current level <small style={{color: "red"}}>(required)</small></label>
+                                    <select
+                                        onChange={update}
+                                        name="Current_Level__c"
+                                        id={`Ben${i}[Current_Level__c]`}
+                                        className="form-control select"
+                                    >
+                                        <option value=''></option>
+                                        {state.curLevelBySchool.map((option) => {
+                                            return (
+                                                <option key={option.value} value={option.value}>{option.label}</option>
+                                            );
                                         })}
                                     </select>
                                 </div>
@@ -286,7 +333,7 @@ class Tab3 extends React.Component {
                                         onChange={update}
                                         name="Stream__c"
                                         id={`Ben${i}[Stream__c]`}
-                                        className="form-control"
+                                        className="form-control select"
                                     >
                                         <option value=''></option>
                                         {props.data.streamList !== undefined && props.data.streamList.map((option) => {
@@ -303,7 +350,7 @@ class Tab3 extends React.Component {
                                     <label>Applying to <small style={{color: "red"}}>(required)</small></label>
                                     <select
                                         name="Applying_to__c"
-                                        className="form-control"
+                                        className="form-control select"
                                         ref="Ben[{i}][Applying_to__c]" 
                                         id={`Ben${i}[Applying_to__c]`}
                                         onChange={update}
@@ -337,14 +384,19 @@ class Tab3 extends React.Component {
                             {/* Upload NRIC */}
                             <div className="col-sm-3">
                                 <div className="form-group">
-                                    <label></label>
+                                    <br/>
+                                    <label className="fileContainer">
+                                    Choose File
                                     <input
                                         onChange={that.uploadBen}
                                         type="file"
                                         className="form-control-file"
                                         id={`Ben${i}[file]`}
                                         aria-describedby="fileHelp1" />
-                                    <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
+                                    </label>&nbsp;<span id={`fileName${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    <label>
+                                        <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format : jpg, png, pdf only </small>
+                                    </label>
                                 </div>
                             </div>
                             {/* Graduating this year */}

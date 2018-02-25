@@ -52,7 +52,9 @@ class Tab1 extends React.Component {
             <div className="col-md-12 print">
                 <br />
                 <p> * This form takes about 10 - 12 minutes to complete. Please ensure that you have the below documents scanned and ready for upload.</p>
-                <p><b>Eligibility Criteria</b></p>
+                <br />
+                <h4 className="info-text">Eligibility Criteria</h4>
+                <br />
                 <ul className="ulnone">
                     <li>
                         <input 
@@ -81,7 +83,9 @@ class Tab1 extends React.Component {
                         <input type="checkbox" name="check10" id="check10" defaultChecked={this.props.data.check10} onChange={this.handleInputChange} />  
                         Student is 20 years or younger at point of application </li>
                 </ul>
-                <p><b>All completed STSPMF application forms must be attached with the relevant documents listed below:</b></p>
+                <hr />
+                <h4 className="info-text">All completed STSPMF application forms must be attached with the relevant documents listed below:</h4>
+                <br />
                 <ul className="ulnone">
                     <li>
                         <input type="checkbox" name="check1" id="check1" defaultChecked={this.props.data.check1} onChange={this.handleInputChange} />   
@@ -91,6 +95,7 @@ class Tab1 extends React.Component {
                         Photocopy of both parents’/ guardian’s NRIC / passport</li>
                 </ul>
                 <p className="red">STSPMF reserves the right to reject the application if any of the supporting documents is not submitted</p>
+                <br />
             </div>
         )
     }

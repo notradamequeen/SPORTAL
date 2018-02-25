@@ -161,7 +161,8 @@ class Tab2 extends React.Component {
             <div className="col-md-12 print">
                 <div className="row">
                     <br />
-                    <p className="ptitle">Personal Details</p>
+                    <h4 className="info-text">Personal Details</h4>
+                    <br />
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Name <small style={{color:"red"}}>(required)</small></label>
@@ -172,7 +173,7 @@ class Tab2 extends React.Component {
                             <select 
                                 id="ID_Type__c"
                                 name="ID_Type__c"
-                                className="form-control valid"
+                                className="form-control valid select"
                                 aria-invalid="false"
                                 value={this.props.data.ID_Type__c}
                                 onChange={this.handleInputChange}>
@@ -233,7 +234,7 @@ class Tab2 extends React.Component {
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Gender </label>
-                            <select name="Gender__c" id="Gender__c" className="form-control valid" aria-invalid="false">
+                            <select name="Gender__c" id="Gender__c" className="form-control valid select" aria-invalid="false">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
@@ -247,7 +248,7 @@ class Tab2 extends React.Component {
                                 onChange={this.nation_handleChange}
                                 options={this.props.data.nationList}
                                 placeholder="please select marital status"
-                                value={this.state.selectedNation}
+                                value={this.props.data.Nationality__c}
                                 required />
                         </div>
                         <div className="form-group" >
@@ -264,14 +265,14 @@ class Tab2 extends React.Component {
                             <select
                                 id="Race__c"
                                 name="Race__c"
-                                className="form-control valid"
+                                className="form-control valid select"
                                 aria-invalid="false"
                                 onChange={this.handleInputChange}>
-                                <option value=""></option>
+                                <option value="" className="white"></option>
                                 {this.props.data.raceList !== undefined && 
                                     this.props.data.raceList.map((option) => {
                                         return (
-                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                            <option key={option.value} value={option.value} className="white">{option.label}</option>
                                         );
                                     })
                                 }
@@ -289,7 +290,9 @@ class Tab2 extends React.Component {
                     </div>
                 </div>  
                 <div className="row">
-                    <p className="ptitle">Address</p>	
+                    <br />
+                    <h4 className="info-text">Address</h4>
+                    <br />
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Postal Code</label>
@@ -372,8 +375,10 @@ class Tab2 extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="row">	
-                    <p>Personal Contact</p>	
+                <div className="row">
+                    <br />
+                    <h4 className="info-text">Personal Contact</h4>
+                    <br />
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Home Phone <small style={{color:"red"}}>(required)</small></label>
