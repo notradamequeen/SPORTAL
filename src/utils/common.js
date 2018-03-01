@@ -165,16 +165,40 @@ export function validation(step, data){
     let validFields = []
     let isValid = false;
     if (step == 2){
-        requiredField = ['Full_Name__c', 'ID_Number__c', 'Home_Phone__c']
-
-        if(data[requiredField[0]] !== '' && data[requiredField[1]] !== '' && data[requiredField[2]] !== '') {
+        requiredField = ['Full_Name__c', 'ID_Type__c', 'ID_Number__c', 'Home_Phone__c', 'Email_Address__c', 'Postal__c',
+                         'Street__c', 'Block__c', 'Flat_Type__c', 'Date_of_Birth__c', 'Marital_Status__c', 'Gender__c', 
+                         'Nationality__c',
+                         'Race__c', 
+                        ]
+        const validStep2 = requiredField.map((step2Field)=>{
+            if (step2Field == 'Marital_Status__c' && data[step2Field] == 'Others') {
+                console.log('other')
+                return data.Other_Marital_Status__c !== '' && data.Other_Marital_Status__c !== undefined
+            }
+            if (step2Field == 'Nationality__c' && data[step2Field] == 'Others') {
+                console.log('other', step2Field)
+                return data.Other_Nationality__c !== '' && data.Other_Nationality__c !== undefined    
+            }
+            if (step2Field == 'Race__c' && data[step2Field] == 'Others') {
+                return data.Other_Race__c !== '' && data.Other_Race__c !== undefined    
+            }
+            if (step2Field == 'Flat_Type__c' && data[step2Field] == 'Others') {
+                return data.Other_Flat_Type__c !== '' && data.Other_Flat_Type__c !== undefined    
+            }
+            else {
+                console.log('not other', step2Field, data[step2Field])
+                return data[step2Field] !== '' && data[step2Field] !== undefined
+            }    
+        })
+        if (!validStep2.includes(false)){
             isValid = true
         }
         return isValid
     }
     if (step == 3) {
         requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Current_Level__c',
-                            'Current_School__c', 'Applying_to__c', 'Race__c', 'Email_Address__c'
+                         'Current_School__c', 'Applying_to__c', 'Race__c', 'Email_Address__c',
+                         'Gender__c', 'Nationality__c'
                         ];
         validFields = data.Ben.map((dataBen) => {
             if (dataBen.data[requiredField[0]] !== '' && dataBen.data[requiredField[0]] !== undefined && 
@@ -185,6 +209,8 @@ export function validation(step, data){
                 dataBen.data[requiredField[5]] !== '' && dataBen.data[requiredField[5]] !== undefined &&
                 dataBen.data[requiredField[6]] !== '' && dataBen.data[requiredField[6]] !== undefined &&
                 dataBen.data[requiredField[7]] !== '' && dataBen.data[requiredField[7]] !== undefined &&
+                dataBen.data[requiredField[8]] !== '' && dataBen.data[requiredField[8]] !== undefined &&
+                dataBen.data[requiredField[9]] !== '' && dataBen.data[requiredField[9]] !== undefined &&
                 dataBen.attachment.Body !== undefined 
             ){
                 return 'true' 
@@ -216,7 +242,8 @@ export function validation(step, data){
             if (data.Full_Name__c !== '' && data.ID_Number__c !== '' && data.Date_of_Birth__c !== '' &&
                 data.Relationship_to_Applicant__c !== '' && data.Monthly_Gross_Income__c !== '' && 
                 data.Employment_Status__c !== '' && data.Occupation__c !== '' && data.Company__c !== '' &&
-                data.Employment_Start_Date__c !== ''){
+                data.Employment_Start_Date__c !== '' && data.Hou[0].attachment.file1.Body !== undefined
+                && data.Hou[0].attachment.file2.Body !== undefined){
                     isValid = true  
                 }
         }
@@ -239,7 +266,8 @@ export function validation(step, data){
                         dataHou.data.Employment_Status__c !== '' && dataHou.data.Employment_Status__c !== undefined &&
                         dataHou.data.Occupation__c !== '' && dataHou.data.Occupation__c !== undefined && 
                         dataHou.data.Company__c !== '' && dataHou.data.Company__c !== undefined &&
-                        dataHou.data.Employment_Start_Date__c !== '' && dataHou.data.Employment_Start_Date__c !== undefined){
+                        dataHou.data.Employment_Start_Date__c !== '' && dataHou.data.Employment_Start_Date__c !== undefined &&
+                        dataHou.attachment.file1.Body !== undefined && dataHou.attachment.file2.Body !== undefined){
                         return 'true'
                     } else {
                         return 'false'
@@ -801,7 +829,8 @@ export function getData(type, data, datamap=null) {
     if (type == "Contact") {
         newData.push(
             // [""],
-            ["Home Phone", data.Home_Phone__c, "Mobile Phone", data.Mobile_Phone__c],
+            ["Contact Number", data.Contact_Number__c, "Mobile Phone", data.Mobile_Phone__c],
+            ["Home Phone", data.Home_Phone__c, "Office Phone", data.Office_Number__c],
             ["Email Address", data.Email_Address__c]
         )
     }
@@ -809,6 +838,7 @@ export function getData(type, data, datamap=null) {
         newData.push(
             ["Name", data.data.Full_Name__c, "NRIC", data.data.ID_Number__c],
             ["Date of Birth", data.data.Date_of_Birth__c, "Race", data.data.Race__c],
+            ["Gender", data.data.Gender__c, "Nationality", data.data.Nationality__c],
             ["School", datamap.schoolMap[data.data.Current_School__c], "Current Level", data.data.Current_Level__c],
             ["Stream", data.data.Stream__c, "Applaying to", datamap.schoolMap[data.data.Applying_to__c]],
             ["Email", data.data.Email_Address__c, "NRIC Uploaded File", data.attachment.Name]
@@ -817,11 +847,13 @@ export function getData(type, data, datamap=null) {
     if (type == "Hou") {
         newData.push(
             ["Name", data.data.Full_Name__c, "NRIC", data.data.ID_Number__c],
-            ["Date of Birth", data.data.Date_of_Birth__c, "Relationship to Applicant", data.data.Relationship_to_Applicant__c, ],
-            ["Gross Monthly Income", data.data.Monthly_Gross_Income__c, "Employment Status", data.data.Employment_Status__c],
+            ["Date of Birth", data.data.Date_of_Birth__c, "Race", data.data.Race__c, ],
+            ["Gender", data.data.Gender__c, "Nationality", data.data.Nationality__c, ],
+            ["Relationship to Applicant", data.data.Relationship_to_Applicant__c, "Gross Monthly Income", data.data.Monthly_Gross_Income__c],
+            ["Employment Status", data.data.Employment_Status__c, "Employment Start Date", data.data.Employment_Start_Date__c,],
             ["Occupation", data.data.Occupation__c, "Company", data.data.Company__c],
-            ["Employment Start Date", data.data.Employment_Start_Date__c, "Employment End Date", data.data.Employment_End_Date__c],
-            ["NRIC Uploaded File", data.attachment.file1 ? data.attachment.file1.Name : '', "Income Statement Receipt", data.attachment.file2 ? data.attachment.file2.Name : '']
+            ["NRIC Uploaded File", data.attachment.file1 ? data.attachment.file1.Name : '', "Income Statement Receipt", data.attachment.file2 ? data.attachment.file2.Name : ''],
+            ["Payslip Uploaded File", data.attachment.file3 ? data.attachment.file3.Name : '']
         );
     }
     if (type == "Declaration"){

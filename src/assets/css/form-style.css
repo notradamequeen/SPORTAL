@@ -7,12 +7,7 @@ input[type=checkbox]
   -o-transform: scale(1.4); /* Opera */
   padding: 10px;
 }
-input[type=checkbox]:checked + label:after{
-    content: '✔';
-    color:#186b8e;
-    font-size: 12pt;
-    font-style: normal;
-}
+
 input[type=checkbox]#checkagree{
     -ms-transform: scale(1.5); /* IE */
     -moz-transform: scale(1.5); /* FF */
@@ -134,7 +129,7 @@ span .fileName{
     margin-bottom: 20px;
 }
 
-hr{
+hr.dashed{
     border: 2px dashed #818181;
     border-style: none none dashed; 
     color: #fff; 
@@ -194,3 +189,15 @@ div.Select-control>.Select-value {
   .react-datepicker__day-name, .react-datepicker__day {
     margin: 0.7rem !important;
   }
+
+  .text-content {
+      text-align: left;
+      padding: 6px;
+  }
+  .checkContainer {
+      text-align: right;
+  }
+
+  .text-content-consent {
+    text-align: left;
+}

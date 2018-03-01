@@ -1,6 +1,7 @@
 import {
     q_POSTAL_CODE_RECORD,
     q_SCHOLL_LIST,
+    q_APPLYING_TO,
     q_RECORD_TYPE
 } from './query';
 import { sfRequestSync, sfRequest } from '../utils/common';
@@ -9,8 +10,6 @@ const SF_VERSION = 'v20.0';
 
 export function getSalesforceToken(callback) {
     return async (dispatch, getState) => {
-        // if (getState().CurrentUser === null) return;
-        // const token = await getState().CurrentUser.getIdToken();
         const url = `${spmfcloudFunctionUrl}/salesforce-token`;
         const json = await fetch(url, {
             method: 'GET',
@@ -110,6 +109,47 @@ export function getSchoolList(callback) {
                 dispatch({
                     payload: responseData,
                     type: 'SCHOOL_LIST',
+                });
+            }
+        });
+    }
+}
+
+export function getApplyingToList(callback) {
+    return async (dispatch, getState) => {
+        let fullUrl = ''
+        const salesforceToken = getState().salesforce.token;
+        if(salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_APPLYING_TO)}`   
+        }
+        const fetchConfig = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${salesforceToken.accessToken}`,
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+            timeout: 5000,
+        };
+        await fetch(fullUrl, fetchConfig).then(response => response.json()).catch((err) => {
+            dispatch({ type: 'TOGGLE_LOADING' });
+            setTimeout(() => null, 0);
+            swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
+        }).then(responseData => {
+            dispatch({ type: 'TOGGLE_LOADING' });
+            if (responseData.length > 0) {
+                if (responseData[0].errorCode) {
+                    swal('Error occured', `An Error occured "${responseData[0].errorCode} - ${responseData[0].message} - ${sobject}".`);
+                } else {
+                    dispatch({
+                        payload: responseData,
+                        type: 'APPLYING_TO_LIST',
+                    });
+                }
+            } else {
+                dispatch({
+                    payload: responseData,
+                    type: 'APPLYING_TO_LIST',
                 });
             }
         });

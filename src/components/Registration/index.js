@@ -8,6 +8,7 @@ import {
         getPersonField,
         getPersonFields,
         getSchoolList,
+        getApplyingToList,
         retrieveObject,
         saveObject,
         updateObject,
@@ -88,6 +89,10 @@ class Registration extends React.Component {
             isValidBenNric: ['', ],
             isValidHouNric: ['',],
             schoolList: [],
+            applyingToList: [],
+            nationList: [],
+            raceList: [],
+            msList: [],
             schoolMap: {},
             //data
             check1: '',
@@ -143,14 +148,15 @@ class Registration extends React.Component {
             Total_number_of_household_members__c: '',
             Unit_Number__c: '',
             // Person
-            Applying_to__c: '0015D0000053q5WQAQ',
+            Applying_to__c: '',
             Applying_to_Education_Level__c: '',
             Applying_to_Level_Year__c: '',
             City__c: '',
             Company__c: '',
             Country__c: 'Singapore',
+            Contact_Number__c: '',
             Current_Level__c: '',
-            Current_School__c: '0015D0000053q5WQAQ',
+            Current_School__c: '',
             Date_of_Birth__c: '',
             Email_Address__c: '',
             Employment_End_Date__c: '',
@@ -171,7 +177,8 @@ class Registration extends React.Component {
             Race__c: '',
             Street__c: '',
             Unit_Number__c: '',
-            Occupation__c: '',	
+            Occupation__c: '',
+            Office_Number__c: '',	
             Other_Marital_Status__c: '',
             Other_Nationality__c: '',
             Other_Race__c: '',
@@ -204,7 +211,11 @@ class Registration extends React.Component {
     componentDidMount() {
         this.props.getSalesforceToken(() => {
         }).then(() => {
-            Promise.all([this.props.getPostalCodeRecord(()=>{}), this.props.getSchoolList(()=>{})]).then(()=>{
+            Promise.all([
+                this.props.getPostalCodeRecord(()=>{}),
+                this.props.getSchoolList(()=>{}),
+                this.props.getApplyingToList(()=>{})
+            ]).then(()=>{
                 const postalCodeOption = []
                 this.props.salesforce.postalCodeRecord.fields.records.map((pc_list, idx) => {
                 postalCodeOption.push({
@@ -220,12 +231,21 @@ class Registration extends React.Component {
                 const schoolMap = {}
                 this.props.salesforce.schoolList.fields.records.map((field) => {
                     schoolList.push({type: field.Partner_SubType__c, value: field.Id, label: field.Name })
-                    levelSchoolMap.push({[field.Name] : field.Partner_SubType__c})
-                    schoolMap[field.Id] = field.Name
+                    
                 })
                 this.state.schoolList = schoolList
-                this.state.levelSchoolMap = levelSchoolMap
-                this.setState({schoolMap: schoolMap});
+
+                const applyingToList = []
+                this.props.salesforce.applyingToList.fields.records.map((atlItem) => {
+                    applyingToList.push({type: atlItem.Partner_Type__c, value: atlItem.Id, label: atlItem.Name})
+                    levelSchoolMap.push({[atlItem.Name] : atlItem.Partner_SubType__c})
+                    schoolMap[atlItem.Id] = atlItem.Name
+                });
+                this.state.applyingToList = applyingToList;
+                this.state.levelSchoolMap = levelSchoolMap;
+                this.state.schoolMap = schoolMap;
+                this.forceUpdate();
+                // this.setState({schoolMap: schoolMap});
             }) 
             this.retrieve('Person__c/describe').then((json)=>{
                 const fields = json.fields
@@ -403,6 +423,7 @@ class Registration extends React.Component {
             Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
             Applying_to_Level_Year__c: this.state.Applying_to_Level_Year__c,
             Company__c: this.state.Company__c,
+            Contact_Number__c: this.state.Contact_Number__c,
             Current_Level__c: this.state.Current_Level__c,
             Current_School__c: this.state.Current_Level__c,
             Email_Address__c: this.state.Email_Address__c,
@@ -418,7 +439,8 @@ class Registration extends React.Component {
             Mobile_Phone__c: this.state.Mobile_Phone__c,
             Monthly_Gross_Income__c: this.state.Monthly_Gross_Income__c,
             Nationality__c: this.state.Nationality__c,
-            Occupation__c: this.state.Occupation__c,	
+            Occupation__c: this.state.Occupation__c,
+            Office_Number__c: this.state.Office_Number__c,
             Other_Marital_Status__c: this.state.Other_Marital_Status__c,
             Other_Nationality__c: this.state.Other_Nationality__c,
             Other_Race__c: this.state.Other_Race__c,
@@ -432,9 +454,6 @@ class Registration extends React.Component {
         };
         if ( this.state.Date_of_Birth__c !== ''){
             personData.Date_of_Birth__c = this.state.Date_of_Birth__c
-        }
-        if (this.state.Employment_End_Date__c !== '') {
-            personData.Employment_End_Date__c = this.state.Employment_End_Date__c
         }
         if (this.state.Employment_Start_Date__c !== ''){
             personData.Employment_Start_Date__c = this.state.Employment_Start_Date__c
@@ -682,6 +701,7 @@ const mapDispatchToProps = dispatch => (
         getPostalCodeRecord,
         getPersonField,
         getSchoolList,
+        getApplyingToList,
         getApplicationField,
     }, dispatch)
 );

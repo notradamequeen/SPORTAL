@@ -2,6 +2,9 @@
     background-color: white;
     /* #f7f5f2; */
 }
+.portal {
+    background-color: #f3f3f1;
+}
 .x_panel {
     padding: 5 10 5 10;
     border-radius: 15px;
@@ -57,23 +60,38 @@ a .menu-item:hover {
 }
 
 hr {
-    height: 2px;
-    color: #818181;
+    border: solid 0.7px;
+    color: #333333;
 }
 .icon-big {
     padding-left: 60px;
     padding-top: 10px;
 }
+.icon-big .yellow i.ti-user::before {
+    color: #ffcc00;
+}
 .numbers {
     padding-right: 60px;
     padding-top: 20px;
+    color: #333333;
 }
 .numbers p {
     font-size: 0.8em;
     text-align: right;
+}
+.numbers h3 {
+    font-size: 1.5em;
+    text-align: right;
+}
+.tb-content p {
+    color: #4d4d4d;
+    font-size: 0.75em;
+    padding-left: 20%;
+    padding-right: auto;
 }
 
 p.normal {
     font-size: 0.7em;
     text-align: center;
 }
+

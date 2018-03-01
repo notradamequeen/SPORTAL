@@ -119,10 +119,11 @@ class Tab4 extends React.Component {
         this.props.changeState('Hou', HouList);
     }
     uploadHouFile(event){
+        const houIdx = Number(event.target.id.match(/\d+/)[0])
         const hou = this.props.data.Hou[Number(event.target.id.match(/\d+/)[0])]
         const name = event.target.name
         const file = event.target.files[0]
-        const prefixFile = {file1: 'Nric_Fin_', file2: 'Income_Receipt_'}
+        const prefixFile = {file1: 'Nric_Fin_', file2: 'Income_Receipt_', file3:'income_receipt_'}
         const fileName = prefixFile[event.target.name] + file.name.replace(/ |-/g, '_')
         const attachment = {
             Name: fileName,
@@ -133,6 +134,7 @@ class Tab4 extends React.Component {
             attachment.Body = encodedFile.split(',')[1]
             hou['attachment'][name] = attachment
         });
+        document.getElementById(`${event.target.name}Name${houIdx}`).innerHTML = file.name;
         console.log(hou)
     }
 
@@ -161,12 +163,12 @@ class Tab4 extends React.Component {
                 {Array.apply(0, Array(this.state.houCount)).map(function (x, i) {
                     return (
                         <div className="fullh" key={i.toString()}>
-                            <div className="row ">
+                        <div className="row ">
                             <br />
                             <p><b>{i == 0 ? 'Main Applicant' : 'Member - ' + i.toString() }</b></p>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>Name <small>(required)</small></label>
+                                    <label>Name <small className="red">(required)</small></label>
                                     {i == 0 ? 
                                         <input
                                             onChange={updateMain}
@@ -191,7 +193,7 @@ class Tab4 extends React.Component {
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>NRIC</label>
+                                    <label>NRIC <small className="red">(required)</small></label>
                                     {i == 0 ? 
                                         <div>
                                         <input
@@ -222,6 +224,157 @@ class Tab4 extends React.Component {
                                     
                                 </div>
                             </div>
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Date of Birth <small className="red">(required)</small></label>
+                                    {i == 0 ? 
+                                        <DatePicker
+                                            name="Date_of_Birth__c"
+                                            selected={props.data.Date_of_Birth__c !== '' ?
+                                                moment(props.data.Date_of_Birth__c) : ''}
+                                            dateFormat="DD/MM/YYYY"
+                                            onChange={handleDOBChange} 
+                                            placeholderText="Date of Birth"
+                                            className="form-control fullw"
+                                            scrollableYearDropdown
+                                            showYearDropdown
+                                            showMonthDropdown
+                                            disabled
+                                        /> :
+                                        <DatePicker
+                                            name="Date_of_Birth__c"
+                                            selected={
+                                                props.data.Hou[i].data.Date_of_Birth__c ?
+                                                moment(props.data.Hou[i].data.Date_of_Birth__c) : ''
+                                            }
+                                            dateFormat="DD/MM/YYYY"
+                                            onChange={date => {
+                                                const newDate = date.format("YYYY-MM-DD").toString()
+                                                props.data.Hou[i].data.Date_of_Birth__c = newDate
+                                                that.forceUpdate();}}
+                                            placeholderText="Date of Birth"
+                                            className="form-control fullw"
+                                            scrollableYearDropdown
+                                            showYearDropdown
+                                            showMonthDropdown
+                                        />
+                                    }
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        {/* row 2 */}
+                        <div className="row ">
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Gender <small className="red">(required)</small></label>
+                                    {i == 0 ? 
+                                        <select
+                                            onChange={updateMain}
+                                            name="Gender__c"
+                                            id={`Hou${i}[Gender__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            value={props.data.Gender__c}
+                                            disabled
+                                        >
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                        :
+                                        <select
+                                            onChange={update}
+                                            name="Gender__c"
+                                            id={`Hou${i}[Gender__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Gender"
+                                        >
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Race <small className="red">(required)</small></label>
+                                    {i == 0 ? 
+                                        <select
+                                            onChange={updateMain}
+                                            name="Race__c"
+                                            id={`Hou${i}[Race__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Race"
+                                            value={props.data.Race__c}
+                                            disabled
+                                        >
+                                        {props.data.raceList !== undefined && props.data.raceList.map((raceItem) => {
+                                            return (
+                                                <option key={raceItem.value} value={raceItem.value}>{raceItem.label}</option>
+                                            );
+                                        })}
+                                        </select>
+                                        :
+                                        <select
+                                            onChange={update}
+                                            name="Race__c"
+                                            id={`Hou${i}[Race__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Race"
+                                        >
+                                        {props.data.raceList !== undefined && props.data.raceList.map((raceItem) => {
+                                            return (
+                                                <option key={raceItem.value} value={raceItem.value}>{raceItem.label}</option>
+                                            );
+                                        })}
+                                        </select>
+                                    }  
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Nationality <small className="red">(required)</small></label>
+                                    {i == 0 ? 
+                                        <select
+                                            onChange={updateMain}
+                                            name="Nationality__c"
+                                            id={`Hou${i}[Nationality__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nationality"
+                                            value={props.data.Nationality__c}
+                                            disabled
+                                        >
+                                        {props.data.nationList !== undefined && props.data.nationList.map((raceItem) => {
+                                            return (
+                                                <option key={raceItem.value} value={raceItem.value}>{raceItem.label}</option>
+                                            );
+                                        })}
+                                        </select>
+                                        :
+                                        <select
+                                            onChange={update}
+                                            name="Nationality__c"
+                                            id={`Hou${i}[Nationality__c]`}
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Nationality"
+                                        >
+                                        {props.data.nationList !== undefined && props.data.nationList.map((raceItem) => {
+                                            return (
+                                                <option key={raceItem.value} value={raceItem.value}>{raceItem.label}</option>
+                                            );
+                                        })}
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        {/* row 3 */}
+                        <div className="row">
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Relationship to Applicant</label>
@@ -257,50 +410,15 @@ class Tab4 extends React.Component {
                                     }
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
+                            {/* Monthly Gross Income */}
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>Date of Birth</label>
-                                    {i == 0 ? 
-                                        <DatePicker
-                                            name="Date_of_Birth__c"
-                                            selected={props.data.Date_of_Birth__c !== '' ?
-                                                moment(props.data.Date_of_Birth__c) : ''}
-                                            dateFormat="DD/MM/YYYY"
-                                            onChange={handleDOBChange} 
-                                            placeholderText="Date of Birth"
-                                            className="form-control fullw"
-                                            showYearDropdown
-                                            showMonthDropdown
-                                            disabled
-                                        /> :
-                                        <DatePicker
-                                            name="Date_of_Birth__c"
-                                            selected={
-                                                props.data.Hou[i].data.Date_of_Birth__c ?
-                                                moment(props.data.Hou[i].data.Date_of_Birth__c) : ''
-                                            }
-                                            dateFormat="DD/MM/YYYY"
-                                            onChange={date => {
-                                                const newDate = date.format("YYYY-MM-DD").toString()
-                                                props.data.Hou[i].data.Date_of_Birth__c = newDate
-                                                that.forceUpdate();}}
-                                            placeholderText="Date of Birth"
-                                            className="form-control fullw"
-                                            showYearDropdown
-                                            showMonthDropdown
-                                        />
-                                    }
-                                    
-                                </div>
-                            </div>
-                            <div className="col-sm-4">
-                                <div className="form-group">
-                                    <label>Gross Monthly Income <a href="#" data-toggle="tooltip" title="The gross household income of the individual">
-                                        <img src={require('../../assets/img/question.png')} width="15px" /></a>
-                                    </label>
-                                    {i == 0 ? 
+                                    {i == 0 ?
+                                        <div>
+                                        <label>Gross Monthly Income {props.data.Employment_Status__c !== 'Unemployed' && <small className="red">(required)</small>}
+                                            <a href="#" data-toggle="tooltip" title="The gross household income of the individual">
+                                            <img src={require('../../assets/img/question.png')} width="15px" /></a>
+                                        </label>
                                         <input
                                             onChange={updateMain}
                                             name="Monthly_Gross_Income__c"
@@ -311,7 +429,12 @@ class Tab4 extends React.Component {
                                             value = {props.data.Employment_Status__c == 'Unemployed' ? 0 : 
                                                 props.data.Monthly_Gross_Income__c}
                                             disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
-                                        /> :
+                                        /></div> :
+                                        <div>
+                                        <label>Gross Monthly Income {props.data.Hou[i].data.Employment_Status__c !== 'Unemployed' && <small className="red">(required)</small>}
+                                            <a href="#" data-toggle="tooltip" title="The gross household income of the individual">
+                                            <img src={require('../../assets/img/question.png')} width="15px" /></a>
+                                        </label>
                                         <input
                                             onChange={update}
                                             name="Monthly_Gross_Income__c"
@@ -322,9 +445,8 @@ class Tab4 extends React.Component {
                                             value = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? 0 : 
                                                 props.data.Hou[i].data.Monthly_Gross_Income__c}
                                             disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
-                                        />
-                                    }
-                                    
+                                        /></div>
+                                    }  
                                 </div>
                             </div>
                             <div className="col-sm-4">
@@ -367,26 +489,32 @@ class Tab4 extends React.Component {
                             </div>
                         </div>
                         <div className="row">
+                            {/* Occupation */}
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>Occupation</label>
-                                    {i == 0 ? 
+                                    {i == 0 ?
+                                        <div>
+                                        <label>Occupation {props.data.Employment_Status__c !== 'Unemployed' && <small className="red">(required)</small>}</label>
                                         <input
                                             onChange={updateMain}
                                             name="Occupation__c"
                                             id={`Hou${i}[Occupation__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Occupation__c" 
-                                        /> :
+                                            placeholder="Occupation__c"
+                                            disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
+                                        /></div> :
+                                        <div>
+                                        <label>Occupation {props.data.Hou[i].Employment_Status__c !== 'Unemployed' && <small className="red">(required)</small>}</label>
                                         <input
                                             onChange={update}
                                             name="Occupation__c"
                                             id={`Hou${i}[Occupation__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Occupation__c" 
-                                        />
+                                            placeholder="Occupation__c"
+                                            disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
+                                        /></div>
                                     }  
                                 </div>
                             </div>
@@ -400,7 +528,8 @@ class Tab4 extends React.Component {
                                             id={`Hou${i}[Company__c]`}
                                             type="text"
                                             className="form-control"
-                                            placeholder="Company" 
+                                            placeholder="Company"
+                                            disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
                                         /> :
                                         <input
                                             onChange={update}
@@ -409,6 +538,7 @@ class Tab4 extends React.Component {
                                             type="text"
                                             className="form-control"
                                             placeholder="Company"
+                                            disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
                                         />
 
                                     }
@@ -428,8 +558,10 @@ class Tab4 extends React.Component {
                                             onChange={handleStartDateChange} 
                                             placeholderText="Employment Start Date"
                                             className="form-control fullw"
+                                            scrollableYearDropdown
                                             showYearDropdown
                                             showMonthDropdown
+                                            disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
                                         /> :
                                         <DatePicker
                                             name="Employment_Start_Date__c"
@@ -448,8 +580,10 @@ class Tab4 extends React.Component {
                                             }} 
                                             placeholderText="Employment Start Date"
                                             className="form-control fullw"
+                                            scrollableYearDropdown
                                             showYearDropdown
                                             showMonthDropdown
+                                            disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
                                         />
                                     }
                                     
@@ -457,7 +591,7 @@ class Tab4 extends React.Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-sm-4">
+                            {/* <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Employment End Date</label>
                                     {i == 0 ? 
@@ -470,6 +604,7 @@ class Tab4 extends React.Component {
                                             onChange={handleEndDateChange} 
                                             placeholderText="Employment End Date"
                                             className="form-control fullw"
+                                            scrollableYearDropdown
                                             showYearDropdown
                                             showMonthDropdown
                                         /> :
@@ -487,15 +622,16 @@ class Tab4 extends React.Component {
                                                 that.forceUpdate();}}
                                             placeholderText="Employment End Date"
                                             className="form-control fullw"
+                                            scrollableYearDropdown
                                             showYearDropdown
                                             showMonthDropdown
                                         />
                                     }
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <br />
+                                    <label>Upload NRIC/Birth Cert Number</label><br /> 
                                     <label className="fileContainer">
                                         Choose File
                                         <input
@@ -505,16 +641,18 @@ class Tab4 extends React.Component {
                                             className="form-control-file"
                                             id={`Hou${i}[nric_fin_file]`}
                                             aria-describedby="fh1" />
-                                    </label>&nbsp;<span id={`file1Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    </label>
+                                    <br />
+                                    &nbsp;<span id={`file1Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
                                     <br />
                                     <label>
-                                        <small id="fileHelp1" className="form-text text-muted">Upload NRIC / FIN, format: jpg, png, pdf only </small>
+                                        <small id="fileHelp1" className="form-text text-muted">jpg, png, pdf only </small>
                                     </label>
                                 </div>
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <br/>
+                                    <label>Upload Income Statement Receipt</label><br />
                                     <label className="fileContainer">
                                         Choose File
                                         <input
@@ -524,10 +662,33 @@ class Tab4 extends React.Component {
                                             className="form-control-file"
                                             id={`Hou${i}[income_receipt_file]`}
                                             aria-describedby="gh1" />
-                                    </label>&nbsp;<span id={`file1Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    </label>
+                                    <br/>
+                                    &nbsp;<span id={`file2Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
                                     <br/>
                                     <label>
-                                        <small id="gh1" className="form-text text-muted">Income Statement Receipt,  format: jpg, png, pdf only </small>
+                                        <small id="gh1" className="form-text text-muted">format: jpg, png, pdf only </small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Upload Payslip</label><br />
+                                    <label className="fileContainer">
+                                        Choose File
+                                        <input
+                                            onChange={that.uploadHouFile}
+                                            type="file"
+                                            name="file3"
+                                            className="form-control-file"
+                                            id={`Hou${i}[payslip]`}
+                                            aria-describedby="fh1" />
+                                    </label>
+                                    <br/>
+                                        &nbsp;<span id={`file3Name${i}`} style={{fontSize: "10pt", fontWeight: "bold"}}></span>
+                                    <br />
+                                    <label>
+                                        <small id="fileHelp1" className="form-text text-muted"> format: jpg, png, pdf only </small>
                                     </label>
                                 </div>
                             </div>
@@ -540,7 +701,7 @@ class Tab4 extends React.Component {
                     <button onClick={this.addCount} className="btn btn-primary">Add more household member</button>
                 </center>
                 <br />
-                <hr />
+                <hr className="dashed" />
                 <div className="row">	
                     <div className="col-sm-12">
                         <div className="form-group">

@@ -18,6 +18,7 @@ class Success extends React.Component {
         this.generateFormPdf = this.generateFormPdf.bind(this)
     }
     componentDidMount() {
+        console.log(this.props.data.schoolMap)
         let beneficiaries = []
         this.props.data.Ben.map((benData) => {
             beneficiaries.push(benData.data.Full_Name__c);
@@ -57,47 +58,89 @@ class Success extends React.Component {
                 {/* Tab 1 Content */}
                 <div className="col-md-12" style={{ marginTop: "40px"}}>
                     <h4 className="info-text">Eligibility Criteria</h4>
-                    <ul className="ulnone">
-                        <li>
-                            <input 
-                                type="checkbox"
-                                name="check4" 
-                                id="check4"
-                                checked />
-                            Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)</li>
-                        <li>
-                            <input 
-                                type="checkbox"
-                                name="check5"
-                                id="check5"
-                                checked />
-                            Family is living in a 4-room HDB flat or smaller</li>
-                        <li>
-                            <input type="checkbox" name="check6" id="check6" checked />
-                            Family has a gross per capita income (PCI) of $625/ month or less</li>
-                        <li>
-                            <input type="checkbox" name="check7" id="check7" checked /> 
-                            Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme</li>
-                        <li>
-                            <input type="checkbox" name="check8" id="check8" checked /> 
-                            Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme</li>
-                        <li>
-                            <input type="checkbox" name="check9" id="check9" checked /> 
-                            Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education. </li>
-                        <li>
-                            <input type="checkbox" name="check10" id="check10" checked />  
-                            Student is 20 years or younger at point of application </li>
-                    </ul>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input 
+                                    type="checkbox"
+                                    name="check4" 
+                                    id="check4"
+                                    checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input 
+                                    type="checkbox"
+                                    name="check5"
+                                    id="check5"
+                                    checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Family is living in a 4-room HDB flat or smaller
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check6" id="check6" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Family has a gross per capita income (PCI) of $625/ month or less
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check7" id="check7" checked /> 
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check8" id="check8" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check9" id="check9" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education.
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check10" id="check10" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Student is 20 years or younger at point of application
+                            </div>
+                        </div>
                     <hr />
                     <h4 className="info-text">All completed STSPMF application forms must be attached with the relevant documents listed below:</h4>
-                    <ul className="ulnone">
-                        <li>
-                            <input type="checkbox" name="check1" id="check1" checked />   
-                            Photocopy of student(s)’s NRIC / birth certificate </li>
-                        <li>
-                            <input type="checkbox" name="check2" id="check2" checked /> 
-                            Photocopy of both parents’/ guardian’s NRIC / passport</li>
-                    </ul>
+                    <div className="row">    
+                        <div className="col-sm-1 checkContainer">
+                            <input type="checkbox" name="check1" id="check1" checked />
+                        </div>
+                        <div className="col-sm-11 text-content">
+                            Photocopy of student(s)’s NRIC / birth certificate
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-1 checkContainer">
+                            <input type="checkbox" name="check2" id="check2" checked />
+                        </div>
+                        <div className="col-sm-11 text-content">
+                            Photocopy of both parents’/ guardian’s NRIC / passport
+                        </div>
+                    </div>
+                    <br />
                     <p className="red">STSPMF reserves the right to reject the application if any of the supporting documents is not submitted</p>
                     <br/>
                     <hr />
@@ -109,6 +152,7 @@ class Success extends React.Component {
                     <p><b>Personal Details</b></p>
                     {/* Row 1 */}
                     <div className="row">
+                        {/* FullName */}
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Full Name</p>
@@ -120,6 +164,7 @@ class Success extends React.Component {
                                 <p className="filled">{props.Full_Name__c}</p>
                             </div>
                         </div>
+                        {/* Gender */}
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Gender</p>
@@ -134,6 +179,7 @@ class Success extends React.Component {
                     </div>
                     {/* Row 2 */}
                     <div className="row">
+                        {/* ID Type */}
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>ID Type</p>
@@ -159,6 +205,7 @@ class Success extends React.Component {
                     </div>
                     {/* Row 3 */}
                     <div className="row">
+                        {/* Date of Birth */}
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Date of Birth</p>
@@ -170,15 +217,16 @@ class Success extends React.Component {
                                 <p className="filled">{props.Date_of_Birth__c}</p>
                             </div>
                         </div>
+                        {/* Other Nationality */}
                         <div className="col-sm-6">
                             <div className="col-sm-5">
-                                <p>Race</p>
+                                <p>Other Nationality</p>
                             </div>
                             <div className="col-sm-1">
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p className="filled">{props.Race__c}</p>
+                                <p className="filled">{props.Other_Nationality__c}</p>
                             </div>
                         </div>
                     </div>
@@ -197,13 +245,13 @@ class Success extends React.Component {
                         </div>
                         <div className="col-sm-6">
                             <div className="col-sm-5">
-                                <p>Other Race</p>
+                                <p>Race</p>
                             </div>
                             <div className="col-sm-1">
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p className="filled">{props.Other_Race__c}</p>
+                                <p className="filled">{props.Race__c}</p>
                             </div>
                         </div>
                     </div>
@@ -218,6 +266,17 @@ class Success extends React.Component {
                             </div>
                             <div className="col-sm-6">
                                 <p className="filled">{props.Other_Marital_Status__c}</p>
+                            </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Other Race</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Other_Race__c}</p>
                             </div>
                         </div>
                     </div>
@@ -318,13 +377,13 @@ class Success extends React.Component {
                     <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
-                                <p>Home Phone</p>
+                                <p>Contact Number</p>
                             </div>
                             <div className="col-sm-1">
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p className="filled">{props.Home_Phone__c}</p>
+                                <p className="filled">{props.Contact_Number__c}</p>
                             </div>
                         </div>
                         <div className="col-sm-6">
@@ -343,7 +402,32 @@ class Success extends React.Component {
                     <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
-                                <p>Email Address</p>
+                                <p>Home Phone</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Home_Phone__c}</p>
+                            </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Office Phone</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Office_Number__c}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Row 12 */}
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Email</p>
                             </div>
                             <div className="col-sm-1">
                                 :
@@ -412,6 +496,31 @@ class Success extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <p className="filled">{benData.data.Race__c}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Gender - Nationality */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Gender</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Gender__c}</p>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
+                                            <p>Nationality</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Nationality__c}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -526,11 +635,11 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Full_Name__c}</p>
+                                <p className="filled">{props.Full_Name__c}</p>
                             </div>
                         </div>
                     </div>
-                    {/* Main Applicant Date of Birth - Relationship to Applicant */}
+                    {/* Main Applicant Date of Birth - Race */}
                     <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
@@ -540,9 +649,48 @@ class Success extends React.Component {
                                 :
                             </div>
                             <div className="col-sm-6">
-                                <p>{props.Date_of_Birth__c}</p>
+                                <p className="filled">{props.Date_of_Birth__c}</p>
                             </div>
                         </div>
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Race</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Race__c}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Main Applicant Gender - Nationality */}
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Gender</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Gender__c}</p>
+                            </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Nationality</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Nationality__c}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Main Applicant Relationship To Applicant - Gross Monthly Income */}
+                    <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Relationship to Applicant</p>
@@ -554,9 +702,6 @@ class Success extends React.Component {
                                 <p className="filled">{props.Relationship_to_Applicant__c}</p>
                             </div>
                         </div>
-                    </div>
-                    {/* Main Applicant - Gross Monthly Income - Employment Status */}
-                    <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Gross Monthly Income</p>
@@ -568,6 +713,9 @@ class Success extends React.Component {
                                 <p className="filled">{props.Gross_Monthly_Income__c}</p>
                             </div>
                         </div>
+                    </div>
+                    {/* Main Applicant - Employment Status - Employment Start Date */}
+                    <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
                                 <p>Employment Status</p>
@@ -577,6 +725,17 @@ class Success extends React.Component {
                             </div>
                             <div className="col-sm-6">
                                 <p className="filled">{props.Employment_Status__c}</p>
+                            </div>
+                        </div>
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Employment Start Date</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Employment_Start_Date__c}</p>
                             </div>
                         </div>
                     </div>
@@ -605,32 +764,7 @@ class Success extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {/* Employment Start Date - Employment End Date */}
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <div className="col-sm-5">
-                                <p>Employment Start Date</p>
-                            </div>
-                            <div className="col-sm-1">
-                                :
-                            </div>
-                            <div className="col-sm-6">
-                                <p className="filled">{props.Employment_Start_Date__c}</p>
-                            </div>
-                        </div>
-                        <div className="col-sm-6">
-                            <div className="col-sm-5">
-                                <p>Employment End Date</p>
-                            </div>
-                            <div className="col-sm-1">
-                                :
-                            </div>
-                            <div className="col-sm-6">
-                                <p className="filled">{props.Employment_End_Date__c}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Uploaded File */}
+                    {/* Uploaded File NRIC and Income Receipt*/}
                     <div className="row">
                         <div className="col-sm-6">
                             <div className="col-sm-5">
@@ -652,6 +786,20 @@ class Success extends React.Component {
                             </div>
                             <div className="col-sm-6">
                                 <p className="filled">{props.Hou[0].attachment.file2 ? props.Hou[0].attachment.file2.Name : ''}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Uploaded File Payslip*/}
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <div className="col-sm-5">
+                                <p>Payslip Uploaded File</p>
+                            </div>
+                            <div className="col-sm-1">
+                                :
+                            </div>
+                            <div className="col-sm-6">
+                                <p className="filled">{props.Hou[0].attachment.file3 ? props.Hou[0].attachment.file3.Name : ''}</p>
                             </div>
                         </div>
                     </div>
@@ -688,7 +836,7 @@ class Success extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* Hou Date of Birth - Relationship to Applicant */}
+                                    {/* Hou Date of Birth - Race */}
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="col-sm-5">
@@ -703,6 +851,45 @@ class Success extends React.Component {
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="col-sm-5">
+                                                <p>Race</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Race__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Hou Gender - Nationality */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Gender</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Gender__c}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Nationality</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Nationality__c}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Hou - Relationship to Applicant - Gross Monthly Income */}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
                                                 <p>Relationship to Applicant</p>
                                             </div>
                                             <div className="col-sm-1">
@@ -712,9 +899,6 @@ class Success extends React.Component {
                                                 <p className="filled">{houData.data.Relationship_to_Applicant__c}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    {/* Hou - Gross Monthly Income - Employment Status */}
-                                    <div className="row">
                                         <div className="col-sm-6">
                                             <div className="col-sm-5">
                                                 <p>Gross Monthly Income</p>
@@ -726,6 +910,9 @@ class Success extends React.Component {
                                                 <p className="filled">{houData.data.Gross_Monthly_Income__c}</p>
                                             </div>
                                         </div>
+                                    </div>
+                                    {/* Hou - Employment Status - Employment Start Date */}
+                                    <div className="row">
                                         <div className="col-sm-6">
                                             <div className="col-sm-5">
                                                 <p>Employment Status</p>
@@ -735,6 +922,17 @@ class Success extends React.Component {
                                             </div>
                                             <div className="col-sm-6">
                                                 <p className="filled">{houData.data.Employment_Status__c}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Employment Start Date</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.data.Employment_Start_Date__c}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -763,31 +961,6 @@ class Success extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* Employment Start Date - Employment End Date */}
-                                    <div className="row">
-                                        <div className="col-sm-6">
-                                            <div className="col-sm-5">
-                                                <p>Employment Start Date</p>
-                                            </div>
-                                            <div className="col-sm-1">
-                                                :
-                                            </div>
-                                            <div className="col-sm-6">
-                                                <p className="filled">{houData.data.Employment_Start_Date__c ? houData.data.Employment_Start_Date__c : ''}</p>
-                                            </div>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <div className="col-sm-5">
-                                                <p>Employment End Date</p>
-                                            </div>
-                                            <div className="col-sm-1">
-                                                :
-                                            </div>
-                                            <div className="col-sm-6">
-                                                <p className="filled">{houData.data.Employment_End_Date__c ? houData.data.Employment_End_Date__c : ''}</p>
-                                            </div>
-                                        </div>
-                                    </div>
                                     {/* Uploaded File */}
                                     <div className="row">
                                         <div className="col-sm-6">
@@ -810,6 +983,20 @@ class Success extends React.Component {
                                             </div>
                                             <div className="col-sm-6">
                                                 <p className="filled">{houData.attachment.file2 ? houData.attachment.file2.Name : ''}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Uploaded File Payslip*/}
+                                    <div className="row">
+                                        <div className="col-sm-6">
+                                            <div className="col-sm-5">
+                                                <p>Payslip Uploaded File</p>
+                                            </div>
+                                            <div className="col-sm-1">
+                                                :
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <p className="filled">{houData.attachment.file3 ? houData.attachment.file3.Name : ''}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -837,23 +1024,54 @@ class Success extends React.Component {
                     <div className="row">
                         <br />
                         <h4 className="info-text">Declaration of consent</h4>
-                        <ol>
-                            <li> I, <span className="span_name"></span> {props.Full_Name__c}, I/C No <span className="span_nric"></span> {props.ID_Number__c}, declare that [my child/children/ward (s)] is/are currently NOT receiving The Straits Times School Pocket Money Fund (STSPMF) from any other STSPMF disbursing agency/school and have not applied for STSPMF at another disbursing agency/school.</li>
-                            <li> 1.	I declare that {this.state.beneficiaries.toString()} is/are NOT receiving other similar monthly pocket money schemes excluding MOE FAS.</li>
-                            <li> I acknowledge that for the purpose of facilitating my application for the STSPMF, that is administered by the STSPMF through disbursing agencies and schools,
-                                <ol className="alphabet">
-                                    <li> any and all agencies and schools that have any of my prior financial assistance or social assistance records may share the relevant information with STSPMF.</li>
-                                    <li> that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any agency or persons authorised by The Straits Times School Pocket Money Fund for the purpose of rendering me or assessing my eligibility for financial or other assistance in future occasions; or for research studies in which I, as a specific individual, shall not be identified; or for any other purpose prescribed or permitted under Singapore law. </li>
-                                </ol>
-                            </li>
-                            {/* </p> */}
-                            <li> I acknowledge that the information I have provided is accurate. I understand that [my children / my ward(s)] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery. 
-                                </li>
-                            <li> I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.</li>
-                            <li> I am aware that the STSPMF assistance is given for the benefit of [children/ ward(s)], for use as pocket money in school.
-                                </li>
-                            
-                        </ol>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">1.</div>
+                            <div className="col-sm-11 text-content-consent">
+                                I, <span className="span_name"></span> {props.Full_Name__c}, I/C No <span className="span_nric"></span> {props.ID_Number__c}, declare that [my child/children/ward (s)] is/are currently NOT receiving The Straits Times School Pocket Money Fund (STSPMF) from any other STSPMF disbursing agency/school and have not applied for STSPMF at another disbursing agency/school.
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">2.</div>
+                            <div className="col-sm-11 text-content-consent">
+                               1. I declare that {this.state.beneficiaries.toString()} is/are NOT receiving other similar monthly pocket money schemes excluding MOE FAS.
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">3.</div>
+                            <div className="col-sm-11 text-content-consent">
+                                I acknowledge that for the purpose of facilitating my application for the STSPMF, that is administered by the STSPMF through disbursing agencies and schools,
+                                <div className="row">
+                                    <div className="col-sm-1 checkContainer">a)</div>
+                                    <div className="col-sm-11 text-content-consent">
+                                        any and all agencies and schools that have any of my prior financial assistance or social assistance records may share the relevant information with STSPMF.
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-1 checkContainer">b)</div>
+                                    <div className="col-sm-11 text-content-consent">
+                                        that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any agency or persons authorised by The Straits Times School Pocket Money Fund for the purpose of rendering me or assessing my eligibility for financial or other assistance in future occasions; or for research studies in which I, as a specific individual, shall not be identified; or for any other purpose prescribed or permitted under Singapore law. 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">4.</div>
+                            <div className="col-sm-11 text-content-consent"> 
+                                I acknowledge that the information I have provided is accurate. I understand that [my children / my ward(s)] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery. 
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">5.</div>
+                            <div className="col-sm-11 text-content-consent">
+                                I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">6.</div>
+                            <div className="col-sm-11 text-content-consent"> 
+                                I am aware that the STSPMF assistance is given for the benefit of [children/ ward(s)], for use as pocket money in school.
+                            </div>   
+                        </div>
                     </div>
                     <div className="row">
                         <h4 className="info-text">MEDIA COVERAGE </h4>

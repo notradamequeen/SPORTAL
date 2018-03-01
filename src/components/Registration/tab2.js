@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-
+import '../../assets/css/form-style.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class Tab2 extends React.Component {
@@ -55,9 +55,12 @@ class Tab2 extends React.Component {
 
     pc_handleChange = (selectedPC) => {
         const selectedAddress = this.props.salesforce.postalCodeRecord.fields.records[selectedPC.key]
+        console.log('pc', selectedAddress)
+        this.props.changeState('Postal__c', selectedPC.value)
+        this.props.changeState('Street__c', selectedAddress.Street__c)
+        this.props.changeState('Blok__c', selectedAddress.Block__c)
+        this.props.changeState('Blok__c', selectedAddress.Country__c)
         this.setState({ selectedPC, selectedAddress });
-
-        console.log(selectedAddress);
     }
     ms_handleChange(selectedMS){
         if (selectedMS.value == "Others"){
@@ -154,7 +157,8 @@ class Tab2 extends React.Component {
                label: pc_list.Name});
         });
         this.state.postal_code = postalCodeOption
-
+        this.forceUpdate();
+        console.log('tab 2', this.state)
     }
     render() {
         return (
@@ -169,7 +173,7 @@ class Tab2 extends React.Component {
                             <input name="Full_Name__c" id="Full_Name__c" type="text" className="form-control" placeholder="Fullname" onChange={this.handleInputChange}  />
                         </div>
                         <div className="form-group">
-                            <label>ID Type</label>
+                            <label>ID Type <small className="red">(required)</small></label>
                             <select 
                                 id="ID_Type__c"
                                 name="ID_Type__c"
@@ -196,7 +200,7 @@ class Tab2 extends React.Component {
                             <span id="nric_error" style={{color: "red"}}></span>
                         </div>
                         <div className="form-group">
-                            <label>Date of Birth </label>
+                            <label>Date of Birth <small className="red">(required)</small></label>
                             <DatePicker
                                 name="Date_of_Birth__c"
                                 selected={this.state.dob}
@@ -204,12 +208,13 @@ class Tab2 extends React.Component {
                                 onChange={this.handleDOBChange} 
                                 placeholderText="Date of Birth"
                                 className="form-control fullw"
+                                scrollableYearDropdown
                                 showYearDropdown
                                 showMonthDropdown
                             />
                         </div>
                         <div className="form-group">
-                            <label>Marital Status </label>
+                            <label>Marital Status <small className="red">(required)</small></label>
                             <Select
                                 name="Marital_Status__c" 
                                 ref="Marital_Status__c" 
@@ -223,7 +228,7 @@ class Tab2 extends React.Component {
                         <div className="form-group">
                             <label>Other Marital Status</label>
                             <input 
-                                name="Marital_Status__c"
+                                name="Other_Marital_Status__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="Please Specify" 
@@ -233,14 +238,14 @@ class Tab2 extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Gender </label>
+                            <label>Gender <small className="red">(required)</small></label>
                             <select name="Gender__c" id="Gender__c" className="form-control valid select" aria-invalid="false">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
                         </div>
                         <div className="form-group">
-                            <label>Nationality </label>
+                            <label>Nationality <small className="red">(required)</small></label>
                             <Select
                                 name="Nationality__c" 
                                 ref="Nationality__c" 
@@ -254,14 +259,14 @@ class Tab2 extends React.Component {
                         <div className="form-group" >
                             <label>Other Nationality</label>
                             <input
-                                name="other_nationality"
+                                name="Other_Nationality__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="Please Specify"
                                 disabled={!this.state.otherNation} />
                         </div>
                         <div className="form-group">
-                            <label>Race </label>
+                            <label>Race <small className="red">(required)</small></label>
                             <select
                                 id="Race__c"
                                 name="Race__c"
@@ -281,7 +286,7 @@ class Tab2 extends React.Component {
                         <div className="form-group">
                             <label>Other Race</label>
                             <input
-                                name="other_race"
+                                name="Other_Race__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="Please Specify"
@@ -295,38 +300,38 @@ class Tab2 extends React.Component {
                     <br />
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Postal Code</label>
+                            <label>Postal Code <small className="red">(required)</small></label>
                             {/* <input type="text" name="City__c" id="City__c" className="form-control" placeholder="Please Select Postal Code..." /> */}
                             <Select
-                                name="Postal_Code__c" 
+                                name="Postal__c" 
                                 ref="postal_code" 
                                 id="postalCode" 
                                 onChange={this.pc_handleChange}
-                                options={this.props.data.postal_code}
+                                options={this.state.postal_code}
                                 placeholder="please select postal code"
                                 value={this.state.selectedPC}
                                 required />
                         </div>
                         <div className="form-group">
-                            <label>Street Name</label>
+                            <label>Street Name <small className="red">(required)</small></label>
                             <input 
                                 id="Street__c"
                                 name="Street__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="5h Avenue"
-                                value={this.state.selectedAddress.Street__c}
+                                value={this.props.data.Street__c}
                                 onChange={this.handelAddressChange} />
                         </div>
                         <div className="form-group">
-                            <label>Block Number</label>
+                            <label>Block Number <small className="red">(required)</small></label>
                             <input
                                 id="Block__c"
                                 name="Block__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="242"
-                                value={this.state.selectedAddress.Block__c}
+                                value={this.props.data.Block__c}
                                 onChange={this.handelAddressChange} />
                         </div>
                         <div className="form-group">
@@ -343,7 +348,7 @@ class Tab2 extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Type of Flat  </label>
+                            <label>Type of Flat <small className="red">(required)</small></label>
                             <Select
                                 id="Flat_Type__c" 
                                 name="Flat_Type__c"
@@ -370,7 +375,7 @@ class Tab2 extends React.Component {
                                 type="text"
                                 className="form-control"
                                 placeholder="242"
-                                value={this.state.selectedAddress.Country__c}
+                                value={this.props.data.Country__c}
                                 onChange={this.handelAddressChange} />
                         </div>
                     </div>
@@ -381,10 +386,10 @@ class Tab2 extends React.Component {
                     <br />
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Home Phone <small style={{color:"red"}}>(required)</small></label>
+                            <label>Contact Number <small style={{color:"red"}}>(required)</small></label>
                             <input
-                                name="Home_Phone__c"
-                                id="Home_Phone__c"
+                                name="Contact_Number__c"
+                                id="Contact_Number__c"
                                 type="text"
                                 className="form-control"
                                 placeholder="Home no."
@@ -403,7 +408,29 @@ class Tab2 extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Email Address </label>
+                            <label>Office Phone <small style={{color:"red"}}>(required)</small></label>
+                            <input
+                                name="Office_Number__c"
+                                id="Office_Phone__c"
+                                type="text"
+                                className="form-control"
+                                placeholder="Home no."
+                                onChange={this.handleInputChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Home Phone</label>
+                            <input
+                                name="Home_Phone__c"
+                                id="Home_Phone__c"
+                                type="text"
+                                className="form-control"
+                                placeholder="Mobile no."
+                                onChange={this.handleInputChange} />
+                        </div>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <label>Email Address <small className="red">(required)</small></label>
                             <input
                                 name="Email_Address__c"
                                 id="Email_Address__c"
