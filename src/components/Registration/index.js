@@ -197,7 +197,7 @@ class Registration extends React.Component {
             HouStatusEmployement: ['',],
             isLoading: true,
             fullUrl: '',
-            isSubmitted: false,
+            isSubmitted: true,
         };
         this.onClickNext                = this.onClickNext.bind(this);
         this.onClickPrev                = this.onClickPrev.bind(this);
@@ -419,9 +419,6 @@ class Registration extends React.Component {
     }
     submitApp(){
         let personData = {
-            Applying_to__c: this.state.Applying_to__c,
-            Applying_to_Education_Level__c: this.state.Applying_to_Education_Level__c,
-            Applying_to_Level_Year__c: this.state.Applying_to_Level_Year__c,
             Company__c: this.state.Company__c,
             Contact_Number__c: this.state.Contact_Number__c,
             Current_Level__c: this.state.Current_Level__c,

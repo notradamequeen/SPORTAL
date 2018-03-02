@@ -236,9 +236,9 @@ class Tab4 extends React.Component {
                                             onChange={handleDOBChange} 
                                             placeholderText="Date of Birth"
                                             className="form-control fullw"
-                                            scrollableYearDropdown
-                                            showYearDropdown
                                             showMonthDropdown
+                                            showYearDropdown
+                                            dropdownMode="select"
                                             disabled
                                         /> :
                                         <DatePicker
@@ -254,9 +254,9 @@ class Tab4 extends React.Component {
                                                 that.forceUpdate();}}
                                             placeholderText="Date of Birth"
                                             className="form-control fullw"
-                                            scrollableYearDropdown
-                                            showYearDropdown
                                             showMonthDropdown
+                                            showYearDropdown
+                                            dropdownMode="select"
                                         />
                                     }
                                     
@@ -558,9 +558,9 @@ class Tab4 extends React.Component {
                                             onChange={handleStartDateChange} 
                                             placeholderText="Employment Start Date"
                                             className="form-control fullw"
-                                            scrollableYearDropdown
-                                            showYearDropdown
                                             showMonthDropdown
+                                            showYearDropdown
+                                            dropdownMode="select"
                                             disabled = {props.data.Employment_Status__c == 'Unemployed' ? true : false}
                                         /> :
                                         <DatePicker
@@ -580,9 +580,9 @@ class Tab4 extends React.Component {
                                             }} 
                                             placeholderText="Employment Start Date"
                                             className="form-control fullw"
-                                            scrollableYearDropdown
-                                            showYearDropdown
                                             showMonthDropdown
+                                            showYearDropdown
+                                            dropdownMode="select"
                                             disabled = {props.data.Hou[i].data.Employment_Status__c == 'Unemployed' ? true : false}
                                         />
                                     }

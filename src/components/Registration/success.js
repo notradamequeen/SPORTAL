@@ -57,6 +57,24 @@ class Success extends React.Component {
                 </div>
                 {/* Tab 1 Content */}
                 <div className="col-md-12" style={{ marginTop: "40px"}}>
+                    <h4 className="info-text">All completed STSPMF application forms must be attached with the relevant documents listed below:</h4>
+                        <div className="row">    
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check1" id="check1" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Photocopy of student(s)’s NRIC / birth certificate
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check2" id="check2" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Photocopy of both parents’/ guardian’s NRIC / passport
+                            </div>
+                        </div>
+                    <hr />
                     <h4 className="info-text">Eligibility Criteria</h4>
                         <div className="row">
                             <div className="col-sm-1 checkContainer">
@@ -95,7 +113,7 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check7" id="check7" checked /> 
                             </div>
                             <div className="col-sm-11 text-content">
-                                Is not concurrently receiving School Pocket Money Fund from any other STSPMF disbursing agency/school or any other similar schemes except MOE Financial Assistance Scheme
+                                Student is receiving full-time formal education in a mainstream primary/ secondary/ mixed level/ Junior College/ Centralized institute; Independent; SPED; Institutes of Technical Education; Polytechnic; Specialised; Specialized Independent; MOE-designated full-time Madrasahs and Mountbatten Vocational School
                             </div>
                         </div>
                         <div className="row">
@@ -103,7 +121,7 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check8" id="check8" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                                Is not concurrently receiving School Pocket Money Fund from School or any other similar schemes except MOE Financial Assistance Scheme
+                            Is not concurrent receiving STSPMF or other similar monthly school pocket money schemes (Note that applicant under the MOE Financial Assistance Scheme are eligible)
                             </div>
                         </div>
                         <div className="row">
@@ -111,9 +129,10 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check9" id="check9" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                                Has not been a STSPMF beneficiary for more than 24 months for the whole schooling years of primary and secondary education or more than 48 months for the schooling years of post-secondary education.
+                            Is currently not receiving  STSPMF and has not been a STSPMF beneficiary for 24 months for the whole schooling years of primary and secondary school and 48 months for post-secondary school.[Note: This does not refer to students who are currently receiving fund through their schools and wish to continue receiving fund, subjected to their eligibility]
                             </div>
                         </div>
+                        <h4 className="info-text">Additional criteria for students own JC,ITE or Polytechnic applying for STSPMF</h4>
                         <div className="row">
                             <div className="col-sm-1 checkContainer">
                                 <input type="checkbox" name="check10" id="check10" checked />
@@ -122,24 +141,6 @@ class Success extends React.Component {
                                 Student is 20 years or younger at point of application
                             </div>
                         </div>
-                    <hr />
-                    <h4 className="info-text">All completed STSPMF application forms must be attached with the relevant documents listed below:</h4>
-                    <div className="row">    
-                        <div className="col-sm-1 checkContainer">
-                            <input type="checkbox" name="check1" id="check1" checked />
-                        </div>
-                        <div className="col-sm-11 text-content">
-                            Photocopy of student(s)’s NRIC / birth certificate
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-1 checkContainer">
-                            <input type="checkbox" name="check2" id="check2" checked />
-                        </div>
-                        <div className="col-sm-11 text-content">
-                            Photocopy of both parents’/ guardian’s NRIC / passport
-                        </div>
-                    </div>
                     <br />
                     <p className="red">STSPMF reserves the right to reject the application if any of the supporting documents is not submitted</p>
                     <br/>

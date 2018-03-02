@@ -165,10 +165,9 @@ export function validation(step, data){
     let validFields = []
     let isValid = false;
     if (step == 2){
-        requiredField = ['Full_Name__c', 'ID_Type__c', 'ID_Number__c', 'Home_Phone__c', 'Email_Address__c', 'Postal__c',
+        requiredField = ['Full_Name__c', 'ID_Type__c', 'ID_Number__c', 'Mobile_Phone__c', 'Email_Address__c', 'Postal__c',
                          'Street__c', 'Block__c', 'Flat_Type__c', 'Date_of_Birth__c', 'Marital_Status__c', 'Gender__c', 
-                         'Nationality__c',
-                         'Race__c', 
+                         'Nationality__c','Race__c', 'Contact_Number__c' 
                         ]
         const validStep2 = requiredField.map((step2Field)=>{
             if (step2Field == 'Marital_Status__c' && data[step2Field] == 'Others') {
@@ -190,6 +189,7 @@ export function validation(step, data){
                 return data[step2Field] !== '' && data[step2Field] !== undefined
             }    
         })
+        console.log(validStep2)
         if (!validStep2.includes(false)){
             isValid = true
         }

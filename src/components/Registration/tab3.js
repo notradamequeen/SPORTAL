@@ -154,7 +154,7 @@ class Tab3 extends React.Component {
                             return {value: clItem.value, label: clItem.label}
                         }
                     })
-                    if (subtype == "Junior College")
+                    if (subtype == "Post-Secondary School")
                         this.state.curLevelBySchool = this.props.data.currLevelList.filter((clItem)=>{
                         if(clItem.value.includes("JC")){
                             return {value: clItem.value, label: clItem.label}
@@ -163,7 +163,7 @@ class Tab3 extends React.Component {
                 }
             })
         }
-        
+        console.log(BenList)
         BenList[benIdx]['data'][event.target.name] = value
         this.setState({ 
             Ben: BenList
@@ -254,9 +254,9 @@ class Tab3 extends React.Component {
                                                 that.forceUpdate();}}
                                             placeholderText="Date of Birth"
                                             className="form-control fullw"
-                                            scrollableYearDropdown
-                                            showYearDropdown
                                             showMonthDropdown
+                                            showYearDropdown
+                                            dropdownMode="select"
                                         />
                                 </div>
                             </div>

@@ -7,7 +7,7 @@ import { regexValidate, validateNRIC } from '../../utils/common';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import Select from 'react-select';
-import 'react-select/dist/react-select.css';
+import 'react-select/dist/react-select.min.css';
 import '../../assets/css/form-style.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -54,13 +54,27 @@ class Tab2 extends React.Component {
     }
 
     pc_handleChange = (selectedPC) => {
-        const selectedAddress = this.props.salesforce.postalCodeRecord.fields.records[selectedPC.key]
-        console.log('pc', selectedAddress)
-        this.props.changeState('Postal__c', selectedPC.value)
-        this.props.changeState('Street__c', selectedAddress.Street__c)
-        this.props.changeState('Blok__c', selectedAddress.Block__c)
-        this.props.changeState('Blok__c', selectedAddress.Country__c)
-        this.setState({ selectedPC, selectedAddress });
+        if (selectedPC == null){
+            this.props.changeState('Postal__c', '')
+            this.props.changeState('Street__c', '')
+            this.props.changeState('Blok__c', '')
+            this.props.changeState('Blok__c', '')
+            this.setState({ selectedPC: {}, 
+                selectedAddress: {Street__c: '',
+                    Block__c: '',
+                    Contry__c: '',
+                }
+            });
+        } else {
+            const selectedAddress = this.props.salesforce.postalCodeRecord.fields.records[selectedPC.key]
+            console.log('pc', selectedAddress)
+            this.props.changeState('Postal__c', selectedPC.value)
+            this.props.changeState('Street__c', selectedAddress.Street__c)
+            this.props.changeState('Blok__c', selectedAddress.Block__c)
+            this.props.changeState('Blok__c', selectedAddress.Country__c)
+            this.setState({ selectedPC, selectedAddress });
+        }
+        
     }
     ms_handleChange(selectedMS){
         if (selectedMS.value == "Others"){
@@ -208,9 +222,9 @@ class Tab2 extends React.Component {
                                 onChange={this.handleDOBChange} 
                                 placeholderText="Date of Birth"
                                 className="form-control fullw"
-                                scrollableYearDropdown
-                                showYearDropdown
                                 showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
                             />
                         </div>
                         <div className="form-group">
@@ -319,7 +333,7 @@ class Tab2 extends React.Component {
                                 name="Street__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="5h Avenue"
+                                placeholder="Street Name Ex: 5h Avenue"
                                 value={this.props.data.Street__c}
                                 onChange={this.handelAddressChange} />
                         </div>
@@ -330,7 +344,7 @@ class Tab2 extends React.Component {
                                 name="Block__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="242"
+                                placeholder="Block Number Ex: 242"
                                 value={this.props.data.Block__c}
                                 onChange={this.handelAddressChange} />
                         </div>
@@ -341,7 +355,7 @@ class Tab2 extends React.Component {
                                 name="Unit_Number__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="242"
+                                placeholder="Unit Number Ex: 242"
                                 value={this.props.data.Unit_Number__c ? this.props.data.Unit_Number__c : ''}
                                 onChange={this.handleInputChange} />
                         </div>
@@ -392,7 +406,7 @@ class Tab2 extends React.Component {
                                 id="Contact_Number__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Home no."
+                                placeholder="Contact Number"
                                 onChange={this.handleInputChange} />
                         </div>
                         <div className="form-group">
@@ -408,13 +422,13 @@ class Tab2 extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <div className="form-group">
-                            <label>Office Phone <small style={{color:"red"}}>(required)</small></label>
+                            <label>Office Phone</label>
                             <input
                                 name="Office_Number__c"
                                 id="Office_Phone__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Home no."
+                                placeholder="Office Phone"
                                 onChange={this.handleInputChange} />
                         </div>
                         <div className="form-group">
@@ -424,7 +438,7 @@ class Tab2 extends React.Component {
                                 id="Home_Phone__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Mobile no."
+                                placeholder="Home Phone"
                                 onChange={this.handleInputChange} />
                         </div>
                     </div>
@@ -434,7 +448,7 @@ class Tab2 extends React.Component {
                             <input
                                 name="Email_Address__c"
                                 id="Email_Address__c"
-                                type="email"
+                                type="text"
                                 className="form-control"
                                 placeholder="Email address"
                                 onChange={this.handleInputChange} />
