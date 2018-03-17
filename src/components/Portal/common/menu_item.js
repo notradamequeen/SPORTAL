@@ -18,7 +18,7 @@ class MenuItem extends React.Component {
                         </a>
                     </li>
                     <li >
-                        <a href="#" className="menu-item">
+                        <a href="/portal/applications" className="menu-item">
                             <i className="fa fa-list-ul"></i> Applications
                         </a>
                     </li>

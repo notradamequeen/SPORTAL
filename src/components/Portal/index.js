@@ -4,6 +4,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import SideMenu from './common/side_menu';
 import {AreaChart} from 'react-easy-chart';
+import {
+    BrowserRouter as Router,
+    Route
+} from 'react-router-dom'
+import Applications from './Applications'
 import '../../assets/css/themify-icons.css';
 import '../../assets/css/portal.css';
 
