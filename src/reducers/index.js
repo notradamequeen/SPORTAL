@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import firebaseReducers from './firebaseReducers';
+import user from './userReducers';
 import salesforceReducers from './salesforceReducers';
 
 
 const rootReducers = combineReducers({
-    user: firebaseReducers,
+    user,
     salesforce: salesforceReducers,
 });
 

@@ -63,7 +63,7 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check1" id="check1" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                                Photocopy of student(s)’s NRIC / birth certificate
+                                Soft copy of student(s)’s NRIC / birth certificate
                             </div>
                         </div>
                         <div className="row">
@@ -71,7 +71,15 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check2" id="check2" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                                Photocopy of both parents’/ guardian’s NRIC / passport
+                                Soft copy of both parents’/ guardian’s NRIC / passport
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-1 checkContainer">
+                                <input type="checkbox" name="check2" id="check2" checked />
+                            </div>
+                            <div className="col-sm-11 text-content">
+                                Latest documentary evidence of gross household income of <b>every single member of the household</b> e.g.: latest pay slips and  CPF statements for the past 15 months (My Contribution, My Statement and Transaction History) or income declaration**iIn the absence of evidence indicating household income, please fill up the income declarations from in Annex B STSPMF reserves the right to reject the application if any of the supporting documents is not submitted
                             </div>
                         </div>
                     <hr />
@@ -590,6 +598,20 @@ class Success extends React.Component {
                                     </div>
                                     <div className="col-sm-6">
                                         <div className="col-sm-5">
+                                            <p>Relationship to Applicant</p>
+                                        </div>
+                                        <div className="col-sm-1">
+                                            :
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <p className="filled">{benData.data.Relationship_to_Applicant__c}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Upload NRIC file - Graduating this year */}
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="col-sm-5">
                                             <p>NRIC file</p>
                                         </div>
                                         <div className="col-sm-1">
@@ -600,7 +622,6 @@ class Success extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Graduating this year */}
                             </div>
                         )
                     })}

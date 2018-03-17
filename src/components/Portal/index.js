@@ -3,62 +3,57 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import SideMenu from './common/side_menu';
-import {AreaChart} from 'react-easy-chart';
-import {
-    BrowserRouter as Router,
-    Route
-} from 'react-router-dom'
-import Applications from './Applications'
+import { AreaChart } from 'react-easy-chart';
 import '../../assets/css/themify-icons.css';
 import '../../assets/css/portal.css';
 
 class Dashboard extends React.Component {
-    constructor (props) {
-        super(props)
+    constructor(props) {
+        super(props);
         this.state = {
-            iconBigYellowStyle: {fontSize: "2.5em", color: "#ffcc00"},
-            iconBigGreenStyle: {fontSize: "2.5em", color: "#77b300"},
-            iconBigStyle: {fontSize: "2.5em", color: "#dd6f25"},
-            tableHrStyle: { backgroundColor: "#818181", height: "0.6px" },
+            iconBigYellowStyle: { fontSize: '2.5em', color: '#ffcc00' },
+            iconBigGreenStyle: { fontSize: '2.5em', color: '#77b300' },
+            iconBigStyle: { fontSize: '2.5em', color: '#dd6f25' },
+            tableHrStyle: { backgroundColor: '#818181', height: '0.6px' },
             chartWidth: 0,
-        }
+        };
     }
     componentDidMount() {
-        this.setState({ chartWidth: this.Chart.getBoundingClientRect().width })
+        this.setState({ chartWidth: this.Chart.getBoundingClientRect().width });
         console.log(this.Chart.getBoundingClientRect().width);
     }
-    render () {
+    render() {
         // window.Highcharts = require('highcharts');
         return (
             <div>
-               <div className="container body portal">
+                <div className="container body portal">
                     <div className="main_container">
                         <SideMenu />
                         <div className="content-title">
                             <p className="page_title">Dashboard </p>
-                            <hr width="100%"/>
+                            <hr width="100%" />
                         </div>
                         <div className="content-page">
                             <div className="row">
-                                <div className="col-md-6">
+                               <div className="col-md-6">
                                     <div className="x_panel">
                                         <div className="col-md-6 icon-big yellow">
-                                            <i className="ti-user" style={this.state.iconBigYellowStyle}></i>
+                                            <i className="ti-user" style={this.state.iconBigYellowStyle} />
                                         </div>
                                         <div className="col-md-6 numbers">
                                             <p>Beneficiaries</p>
                                             <h3> 1122</h3>
                                         </div>
                                         <div className="col-md-12">
-                                            <hr/>
-                                            <p style={{fontSize: "0.6em"}}><i className="fa fa-refresh"></i> Until Today </p>
+                                            <hr />
+                                            <p style={{ fontSize: '0.6em' }}><i className="fa fa-refresh" /> Until Today </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-6">
+                               <div className="col-md-6">
                                     <div className="x_panel">
                                         <div className="col-md-6 icon-big green">
-                                            <i className="ti-wallet" style={this.state.iconBigGreenStyle}></i>
+                                            <i className="ti-wallet" style={this.state.iconBigGreenStyle} />
                                         </div>
                                         <div className="col-md-6 numbers">
                                             <p>Funded</p>
@@ -66,14 +61,14 @@ class Dashboard extends React.Component {
                                         </div>
                                         <div className="col-md-12">
                                             <hr />
-                                            <p style={{fontSize: "0.6em"}}><i className="fa fa-refresh"></i> Until Today </p>
+                                            <p style={{ fontSize: '0.6em' }}><i className="fa fa-refresh" /> Until Today </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-6">
+                               <div className="col-md-6">
                                     <div className="x_panel">
                                         <div className="col-md-6 icon-big orange">
-                                            <i className="ti-pulse" style={this.state.iconBigStyle}></i>
+                                            <i className="ti-pulse" style={this.state.iconBigStyle} />
                                         </div>
                                         <div className="col-md-6 numbers">
                                             <p>Applications</p>
@@ -81,26 +76,26 @@ class Dashboard extends React.Component {
                                         </div>
                                         <div className="col-md-12">
                                             <hr />
-                                            <p style={{fontSize: "0.6em"}}><i className="fa fa-refresh"></i> Until Today </p>
+                                            <p style={{ fontSize: '0.6em' }}><i className="fa fa-refresh" /> Until Today </p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                           </div>
                             <div className="row">
-                                {/* Pri/Sec Fund Pane */}
-                                <div className="col-md-6">
+                               {/* Pri/Sec Fund Pane */}
+                               <div className="col-md-6">
                                     <div className="x_panel">
                                         <div className="col-md-12">
                                             <h4> Pri/Sec Fund </h4>
                                             {/* Disbursement Amount */}
-                                            <hr/>
+                                            <hr />
                                             <div className="col-md-6 tb-content">
                                                 <p><b> Disburse Amount </b></p>
                                             </div>
                                             <div className="col-md-6 tb-content">
                                                 <p> $2120,00 </p>
                                             </div>
-                            
+
                                             {/* Available Amount */}
                                             <hr />
                                             <div className="col-md-6 tb-content">
@@ -129,19 +124,19 @@ class Dashboard extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Post Sec Fund Pane */}
-                                <div className="col-md-6">
+                               {/* Post Sec Fund Pane */}
+                               <div className="col-md-6">
                                     <div className="x_panel">
                                         <h4> Pri/Sec Fund </h4>
                                         {/* Disbursement Amount */}
-                                        <hr/>
+                                        <hr />
                                         <div className="col-md-6 tb-content">
                                             <p><b> Disburse Amount </b></p>
                                         </div>
                                         <div className="col-md-6 tb-content">
                                             <p> $2120,00 </p>
                                         </div>
-                        
+
                                         {/* Available Amount */}
                                         <hr />
                                         <div className="col-md-6 tb-content">
@@ -165,48 +160,48 @@ class Dashboard extends React.Component {
                                         </div>
                                         <div className="col-md-6 tb-content">
                                             <p> $2120,00 </p>
-                                        </div> 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                           </div>
                             <div className="row">
-                                <div className="col-md-12">
+                               <div className="col-md-12">
                                     <div className="x_panel">
                                         <h4> Total Applications</h4>
-                                        <p style={{fontSize: "0.6em"}}> Monthly </p>
+                                        <p style={{ fontSize: '0.6em' }}> Monthly </p>
                                         <div className="col-sm-12" ref={(chart) => { this.Chart = chart; }}>
                                             <AreaChart
-                                                xType={'time'}
+                                                xType="time"
                                                 axes
-                                                interpolate={'cardinal'}
+                                                interpolate="cardinal"
                                                 width={this.state.chartWidth}
                                                 height={250}
-                                                areaColors={["#00e6e6", "#008080"]}
+                                                areaColors={['#00e6e6', '#008080']}
                                                 data={[
-                                                [
-                                                    { x: '1-Jan-15', y: 20 },
-                                                    { x: '1-Feb-15', y: 10 },
-                                                    { x: '1-Mar-15', y: 33 },
-                                                    { x: '1-Apr-15', y: 45 },
-                                                    { x: '1-May-15', y: 15 }
-                                                ], [
-                                                    { x: '1-Jan-15', y: 10 },
-                                                    { x: '1-Feb-15', y: 15 },
-                                                    { x: '1-Mar-15', y: 13 },
-                                                    { x: '1-Apr-15', y: 15 },
-                                                    { x: '1-May-15', y: 10 }
-                                                ]
+                                                    [
+                                                        { x: '1-Jan-15', y: 20 },
+                                                        { x: '1-Feb-15', y: 10 },
+                                                        { x: '1-Mar-15', y: 33 },
+                                                        { x: '1-Apr-15', y: 45 },
+                                                        { x: '1-May-15', y: 15 },
+                                                    ], [
+                                                        { x: '1-Jan-15', y: 10 },
+                                                        { x: '1-Feb-15', y: 15 },
+                                                        { x: '1-Mar-15', y: 13 },
+                                                        { x: '1-Apr-15', y: 15 },
+                                                        { x: '1-May-15', y: 10 },
+                                                    ],
                                                 ]}
                                             />
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                           </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
-            
+
         );
     }
 }

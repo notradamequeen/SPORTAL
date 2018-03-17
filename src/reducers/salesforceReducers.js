@@ -17,8 +17,16 @@ const DEFAULT_STATE = {
         retrievedAt: 0,
         fields: [],
     },
+    applicationList: {
+        retrievedAt: 0,
+        records: [],
+    },
+    beneficiaryList: {
+        retrievedAt: 0,
+        records: [],
+    },
     recordType: {
-        data: {}
+        data: {},
     },
 
 };
@@ -68,6 +76,20 @@ const fnList = {
         applicationField: {
             retrievedAt: new Date().getTime(),
             fields: payload,
+        },
+    }),
+    GET_APPLICATION_LIST: (state, payload) => ({
+        ...state,
+        applicationList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
+        },
+    }),
+    GET_BENEFICIARY_LIST: (state, payload) => ({
+        ...state,
+        beneficiaryList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
         },
     }),
 };

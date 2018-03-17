@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getApplicationField, getPersonField } from '../../actions/salesforces';
+import { q_SCHOLL_LIST, q_POSTAL_CODE_RECORD, q_POSTAL_CODE_RECORD_CONDT } from '../../actions/query';
 import { regexValidate, validateNRIC } from '../../utils/common';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import Select from 'react-select';
+import { Creatable } from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import '../../assets/css/form-style.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -41,6 +43,7 @@ class Tab2 extends React.Component {
         this.ms_handleChange                  = this.ms_handleChange.bind(this);
         this.nation_handleChange              = this.nation_handleChange.bind(this);
         this.flatType_handleChange            = this.flatType_handleChange.bind(this);
+        this.getPostaCodeOptions              = this.getPostaCodeOptions.bind(this);
         
     }
 
@@ -54,11 +57,12 @@ class Tab2 extends React.Component {
     }
 
     pc_handleChange = (selectedPC) => {
+        console.log('selected', selectedPC)
         if (selectedPC == null){
             this.props.changeState('Postal__c', '')
             this.props.changeState('Street__c', '')
-            this.props.changeState('Blok__c', '')
-            this.props.changeState('Blok__c', '')
+            this.props.changeState('Block__c', '')
+            this.props.changeState('Country__c', '')
             this.setState({ selectedPC: {}, 
                 selectedAddress: {Street__c: '',
                     Block__c: '',
@@ -66,43 +70,71 @@ class Tab2 extends React.Component {
                 }
             });
         } else {
-            const selectedAddress = this.props.salesforce.postalCodeRecord.fields.records[selectedPC.key]
-            console.log('pc', selectedAddress)
-            this.props.changeState('Postal__c', selectedPC.value)
-            this.props.changeState('Street__c', selectedAddress.Street__c)
-            this.props.changeState('Blok__c', selectedAddress.Block__c)
-            this.props.changeState('Blok__c', selectedAddress.Country__c)
-            this.setState({ selectedPC, selectedAddress });
+            if (selectedPC.type == undefined) {
+                this.props.changeState('Postal__c', selectedPC.value)
+                this.setState({
+                    selectedPC, 
+                    selectedAddress: {
+                        Street__c: '',
+                        Block__c: '',
+                        Contry__c: '',
+                    }
+                });
+            } else {
+                const selectedAddress = this.props.salesforce.postalCodeRecord.fields.records[selectedPC.key]
+                console.log('pc', selectedAddress)
+                this.props.changeState('Postal__c', selectedPC.value)
+                this.props.changeState('Street__c', 
+                selectedAddress.Building_Name__c !== null ? selectedAddress.Street__c + ', ' + selectedAddress.Building_Name__c : selectedAddress.Street__c)
+                this.props.changeState('Block__c', selectedAddress.Block__c !== null ? selectedAddress.Block__c : 'NA')
+                this.props.changeState('Country__c', selectedAddress.Country__c)
+                this.setState({ selectedPC, selectedAddress });
+            }
         }
         
     }
     ms_handleChange(selectedMS){
-        if (selectedMS.value == "Others"){
-            this.setState({ otherMS: true })
+        if (selectedMS == null) {
+            this.props.changeState('Marital_Status__c', '');
+            this.setState({ selectedMS: {} });
         } else {
-            this.setState({ otherMS: false })
+            if (selectedMS.value == "Others"){
+                this.setState({ otherMS: true })
+            } else {
+                this.setState({ otherMS: false })
+            }
+            this.props.changeState('Marital_Status__c', selectedMS.value);
+            this.setState({ selectedMS })
         }
-        this.props.changeState('Marital_Status__c', selectedMS.value);
-        this.setState({ selectedMS })
     }
     nation_handleChange(selectedNation){
-        if (selectedNation.value == "Others"){
-            this.setState({ otherNation: true })
+        if (selectedNation == null){
+            this.props.changeState('Nationality__c', '');
+            this.setState({ selectedNation: {} }) 
         } else {
-            this.setState({ otherNation: false })
+            if (selectedNation.value == "Others"){
+                this.setState({ otherNation: true })
+            } else {
+                this.setState({ otherNation: false })
+            }
+            this.props.changeState('Nationality__c', selectedNation.value);
+            this.setState({ selectedNation })
         }
-        this.props.changeState('Nationality__c', selectedNation.value);
-        this.setState({ selectedNation })   
     }
 
     flatType_handleChange(selectedFlatType){
-        if (selectedFlatType.value == "Others"){
-            this.setState({ otherTF: true })
+        if (selectedFlatType == null){
+            this.props.changeState(['Flat_Type__c'], '');
+            this.setState({ selectedFlatType: {}});
         } else {
-            this.setState({ otherTF: false })
+            if (selectedFlatType.value == "Others"){
+                this.setState({ otherTF: true })
+            } else {
+                this.setState({ otherTF: false })
+            }
+            this.setState({ selectedFlatType })
+            this.props.changeState(['Flat_Type__c'],selectedFlatType.value);
         }
-        this.setState({ selectedFlatType })
-        this.props.changeState(['Flat_Type__c'],selectedFlatType.value);  
     }
 
     handelAddressChange(evt) {
@@ -131,17 +163,30 @@ class Tab2 extends React.Component {
                 document.getElementById("email_error").innerHTML = ''
             }
             this.props.data.isValidMainEmail = isValidEmail;
-            
-            console.log(event.target.style)
+        }
+        if(evt.target.name == 'ID_Type__c'){
+            if(evt.target.value == 'Others'){
+                document.getElementById("nric_error").innerHTML = ""
+            } else {
+                if(document.getElementById("ID_Number__c").value !== ''){
+                    if(!validateNRIC(document.getElementById("ID_Number__c").value)){
+                        document.getElementById("nric_error").innerHTML = "invalid NRIC/FIN format"
+                    }
+                }
+            }
         }
         if (evt.target.name == 'ID_Number__c'){
-            const isValidId = validateNRIC(value)
-            if(!isValidId) {
-                document.getElementById("nric_error").innerHTML = "invalid NRIC/FIN format"
+            if(document.getElementById('ID_Type__c').value == 'NRIC' || document.getElementById('ID_Type__c').value == 'FIN') {
+                const isValidId = validateNRIC(value)
+                if(!isValidId) {
+                    document.getElementById("nric_error").innerHTML = "invalid NRIC/FIN format"
+                } else {
+                    document.getElementById("nric_error").innerHTML = ""
+                }
+                this.props.data.isValidMainNric = isValidId;
             } else {
-                document.getElementById("nric_error").innerHTML = ""
-            }
-            this.props.data.isValidMainNric = isValidId;
+                this.props.data.isValidMainNric = true
+            }      
         }
         this.props.changeState([evt.target.name],value);
     }
@@ -152,12 +197,26 @@ class Tab2 extends React.Component {
         this.setState({
             dob: date
         });
-        //console.log( date.format("DD/MM/YYYY"));
-        //alert('aaaa');
     }
-
+    getPostaCodeOptions(input){
+        const fullUrl = `${this.props.salesforce.token.instanceUrl}/services/data/v20.0/query/?q=${encodeURIComponent(q_POSTAL_CODE_RECORD_CONDT)}'${input}%'`
+        const fetchConfig = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${this.props.salesforce.token.accessToken}`,
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+            timeout: 5000,
+        };
+        return fetch(fullUrl, fetchConfig)
+          .then((response) => {
+            return response.json();
+          }).then((json) => {
+            return { options: json };
+          });
+    }
     componentWillMount(){
-        console.log(this.props);
     }
 
     componentDidMount() {
@@ -172,7 +231,6 @@ class Tab2 extends React.Component {
         });
         this.state.postal_code = postalCodeOption
         this.forceUpdate();
-        console.log('tab 2', this.state)
     }
     render() {
         return (
@@ -184,7 +242,7 @@ class Tab2 extends React.Component {
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Name <small style={{color:"red"}}>(required)</small></label>
-                            <input name="Full_Name__c" id="Full_Name__c" type="text" className="form-control" placeholder="Fullname" onChange={this.handleInputChange}  />
+                            <input name="Full_Name__c" id="Full_Name__c" type="text" className="form-control" onChange={this.handleInputChange}  />
                         </div>
                         <div className="form-group">
                             <label>ID Type <small className="red">(required)</small></label>
@@ -195,9 +253,13 @@ class Tab2 extends React.Component {
                                 aria-invalid="false"
                                 value={this.props.data.ID_Type__c}
                                 onChange={this.handleInputChange}>
-                                <option value="NRIC">NRIC</option>
-                                <option value="FIN">FIN</option>
-                                <option value="other">Others</option>
+                                {this.props.data.IDTypeList !== undefined && 
+                                    this.props.data.raceList.map((option) => {
+                                        return (
+                                            <option key={option.value} value={option.value} className="white">{option.label}</option>
+                                        );
+                                    })
+                                }
                             </select>
                         </div>
                         <div className="form-group">
@@ -207,7 +269,6 @@ class Tab2 extends React.Component {
                                 id="ID_Number__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="NRIC / FIN"
                                 maxLength="9"
                                 onChange={this.handleInputChange}
                             />
@@ -220,7 +281,6 @@ class Tab2 extends React.Component {
                                 selected={this.state.dob}
                                 dateFormat="DD/MM/YYYY"
                                 onChange={this.handleDOBChange} 
-                                placeholderText="Date of Birth"
                                 className="form-control fullw"
                                 showMonthDropdown
                                 showYearDropdown
@@ -235,7 +295,6 @@ class Tab2 extends React.Component {
                                 id="Marital_Status__c" 
                                 onChange={this.ms_handleChange}
                                 options={this.props.data.msList}
-                                placeholder="please select marital status"
                                 value={this.state.selectedMS}
                                 required />
                         </div>
@@ -245,7 +304,6 @@ class Tab2 extends React.Component {
                                 name="Other_Marital_Status__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Please Specify" 
                                 disabled={!this.state.otherMS}/>
                         </div>
                         
@@ -254,6 +312,7 @@ class Tab2 extends React.Component {
                         <div className="form-group">
                             <label>Gender <small className="red">(required)</small></label>
                             <select name="Gender__c" id="Gender__c" className="form-control valid select" aria-invalid="false">
+                                <option value=''></option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
@@ -266,7 +325,6 @@ class Tab2 extends React.Component {
                                 id="Nationality__c" 
                                 onChange={this.nation_handleChange}
                                 options={this.props.data.nationList}
-                                placeholder="please select marital status"
                                 value={this.props.data.Nationality__c}
                                 required />
                         </div>
@@ -276,7 +334,6 @@ class Tab2 extends React.Component {
                                 name="Other_Nationality__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Please Specify"
                                 disabled={!this.state.otherNation} />
                         </div>
                         <div className="form-group">
@@ -303,7 +360,6 @@ class Tab2 extends React.Component {
                                 name="Other_Race__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Please Specify"
                                 disabled={!this.state.otherRace} />
                         </div>
                     </div>
@@ -316,15 +372,21 @@ class Tab2 extends React.Component {
                         <div className="form-group">
                             <label>Postal Code <small className="red">(required)</small></label>
                             {/* <input type="text" name="City__c" id="City__c" className="form-control" placeholder="Please Select Postal Code..." /> */}
-                            <Select
+                            {/* <Select
                                 name="Postal__c" 
                                 ref="postal_code" 
                                 id="postalCode" 
                                 onChange={this.pc_handleChange}
+                                onInputChange={(input)=>{this.pc_handleChange({type:'userinput' ,label: input, value: input})}}
                                 options={this.state.postal_code}
-                                placeholder="please select postal code"
                                 value={this.state.selectedPC}
-                                required />
+                                required /> */}
+                            <Creatable
+                                name="form-field-name"
+                                value={this.state.selectedPC}
+                                options={this.state.postal_code}
+                                onChange={this.pc_handleChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label>Street Name <small className="red">(required)</small></label>
@@ -333,7 +395,6 @@ class Tab2 extends React.Component {
                                 name="Street__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Street Name Ex: 5h Avenue"
                                 value={this.props.data.Street__c}
                                 onChange={this.handelAddressChange} />
                         </div>
@@ -344,18 +405,17 @@ class Tab2 extends React.Component {
                                 name="Block__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Block Number Ex: 242"
+                                placeholder="Put NA if not applicable"
                                 value={this.props.data.Block__c}
                                 onChange={this.handelAddressChange} />
                         </div>
                         <div className="form-group">
-                            <label>Unit Number</label>
+                            <label>Unit Number/House Number</label>
                             <input
                                 id="Unit_Number__c"
                                 name="Unit_Number__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Unit Number Ex: 242"
                                 value={this.props.data.Unit_Number__c ? this.props.data.Unit_Number__c : ''}
                                 onChange={this.handleInputChange} />
                         </div>
@@ -377,7 +437,6 @@ class Tab2 extends React.Component {
                                 name="Other_Flat_Type__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Please Specify"
                                 disabled={!this.state.otherTF} />
                         </div>
                         
@@ -388,7 +447,6 @@ class Tab2 extends React.Component {
                                 name="Country__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="242"
                                 value={this.props.data.Country__c}
                                 onChange={this.handelAddressChange} />
                         </div>
@@ -406,7 +464,6 @@ class Tab2 extends React.Component {
                                 id="Contact_Number__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Contact Number"
                                 onChange={this.handleInputChange} />
                         </div>
                         <div className="form-group">
@@ -416,7 +473,6 @@ class Tab2 extends React.Component {
                                 id="Mobile_Phone__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Mobile no."
                                 onChange={this.handleInputChange} />
                         </div>
                     </div>
@@ -428,7 +484,6 @@ class Tab2 extends React.Component {
                                 id="Office_Phone__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Office Phone"
                                 onChange={this.handleInputChange} />
                         </div>
                         <div className="form-group">
@@ -438,7 +493,6 @@ class Tab2 extends React.Component {
                                 id="Home_Phone__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Home Phone"
                                 onChange={this.handleInputChange} />
                         </div>
                     </div>
@@ -450,7 +504,6 @@ class Tab2 extends React.Component {
                                 id="Email_Address__c"
                                 type="text"
                                 className="form-control"
-                                placeholder="Email address"
                                 onChange={this.handleInputChange} />
                                 <span id="email_error" style={{color: "red"}}></span>
                         </div>

@@ -52,7 +52,7 @@ class Tab5 extends React.Component {
                         </div>
                         <div className="col-sm-1 checkContainer">b)</div>
                         <div className="col-sm-11 text-content-consent"> 
-                            that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any agency or persons authorised by The Straits Times School Pocket Money Fund for the purpose of rendering me or assessing my eligibility for financial or other assistance in future occasions; or for research studies in which I, as a specific individual, shall not be identified; or for any other purpose prescribed or permitted under Singapore law.
+                        That the record of this application, if approved, may be shared with STSPMF Trustees, the school and any agency, organization or persons authorized by The Straits Times School Pocket Money Fund for the purpose of rendering me or assessing my eligibility for financial or other assistance in future occasions; or for research studies or for any other purpose prescribed or permitted under Singapore law.
                         </div>
                     </div>
                     <div className="col-sm-1 checkContainer">4.</div>

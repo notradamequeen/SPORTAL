@@ -6,26 +6,24 @@ import MenuItem from './menu_item';
 import '../../../assets/css/portal.css';
 
 class SideMenu extends React.Component {
-    render () {
+    render() {
         return (
             <div className="sidenav">
                 <div className="col-md-12">
-                    <h4 style={{ textAlign: "center"}}>PARTNER PORTAL</h4>
+                    <h4 style={{ textAlign: 'center' }}>PARTNER PORTAL</h4>
                 </div>
                 <div className="col-md-12 profile-box">
-                    <img src="https://colorlib.com/polygon/gentelella/images/img.jpg" alt="..." className="img-prof" width="200px" height="200px"/>
+                    <img src="https://colorlib.com/polygon/gentelella/images/img.jpg" alt="..." className="img-prof" width="200px" height="200px" />
                 </div>
                 <div className="col-md-12">
-                    <h5 style={{ textAlign: "center"}}>WESTWOOD SECONDARY SCHOOL</h5>
+                    <h5 style={{ textAlign: 'center' }}>WESTWOOD SECONDARY SCHOOL</h5>
                 </div>
                 <div id="sidebar-menu" className="main_menu_side hidden-print main_menu">
-                    <div className="menu_section active">
-                        
-                    </div>
+                    <div className="menu_section active" />
                     <MenuItem />
                 </div>
             </div>
-        )
+        );
     }
 }
 

@@ -70,6 +70,15 @@ class Tab1 extends React.Component {
                         Soft copy of both parents’/ guardian’s NRIC / passport
                     </div>
                 </div>
+                <div className="row">
+                    <div className="col-sm-1 checkContainer">
+                        <input type="checkbox" name="check2" id="check2" defaultChecked={this.props.data.check2} onChange={this.handleInputChange} /> 
+                    </div>
+                    <div className="col-sm-11 text-content">
+                        Latest documentary evidence of gross household income of <b>every single member of the household</b> e.g.: latest pay slips and  CPF statements for the past 15 months (My Contribution, My Statement and Transaction History) or income declaration**iIn the absence of evidence indicating household income, please fill up the income declarations from in Annex B STSPMF reserves the right to reject the application if any of the supporting documents is not submitted
+                    </div>
+                </div>
+
                 <hr className="dashed"/>
                 <h4 className="info-text">Eligibility Criteria</h4>
                 <div className="row">
@@ -82,7 +91,7 @@ class Tab1 extends React.Component {
                             onChange={this.handleInputChange} />
                     </div>
                     <div className="col-sm-11 text-content">
-                            Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)
+                        Student is a Singapore Citizen (SC) or Singapore Permanent Resident (SPR)
                     </div>
                 </div>
                 <div className="row">

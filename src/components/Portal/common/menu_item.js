@@ -2,67 +2,70 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { logout } from '../actions';
 import '../../../assets/css/portal.css';
 
 
 class MenuItem extends React.Component {
-
-    render () {
+    render() {
         return (
             <div className="col-md-12 menu-item">
                 <ul className="nav">
                     <li className="active">
-                        <a href="#" className="menu-item">
-                            <i className="fa fa-dashboard"></i>
+                        <a href="/portal" className="menu-item">
+                            <i className="fa fa-dashboard" />
                             Dashboard
                         </a>
                     </li>
                     <li >
                         <a href="/portal/applications" className="menu-item">
-                            <i className="fa fa-list-ul"></i> Applications
+                            <i className="fa fa-list-ul" /> Applications
+                        </a>
+                    </li>
+                    <li >
+                        <a href="/portal/beneficiaries" className="menu-item">
+                            <i className="fa fa-list-ul" /> Beneficiaries
                         </a>
                     </li>
                     <li >
                         <a href="#" className="menu-item">
-                            <i className="fa fa-list-ul"></i> Beneficiaries
-                        </a>
-                    </li>
-                    <li >
-                        <a href="#" className="menu-item">
-                            <i className="fa fa-list-ul"></i> Receipts
+                            <i className="fa fa-list-ul" /> Receipts
                         </a>
                     </li>
                     <li>
                         <a href="#" className="menu-item">
-                            <i className="fa fa-list-ul"></i>  Fund Requests
+                            <i className="fa fa-list-ul" />  Fund Requests
                         </a>
                     </li>
                     <li >
                         <a href="#" className="menu-item">
-                            <i className="fa fa-list-ul"></i> Terminations
+                            <i className="fa fa-list-ul" /> Terminations
                         </a>
                     </li>
                     <li >
                         <a href="#" className="menu-item">
-                            <i className="fa fa-list-ul"></i> Transfer
+                            <i className="fa fa-list-ul" /> Transfer
+                        </a>
+                    </li>
+                    <li >
+                        <a href="#" className="menu-item" onClick={this.props.logout}>
+                            <i className="fa fa-list-ul" /> Logout
                         </a>
                     </li>
                 </ul>
             </div>
-        )
+        );
     }
 }
 
 MenuItem.propTypes = {
-    title: PropTypes.string,
+    user: PropTypes.object.isRequired,
+    logut: PropTypes.func.isRequired,
 };
-MenuItem.defaultProps = {
-    title: 'Hello World',
-};
-
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
+        logout,
     }, dispatch)
 );
 

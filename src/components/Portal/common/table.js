@@ -4,15 +4,18 @@ class Table extends Component {
 
   // kolom nya bisa di props, bentuknya array
   // kalo ga ada, dia bakal pake nama property dari objek nya
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       columns: [],
       properties: []
     }
+    this.drawTableBody = this.drawTableBody.bind(this)
+    this.drawTableHeaders = this.drawTableHeaders.bind(this)
   }
 
   componentDidMount() {
+    console.log('props', this.props)
     const tableData = this.props.tableData
     const headerColumns = this.props.columns
     let columns = []
@@ -48,7 +51,7 @@ class Table extends Component {
   }
 
 
-  drawTableHeaders = () => {
+  drawTableHeaders() {
     return (
       <thead>
         <tr>
@@ -64,7 +67,8 @@ class Table extends Component {
     )
   }
 
-  drawTableBody = () => {
+  drawTableBody() {
+    alert(this.state.properties)
     let properties = this.state.properties
     return (
       <tbody>

@@ -19,7 +19,7 @@ class Applications extends Component {
   render() {
     return(
       <React.Fragment>
-        <Table dataTable={datas}/>
+        <Table tableData={this.state.datas}/>
       </React.Fragment>
     )
   }
