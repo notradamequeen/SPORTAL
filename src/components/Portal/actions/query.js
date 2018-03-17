@@ -23,3 +23,6 @@ Block__c, City__c, Country__c, Flat_Type__c, Unit_Number__c, Applicant__r.Contac
 Applicant__r.Mobile_Phone__c, Applicant__r.Office_Number__c, Applicant__r.Relationship_to_Applicant__c, Applicant__r.Company__c, \
 Applicant__r.Occupation__c, Applicant__r.Employment_Status__c, Applicant__r.Employment_Start_Date__c, Applicant__r.Monthly_Gross_Income__c \
 From Application__c Where Name ='
+
+export const qApplicationBeneList = "Select Name, Full_Name__c, Applying_to__r.Name from Person__c Where RecordType.Name = 'Beneficiary' AND Application__r.Name =";
+export const qApplicationHouList = "Select Name, Full_Name__c, Relationship_to_Applicant__c from Person__c Where RecordType.Name = 'Household Member' AND Application__r.Name =";

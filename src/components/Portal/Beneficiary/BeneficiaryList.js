@@ -67,7 +67,7 @@ class BeneficiaryList extends React.Component {
                                                         <td>{BeneData.Updated_by_Application_Person__r.Current_Level__c}</td>
                                                         <td>{BeneData.Updated_by_Application_Person__r.Stream__c}</td>
                                                         <td>{BeneData.Updated_by_Application_Person__r.Current_School__r ?
-                                                            BeneData.Updated_by_Application_Person__r.Current_School__r.Name: ''}</td>
+                                                            BeneData.Updated_by_Application_Person__r.Current_School__r.Name : ''}</td>
                                                         <td>{BeneData.Active__c}</td>
                                                         <td><button className="btn btn-orange">view</button></td>
                                                     </tr>

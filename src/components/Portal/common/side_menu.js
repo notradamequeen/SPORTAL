@@ -16,7 +16,7 @@ class SideMenu extends React.Component {
                     <img src="https://colorlib.com/polygon/gentelella/images/img.jpg" alt="..." className="img-prof" width="200px" height="200px" />
                 </div>
                 <div className="col-md-12">
-                    <h5 style={{ textAlign: 'center' }}>WESTWOOD SECONDARY SCHOOL</h5>
+                    <h4 style={{ textAlign: 'center' }}>{this.props.user.loggedInUser.Account.Name}</h4>
                 </div>
                 <div id="sidebar-menu" className="main_menu_side hidden-print main_menu">
                     <div className="menu_section active" />

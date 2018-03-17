@@ -141,7 +141,7 @@ router.post('/applications-list', validateToken, loginToSalesforce, (req, res) =
     });
 });
 
-router.post('/applications-detail', validateToken, loginToSalesforce, (req, res) => {
+router.post('/application-detail', validateToken, loginToSalesforce, (req, res) => {
     clientRedis.get('sfToken', (err, reply) => {
         if (err) return res.status(500).send({ error: true, status: 503 });
         const sfToken = JSON.parse(reply);
@@ -178,6 +178,25 @@ router.post('/beneficiary-list', validateToken, loginToSalesforce, (req, res) =>
                 return res.send({ status: 200, records: results.records }).status(200);
             }
             return res.send({ status: 404, message: 'User not found' }).status(404);
+        });
+    });
+});
+
+router.post('/query-data', validateToken, loginToSalesforce, (req, res) => {
+    clientRedis.get('sfToken', (err, reply) => {
+        if (err) return res.status(500).send({ error: true, status: 503 });
+        const sfToken = JSON.parse(reply);
+        const conn = new jsforce.Connection({
+            instanceUrl: sfToken.instanceUrl,
+            accessToken: sfToken.accessToken,
+        });
+        const query = req.body.query;
+        conn.query(query, (error, results) => {
+            if (error) return res.status(500).send({ error: true, status: 500, results });
+            if (results.records.length > 0) {
+                return res.send({ status: 200, records: results.records }).status(200);
+            }
+            return res.send({ status: 404, message: 'Empty' }).status(404);
         });
     });
 });
