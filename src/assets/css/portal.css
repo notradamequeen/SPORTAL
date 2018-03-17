@@ -28,7 +28,7 @@
 .content-page {
     padding-left: 23%;
     height: 100%;
-    font-size: 1.6em;
+    font-size: 1.2em;
 }
 /* The navigation menu links */
 .sidenav a {
@@ -95,3 +95,54 @@ p.normal {
     text-align: center;
 }
 
+button.btn-green {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid aquamarine;
+    background-color: rgb(4, 153, 103); background-image: -webkit-gradient(linear, left top, right bottom , from(#186b8e), to(#4ea8c4));
+    background-image: -webkit-linear-gradient(to right, rgb(4, 153, 103), aquamarine);
+    background-image: -moz-linear-gradient(to right, rgb(4, 153, 103), aquamarine);
+    background-image: -ms-linear-gradient(to right, rgb(4, 153, 103), aquamarine);
+    background-image: -o-linear-gradient(to right, rgb(4, 153, 103), aquamarine);
+    background-image: linear-gradient(to right, rgb(4, 153, 103), aquamarine);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#186b8e, endColorstr=#4ea8c4);
+    height: 40px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.8em;
+}
+button.btn-orange {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid orange;
+    background-color: rgb(250, 182, 56); background-image: -webkit-gradient(linear, left top, right bottom , from(#186b8e), to(#4ea8c4));
+    background-image: -webkit-linear-gradient(to right, rgb(250, 182, 56), rgb(243, 196, 108));
+    background-image: -moz-linear-gradient(to right, rgb(250, 182, 56), rgb(243, 196, 108));
+    background-image: -ms-linear-gradient(to right, rgb(250, 182, 56), rgb(243, 196, 108));
+    background-image: -o-linear-gradient(to right, rgb(250, 182, 56), rgb(243, 196, 108));
+    background-image: linear-gradient(to right, rgb(250, 182, 56), rgb(243, 196, 108));filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#186b8e, endColorstr=#4ea8c4);
+    height: 40px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.8em;
+}
+button.btn-red {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid rgb(185, 7, 7);
+    background-color: rgb(185, 7, 7); background-image: -webkit-gradient(linear, left top, right bottom , from(#186b8e), to(#4ea8c4));
+    background-image: -webkit-linear-gradient(to right, rgb(185, 7, 7), rgb(238, 141, 141));
+    background-image: -moz-linear-gradient(to right, rgb(185, 7, 7), rgb(238, 141, 141));
+    background-image: -ms-linear-gradient(to right, rgb(185, 7, 7), rgb(238, 141, 141));
+    background-image: -o-linear-gradient(to right, rgb(185, 7, 7), rgb(238, 141, 141));
+    background-image: linear-gradient(to right, rgb(185, 7, 7), rgb(238, 141, 141));filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#186b8e, endColorstr=#4ea8c4);
+    height: 40px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.8em;
+}
+.btn-group-center {
+    align-content: center;
+    text-align: center;
+    padding-left: 20%;
+    padding-right: 20%;
+}

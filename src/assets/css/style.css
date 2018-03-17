@@ -1,5 +1,17 @@
 html{
-    height: 100%;
+  height: 100%;
+}
+* {
+  font-family: 'Lato', Arial, Helvetica, sans-serif;
+}
+
+.recaptcha {
+  margin: 15% auto;
+  width: 400px;
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
 }
 .container{
     background-color: #fff;

@@ -1,44 +1,47 @@
+import swal from 'sweetalert';
+import { sfRequestSync, sfRequest } from '../utils/common';
 import {
     q_POSTAL_CODE_RECORD,
     q_SCHOLL_LIST,
     q_APPLYING_TO,
-    q_RECORD_TYPE
+    q_RECORD_TYPE,
 } from './query';
-import { sfRequestSync, sfRequest } from '../utils/common';
-const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'https://spmf.interaktiv.sg/sf/';
+
+
+export const spmfcloudFunctionUrl = __DEV__ ? 'http://localhost:2018' : 'https://spmf.interaktiv.sg/sf/';
 const SF_VERSION = 'v20.0';
 
 export function getSalesforceToken(callback) {
     return async (dispatch, getState) => {
         const url = `${spmfcloudFunctionUrl}/salesforce-token`;
-        const json = await fetch(url, {
+        await fetch(url, {
             method: 'GET',
             headers: {
-                // 'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*',
                 // Authorization: `Bearer ${token}`,
-                'Accepted': 'application/json',
-                // mode: 'cors',
+                Accepted: 'application/json',
             },
+            mode: 'cors',
             cache: 'default',
-        }).then(response => response.json()).then(responseData => {
-            localStorage.setItem("tokensf", responseData.accessToken);
-            dispatch({
-                type: 'SALESFORCE_TOKEN',
-                payload: responseData,
+        }).then(response => response.json())
+            .then((responseData) => {
+                localStorage.setItem('tokensf', responseData.accessToken);
+                if (typeof callback === 'function') callback();
+                dispatch({
+                    type: 'SALESFORCE_TOKEN',
+                    payload: responseData,
+                });
             });
-        })
-        
-        // if (typeof callback === 'function') callback();
     };
 }
 
 
 export function getPostalCodeRecord(callback) {
     return async (dispatch, getState) => {
-        let fullUrl = ''
+        let fullUrl = '';
         const salesforceToken = getState().salesforce.token;
-        if(salesforceToken !== null) {
-            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_POSTAL_CODE_RECORD)}`   
+        if (salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_POSTAL_CODE_RECORD)}`;
         }
         const fetchConfig = {
             method: 'GET',
@@ -50,36 +53,37 @@ export function getPostalCodeRecord(callback) {
             timeout: 5000,
         };
         const json = await fetch(fullUrl, fetchConfig).then(response => response.json()).catch((err) => {
-                                dispatch({ type: 'TOGGLE_LOADING' });
-                                setTimeout(() => null, 0);
-                                swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
-                            }).then(responseData => {
-                                dispatch({ type: 'TOGGLE_LOADING' });
-                                if (responseData.length > 0) {
-                                    if (responseData[0].errorCode) {
-                                        swal('Error occured', `An Error occured "${responseData[0].errorCode} - ${responseData[0].message} - ${sobject}".`);
-                                    } else {
-                                        dispatch({
-                                            payload: responseData,
-                                            type: 'POSTAL_CODE_RECORD',
-                                        });
-                                    }
-                                } else {
-                                    dispatch({
-                                        payload: responseData,
-                                        type: 'POSTAL_CODE_RECORD',
-                                    });
-                                }
-                            });
-    }
+            dispatch({ type: 'TOGGLE_LOADING' });
+            setTimeout(() => null, 0);
+            swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
+        }).then((responseData) => {
+            dispatch({ type: 'TOGGLE_LOADING' });
+            if (responseData.length > 0) {
+                if (responseData[0].errorCode) {
+                    swal('Error occured', `An Error occured "${responseData[0].errorCode} - ${responseData[0].message} - ${sobject}".`);
+                } else {
+                    dispatch({
+                        payload: responseData,
+                        type: 'POSTAL_CODE_RECORD',
+                    });
+                }
+            } else {
+                dispatch({
+                    payload: responseData,
+                    type: 'POSTAL_CODE_RECORD',
+                });
+            }
+        });
+        return json;
+    };
 }
 
 export function getSchoolList(callback) {
     return async (dispatch, getState) => {
-        let fullUrl = ''
+        let fullUrl = '';
         const salesforceToken = getState().salesforce.token;
-        if(salesforceToken !== null) {
-            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_SCHOLL_LIST)}`   
+        if (salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_SCHOLL_LIST)}`;
         }
         const fetchConfig = {
             method: 'GET',
@@ -94,7 +98,7 @@ export function getSchoolList(callback) {
             dispatch({ type: 'TOGGLE_LOADING' });
             setTimeout(() => null, 0);
             swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
-        }).then(responseData => {
+        }).then((responseData) => {
             dispatch({ type: 'TOGGLE_LOADING' });
             if (responseData.length > 0) {
                 if (responseData[0].errorCode) {
@@ -112,15 +116,15 @@ export function getSchoolList(callback) {
                 });
             }
         });
-    }
+    };
 }
 
 export function getApplyingToList(callback) {
     return async (dispatch, getState) => {
-        let fullUrl = ''
+        let fullUrl = '';
         const salesforceToken = getState().salesforce.token;
-        if(salesforceToken !== null) {
-            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_APPLYING_TO)}`   
+        if (salesforceToken !== null) {
+            fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(q_APPLYING_TO)}`;
         }
         const fetchConfig = {
             method: 'GET',
@@ -135,7 +139,7 @@ export function getApplyingToList(callback) {
             dispatch({ type: 'TOGGLE_LOADING' });
             setTimeout(() => null, 0);
             swal('Error occured', `Connection to salesforce currently can't be established, ${err.message}.`);
-        }).then(responseData => {
+        }).then((responseData) => {
             dispatch({ type: 'TOGGLE_LOADING' });
             if (responseData.length > 0) {
                 if (responseData[0].errorCode) {
@@ -153,27 +157,25 @@ export function getApplyingToList(callback) {
                 });
             }
         });
-    }
+    };
 }
 
 export const getRecordType = () => (
     (dispatch, getState) => {
         // if (getState().currentUser === null) return;
         const salesforceToken = getState().salesforce.token;
-        const recordType = getState().salesforce.recordType;
+        // const recordType = getState().salesforce.recordType;
         sfRequest(null, {
             method: 'GET',
             url: salesforceToken.instanceUrl,
             id: 'describe',
             accessToken: salesforceToken.accessToken,
             query: q_RECORD_TYPE,
-        },dispatch, 'RECORD_TYPE')
+        }, dispatch, 'RECORD_TYPE');
     }
 );
 
-
-
-export function getApplicationField(salesforceToken){
+export function getApplicationField(salesforceToken) {
     const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/Application__c/describe`;
     const fetchConfig = {
         method: 'GET',
@@ -184,10 +186,10 @@ export function getApplicationField(salesforceToken){
         },
         timeout: 5000,
     };
-    return fetch(fullUrl, fetchConfig).then((response) => response.json())
-};
+    return fetch(fullUrl, fetchConfig).then(response => response.json());
+}
 
-export function getPersonField(salesforceToken){
+export function getPersonField(salesforceToken) {
     const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/Person__c/describe`;
     const fetchConfig = {
         method: 'GET',
@@ -198,10 +200,10 @@ export function getPersonField(salesforceToken){
         },
         timeout: 5000,
     };
-    return fetch(fullUrl, fetchConfig).then((response) => response.json())
-};
+    return fetch(fullUrl, fetchConfig).then(response => response.json());
+}
 
-export const createApplication = data => {
+export const createApplication = data => (
     (dispatch, getState) => {
         const salesforceToken = getState().salesforce.token;
         sfRequest('Application__c', {
@@ -212,18 +214,25 @@ export const createApplication = data => {
             bodyParams: data,
         }, ({ type, payload }) => {
             if (type === 'CREATE_APPLICATION') {
-                console.log(payload)
+                console.log(payload);
                 dispatch({ type, payload });
             } else {
-                console.log(payload)
+                console.log(payload);
                 dispatch({ type, payload });
             }
         }, 'CREATE_APPLICATION');
     }
-}
+);
 
-export function retrieveObject(sobjects, id, salesforceToken){
-    const fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}`;
+export function retrieveObject(sobject, id, salesforceToken, query, key) {
+    console.log(key.toString());
+    let fullUrl = '';
+    if (sobject != null) {
+        fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobject/${sobject}`;
+    } else {
+        fullUrl = `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/query/?q=${encodeURIComponent(query)}${typeof key === 'object' ? `(${  encodeURIComponent(key.toString())  })` : `'${  key  }'`}`;
+    }
+
     const fetchConfig = {
         method: 'GET',
         headers: {
@@ -233,7 +242,7 @@ export function retrieveObject(sobjects, id, salesforceToken){
         },
         timeout: 5000,
     };
-    return fetch(fullUrl, fetchConfig).then((response) => response.json())
+    return fetch(fullUrl, fetchConfig).then(response => response.json());
 }
 
 export function saveObject(sobjects, data, salesforceToken) {
@@ -248,7 +257,7 @@ export function saveObject(sobjects, data, salesforceToken) {
         body: JSON.stringify(data),
         timeout: 5000,
     };
-    return fetch(fullUrl, fetchConfig).then((response) => response.json());
+    return fetch(fullUrl, fetchConfig).then(response => response.json());
 }
 
 export function updateObject(sobjects, id, data, salesforceToken) {
@@ -263,5 +272,5 @@ export function updateObject(sobjects, id, data, salesforceToken) {
         body: JSON.stringify(data),
         timeout: 5000,
     };
-    return fetch(fullUrl, fetchConfig).then((response) => response.json());
+    return fetch(fullUrl, fetchConfig).then(response => response.json());
 }
