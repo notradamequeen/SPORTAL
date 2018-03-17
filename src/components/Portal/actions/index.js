@@ -1,5 +1,5 @@
 import { spmfcloudFunctionUrl } from '../../../actions/salesforces';
-import { qApplicationList, qBeneficiaryList } from './query';
+import { qApplicationList, qBeneficiaryList, qApplicationDetail } from './query';
 import swal from 'sweetalert';
 
 export default null;
@@ -63,5 +63,34 @@ export const getBeneciciaryList = async (key, siteToken) => {
     swal({
         type: 'warning',
         title: 'Connection To salesforce Failed',
+    });
+};
+
+export const getApplicationDetail = async (key, siteToken) => {
+    const query = `${qApplicationDetail}'${key}'`;
+    const json = await fetch(`${spmfcloudFunctionUrl}/applications-detail`, {
+        mode: 'cors',
+        body: JSON.stringify({
+            query,
+            siteToken,
+        }),
+        cache: 'no-cache',
+        method: 'POST',
+        headers: {
+            'hash-token': siteToken,
+            'Content-Type': 'application/json',
+        },
+    }).then(response => response.json());
+    if (json.status === 200) {
+        return {
+            type: 'GET_APPLICATION_DETAIL',
+            payload: json.records,
+        };
+    }
+    console.log(json.records);
+
+    swal({
+        title: 'USER NOT FOUND',
+        text: 'Your username or password combination is wrong.',
     });
 };

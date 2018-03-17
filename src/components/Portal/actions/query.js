@@ -15,3 +15,11 @@ Updated_by_Application_Person__r.Full_Name__c, Updated_by_Application_Person__r.
 Other_Nationality__c, Updated_by_Application_Person__r.Date_of_Birth__c, Race__c, Other_Race__c, \
 Updated_by_Application_Person__r.Email_Address__c, Updated_by_Application_Person__r.Current_Level__c, Updated_by_Application_Person__r.Stream__c, \
 Updated_by_Application_Person__r.Current_School__r.Name FROM Contact WHERE Updated_by_Application_Person__r.Applying_to__r.Id =';
+
+export const qApplicationDetail = 'Select Applicant_Name__c, Applicant__r.Gender__c, Applicant__r.ID_Type__c, Applicant__r.ID_Number__c, \
+Applicant__r.Nationality__c, Applicant__r.Other_Nationality__c, Applicant__r.Date_of_Birth__c, Applicant__r.Race__c, \
+Applicant__r.Other_Race__c, Applicant__r.Marital_Status__c, Applicant__r.Other_Marital_Status__c, Street__c, \
+Block__c, City__c, Country__c, Flat_Type__c, Unit_Number__c, Applicant__r.Contact_Number__c, Applicant__r.Home_Phone__c, \
+Applicant__r.Mobile_Phone__c, Applicant__r.Office_Number__c, Applicant__r.Relationship_to_Applicant__c, Applicant__r.Company__c, \
+Applicant__r.Occupation__c, Applicant__r.Employment_Status__c, Applicant__r.Employment_Start_Date__c, Applicant__r.Monthly_Gross_Income__c \
+From Application__c Where Name ='

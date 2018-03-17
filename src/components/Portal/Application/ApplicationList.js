@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import SideMenu from '../common/side_menu';
 import { getApplicationList } from '../actions';
 import '../../../assets/css/themify-icons.css';
@@ -33,9 +34,13 @@ class ApplicationList extends React.Component {
                             <div className="x_panel">
                                 <div className="x_title">
                                     <div className="col-md-12 btn-group-center">
-                                        <button className="btn btn-green">Approve</button>
-                                        <button className="btn btn-orange">Verify</button>
-                                        <button className="btn btn-red">Reject</button>
+                                        {this.props.user.loggedInUser.Partner_Authority__c == 'Approver' ?
+                                            <div>
+                                                <button className="btn btn-green">Approve</button>
+                                                <button className="btn btn-red">Reject</button>
+                                            </div>
+                                            : <button className="btn btn-orange">Verify</button>
+                                        }
                                     </div>
                                     <div className="clearfix" />
                                 </div>
@@ -53,19 +58,25 @@ class ApplicationList extends React.Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            { this.props.salesforce.applicationList.records.map((mainApp) => {
-                                                return (
-                                                    <tr>
-                                                        <td><input type="checkbox" /></td>
-                                                        <td>{mainApp.Application__r.Name}</td>
-                                                        <td>{mainApp.Application__r.Applicant_Name__c}</td>
-                                                        <td>{mainApp.Application__r.No_of_Bene__c}</td>
-                                                        <td>{mainApp.Application__r.Date_of_Application__c}</td>
-                                                        <td>{mainApp.Application__r.Application_Status__c}</td>
-                                                        <td><button className="btn btn-orange">view</button></td>
-                                                    </tr>
-                                                );
-                                            })
+                                            { this.props.salesforce.applicationList.records.map(mainApp => (
+                                                <tr>
+                                                    <td><input type="checkbox" /></td>
+                                                    <td>{mainApp.Application__r.Name}</td>
+                                                    <td>{mainApp.Application__r.Applicant_Name__c}</td>
+                                                    <td>{mainApp.Application__r.No_of_Bene__c}</td>
+                                                    <td>{mainApp.Application__r.Date_of_Application__c}</td>
+                                                    <td>{mainApp.Application__r.Application_Status__c}</td>
+                                                    <td>
+                                                        <button className="btn btn-orange">
+                                                            <Link 
+                                                            to={{pathname: `/portal/application/${mainApp.Application__r.Name}`}}
+                                                            params={{ personId: mainApp.Application__r.Name}}>
+                                                                view
+                                                            </Link>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
                                             }
 
                                         </tbody>
