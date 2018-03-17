@@ -25,6 +25,10 @@ const DEFAULT_STATE = {
         retrievedAt: 0,
         records: [],
     },
+    fundRequestList: {
+        retrievedAt: 0,
+        records: [],
+    },
     recordType: {
         data: {},
     },
@@ -88,6 +92,13 @@ const fnList = {
     GET_BENEFICIARY_LIST: (state, payload) => ({
         ...state,
         beneficiaryList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
+        },
+    }),
+    GET_FUND_REQUEST_LIST: (state, payload) => ({
+        ...state,
+        fundRequestList: {
             retrievedAt: new Date().getTime(),
             records: payload,
         },

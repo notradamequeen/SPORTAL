@@ -1,5 +1,5 @@
 import { spmfcloudFunctionUrl } from '../../../actions/salesforces';
-import { qApplicationList, qBeneficiaryList, qApplicationDetail } from './query';
+import { qApplicationList, qBeneficiaryList, qApplicationDetail, qFundRequestList } from './query';
 import swal from 'sweetalert';
 
 export default null;
@@ -66,9 +66,9 @@ export const getBeneciciaryList = async (key, siteToken) => {
     });
 };
 
-export const getApplicationDetail = async (key, siteToken) => {
-    const query = `${qApplicationDetail}'${key}'`;
-    const json = await fetch(`${spmfcloudFunctionUrl}/applications-detail`, {
+export const getFundRequestList = async (key, siteToken) => {
+    const query = `${qFundRequestList}'${key}'`;
+    const json = await fetch(`${spmfcloudFunctionUrl}/query-data`, {
         mode: 'cors',
         body: JSON.stringify({
             query,
@@ -83,7 +83,7 @@ export const getApplicationDetail = async (key, siteToken) => {
     }).then(response => response.json());
     if (json.status === 200) {
         return {
-            type: 'GET_APPLICATION_DETAIL',
+            type: 'GET_FUND_REQUEST_LIST',
             payload: json.records,
         };
     }
@@ -94,3 +94,4 @@ export const getApplicationDetail = async (key, siteToken) => {
         text: 'Your username or password combination is wrong.',
     });
 };
+

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import SideMenu from '../common/side_menu';
 import { getBeneciciaryList } from '../actions';
 import '../../../assets/css/themify-icons.css';
@@ -69,7 +70,13 @@ class BeneficiaryList extends React.Component {
                                                         <td>{BeneData.Updated_by_Application_Person__r.Current_School__r ?
                                                             BeneData.Updated_by_Application_Person__r.Current_School__r.Name : ''}</td>
                                                         <td>{BeneData.Active__c}</td>
-                                                        <td><button className="btn btn-orange">view</button></td>
+                                                        <td>
+                                                            <Link
+                                                                to={{ pathname: `/portal/beneficiary/${BeneData.Updated_by_Application_Person__r.Name}` }}
+                                                                params={{ personId: BeneData.Updated_by_Application_Person__r.Name }}>
+                                                                <button className="btn btn-orange">view</button>
+                                                            </Link>
+                                                        </td>
                                                     </tr>
                                                 );
                                             })

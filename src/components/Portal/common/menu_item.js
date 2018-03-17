@@ -33,7 +33,7 @@ class MenuItem extends React.Component {
                         </a>
                     </li>
                     <li>
-                        <a href="#" className="menu-item">
+                        <a href="/portal/fundrequests" className="menu-item">
                             <i className="fa fa-list-ul" />  Fund Requests
                         </a>
                     </li>
@@ -60,7 +60,7 @@ class MenuItem extends React.Component {
 
 MenuItem.propTypes = {
     user: PropTypes.object.isRequired,
-    logut: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => (

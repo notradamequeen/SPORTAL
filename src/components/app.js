@@ -22,6 +22,8 @@ import BeneficiaryList from './Portal/Beneficiary/BeneficiaryList';
 import { spmfcloudFunctionUrl } from '../actions/salesforces';
 import { request } from 'https';
 import ApplicationDetail from './Portal/Application/ApplicationDetail';
+import BeneficiaryDetail from './Portal/Beneficiary/BeneficiaryDetail';
+import FundRequestList from './Portal/FundRequest/FundRequestList';
 
 
 const CPrivateRoute = props => (
@@ -174,7 +176,9 @@ class AllRoutes extends React.Component {
                         <PrivateRoute exact path="/portal" component={Dashboard} />
                         <PrivateRoute exact path="/portal/applications" component={ApplicationList} />
                         <Route exact path="/portal/application/:personId" component={ApplicationDetail} />
+                        <Route exact path="/portal/beneficiary/:personId" component={BeneficiaryDetail} />
                         <PrivateRoute exact path="/portal/beneficiaries" component={BeneficiaryList} />
+                        <PrivateRoute exact path="/portal/fundrequests" component={FundRequestList} />
                         <Route
                             render={(props) => {
                                 window.location = `/404.html?from=${props.location.pathname}`;
