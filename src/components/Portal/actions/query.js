@@ -28,7 +28,7 @@ export const qApplicationBeneList = "Select Name, Full_Name__c, Applying_to__r.N
 
 export const qBeneDetail = "Select Id, Name, Full_Name__c, ID_Type__c, ID_Number__c, Relationship_to_Applicant__c, Application_Date__c, Gender__c, Age_at_Application__c, \
 Current_School__r.Name, Race__c, Nationality__c, Marital_Status__c, Applying_to__r.Name, Application_Type__c, Referred_From__c, Referred_Date__c, Application_Status__c, \
-Current_Level__c, Referring_Reason__c, Stream__c, Email_Address__c From Person__c Where Name ="
+Current_Level__c, Referring_Reason__c, Stream__c, Email_Address__c, Religion__c, Date_of_Birth__c From Person__c Where Name ="
 
 export const qApplicationHouList = "Select Name, Full_Name__c, Relationship_to_Applicant__c, main_Applicant__c from Person__c Where RecordType.Name = 'Household Member' AND Application__r.Name =";
 
