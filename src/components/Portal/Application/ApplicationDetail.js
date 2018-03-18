@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import SideMenu from '../common/side_menu';
-import { getApplicationDetail } from '../services';
+import { getApplicationDetail, getApplicationBeneList, getApplicationHouList } from '../services';
 import '../../../assets/css/themify-icons.css';
 import '../../../assets/css/portal.css';
 
@@ -12,6 +13,8 @@ class ApplicationDetail extends React.Component {
         super(props);
         this.state = {
             appDetail: [],
+            appBeneList: [],
+            appHouList: [],
         };
     }
     componentDidMount() {
@@ -19,8 +22,21 @@ class ApplicationDetail extends React.Component {
             this.props.match.params.personId,
             this.props.user.siteToken.hash,
         ).then(response => response.json()).then((json) => {
-            console.log(json.records[0])
+            console.log('appDetail', json.records[0]);
             this.setState({ appDetail: json.records });
+        });
+        getApplicationBeneList(
+            this.props.match.params.personId,
+            this.props.user.siteToken.hash,
+        ).then(response => response.json()).then((json) => {
+            this.setState({ appBeneList: json.records });
+        });
+        getApplicationHouList(
+            this.props.match.params.personId,
+            this.props.user.siteToken.hash,
+        ).then(response => response.json()).then((json) => {
+            console.log('hou', json);
+            this.setState({ appHouList: json.records });
         });
     }
     render() {
@@ -34,7 +50,7 @@ class ApplicationDetail extends React.Component {
                             <p className="page_title">Main Applicant </p>
                             <hr width="100%" />
                         </div>
-                        <div className="content-page">
+                        <div className="content-page col-md-8">
                             <div className="x_panel">
                                 <div className="x_title">
                                     Personal Details
@@ -44,11 +60,12 @@ class ApplicationDetail extends React.Component {
                                     <div className="col-sm-6">
                                         <div className="form-group">
                                             <label>Name</label>
-                                            <input 
+                                            <input
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant_Name__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>ID Type</label>
@@ -56,7 +73,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.ID_Type__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>ID Number</label>
@@ -64,7 +82,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.ID_Number__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Date Of Birth</label>
@@ -72,7 +91,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Date_of_Birth__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Marital Status</label>
@@ -80,7 +100,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Marital_Status__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Other Marital Status</label>
@@ -88,7 +109,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Marital_Status__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
@@ -98,7 +120,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Gender__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Nationality</label>
@@ -106,7 +129,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Nationality__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Other Nationality</label>
@@ -114,7 +138,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Nationality__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Race</label>
@@ -122,7 +147,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Race__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Other Race</label>
@@ -130,7 +156,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Race__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +173,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Street__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Street Number</label>
@@ -154,7 +182,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Unit_Number__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>City</label>
@@ -162,9 +191,10 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].City__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
-                                    </div>                                        
+                                    </div>
                                     <div className="col-sm-6">
                                         <div className="form-group">
                                             <label>Type of Flat</label>
@@ -172,7 +202,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Flat_Type__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Other Type of Flat</label>
@@ -180,7 +211,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Other_Flat_Type__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Country</label>
@@ -188,10 +220,11 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Country__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
-                            </div>
+                                </div>
                                 <div className="x_title">
                                     Personal Contact
                                     <div className="clearfix" />
@@ -204,7 +237,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Home_Phone__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Mobile Phone</label>
@@ -212,7 +246,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Mobile_Phone__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
@@ -222,7 +257,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Email_Address__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -238,7 +274,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Relationship_to_Applicant__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Company</label>
@@ -246,7 +283,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Company__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Occupation</label>
@@ -254,7 +292,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Occupation__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
@@ -264,7 +303,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Employment_Status__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Employment Start Date</label>
@@ -272,7 +312,8 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Employment_Start_Date__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                         <div className="form-group">
                                             <label>Monthly Gross Income</label>
@@ -280,15 +321,98 @@ class ApplicationDetail extends React.Component {
                                                 type="text"
                                                 className="form-control"
                                                 value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Monthly_Gross_Income__c : ''}
-                                                disabled="true" />
+                                                disabled="true"
+                                            />
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="row">
+                                <div className="x_panel">
+                                    <div className="x_title">
+                                        <h4>Beneficiaries </h4>
+                                        <div className="clearfix" />
+                                    </div>
+                                    {this.state.appBeneList.map(appBenItem => (
+                                        <div className="x_content" style={{ display: 'block' }} >
+                                            <div className="col-xs-2">
+                                                <div className="avatar ben">
+                                                    <Link
+                                                        to={{ pathname: `/portal/beneficiary/${appBenItem.Name}` }}
+                                                        params={{ personId: appBenItem.Name }}
+                                                        target="_blank"
+                                                    >
+                                                        <img
+                                                            src={require('../../../assets/img/face-1.jpg')}
+                                                            alt="Circle"
+                                                            className="img-circle img-no-padding img-responsive"
+                                                        />
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <div className="col-xs-1">
+                                                { appBenItem.Application_Status__c === 'Rejected by Partner' ?
+                                                    <h3 style={{ color: 'red' }}><i className="fa fa-times" /></h3> : ''
+                                                }
+                                                { appBenItem.Application_Status__c === 'Verified by Partner' ?
+                                                    <h3 style={{ color: 'green' }}><i className="fa fa-check" /></h3> : ''
+                                                }
+
+                                            </div>
+                                            <div className="col-xs-6">
+                                                <label> {appBenItem.Full_Name__c} </label>
+                                                <p> {appBenItem.Applying_to__r.Name}</p>
+                                            </div>
+                                            <div className="col-xs-3">
+                                                <button className="btn btn-small btn-danger">Terminate</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="x_panel">
+                                    <div className="x_title">
+                                        <h4>Other HouseHold Member </h4>
+                                        <div className="clearfix" />
+                                    </div>
+                                    {this.state.appHouList.map(appHouItem => (
+                                        !appHouItem.Main_Applicant__c ?
+                                            <div className="x_content" style={{ display: 'block' }} >
+                                                <div className="col-xs-3">
+                                                    <div className="avatar ben">
+                                                        <Link
+                                                            to={{ pathname: `/portal/beneficiary/${appHouItem.Name}` }}
+                                                            params={{ personId: appHouItem.Name }}
+                                                        >
+                                                            <img
+                                                                src={require('../../../assets/img/face-0.jpg')}
+                                                                alt="Circle"
+                                                                className="img-circle img-no-padding img-responsive"
+                                                            />
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                                <div className="col-xs-6">
+                                                    <label> {appHouItem.Full_Name__c} </label>
+                                                    <p> {appHouItem.Relationship_to_Applicant__c}</p>
+                                                </div>
+                                                <div className="col-xs-3">
+                                                    <btn className="btn btn-sm btn-success btn-icon">
+                                                        <i className="fa fa-envelope" />
+                                                    </btn>
+                                                </div>
+                                            </div>
+                                            : ''
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         );
     }
 }

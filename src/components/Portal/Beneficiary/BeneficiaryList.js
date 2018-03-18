@@ -69,12 +69,12 @@ class BeneficiaryList extends React.Component {
                                                         <td>{BeneData.Updated_by_Application_Person__r.Stream__c}</td>
                                                         <td>{BeneData.Updated_by_Application_Person__r.Current_School__r ?
                                                             BeneData.Updated_by_Application_Person__r.Current_School__r.Name : ''}</td>
-                                                        <td>{BeneData.Active__c}</td>
+                                                        <td>{BeneData.Active__c ? 'Yes' : 'No'}</td>
                                                         <td>
                                                             <Link
                                                                 to={{ pathname: `/portal/beneficiary/${BeneData.Updated_by_Application_Person__r.Name}` }}
                                                                 params={{ personId: BeneData.Updated_by_Application_Person__r.Name }}>
-                                                                <button className="btn btn-orange">view</button>
+                                                                <button className="btn btn-small btn-orange">view</button>
                                                             </Link>
                                                         </td>
                                                     </tr>

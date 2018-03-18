@@ -131,7 +131,6 @@ router.post('/applications-list', validateToken, loginToSalesforce, (req, res) =
         const accountId = req.body.accountId;
 
         conn.query(query, (error, results) => {
-            console.log(error, results)
             if (error) return res.status(500).send({ error: true, status: 500, results });
             if (results.records.length > 0) {
                 return res.send({ status: 200, records: results.records }).status(200);
@@ -172,7 +171,7 @@ router.post('/beneficiary-list', validateToken, loginToSalesforce, (req, res) =>
         const accountId = req.body.accountId;
 
         conn.query(query, (error, results) => {
-            console.log(error, results)
+            console.log(error, results);
             if (error) return res.status(500).send({ error: true, status: 500, results });
             if (results.records.length > 0) {
                 return res.send({ status: 200, records: results.records }).status(200);
@@ -193,10 +192,34 @@ router.post('/query-data', validateToken, loginToSalesforce, (req, res) => {
         const query = req.body.query;
         conn.query(query, (error, results) => {
             if (error) return res.status(500).send({ error: true, status: 500, results });
+            console.log(error, results);
             if (results.records.length > 0) {
                 return res.send({ status: 200, records: results.records }).status(200);
             }
             return res.send({ status: 404, message: 'Empty' }).status(404);
+        });
+    });
+});
+
+router.post('/attachment', validateToken, loginToSalesforce, (req, res) => {
+    clientRedis.get('sfToken', (err, reply) => {
+        if (err) return res.status(500).send({ error: true, status: 503 });
+        const sfToken = JSON.parse(reply);
+        const conn = new jsforce.Connection({
+            instanceUrl: sfToken.instanceUrl,
+            accessToken: sfToken.accessToken,
+        });
+        // const query = req.body.query;
+        const atcId = req.body.attachmentId;
+        const attachment = conn.sobject('Document').record(atcId).blob('Body');
+        const buf = [];
+        attachment.on('data', (data, enc) => {
+            buf.push(data.toString(enc));
+        });
+        attachment.on('end', () => {
+            const contentStr = buf.join('');
+            return res.send({ status: 200, contentStr }).status(200);
+            // handle contentStr
         });
     });
 });

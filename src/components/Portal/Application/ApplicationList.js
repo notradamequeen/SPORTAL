@@ -59,23 +59,40 @@ class ApplicationList extends React.Component {
                                         </thead>
                                         <tbody>
                                             { this.props.salesforce.applicationList.records.map(mainApp => (
-                                                <tr>
-                                                    <td><input type="checkbox" /></td>
-                                                    <td>{mainApp.Application__r.Name}</td>
-                                                    <td>{mainApp.Application__r.Applicant_Name__c}</td>
-                                                    <td>{mainApp.Application__r.No_of_Bene__c}</td>
-                                                    <td>{mainApp.Application__r.Date_of_Application__c}</td>
-                                                    <td>{mainApp.Application__r.Application_Status__c}</td>
-                                                    <td>
-                                                        <button className="btn btn-orange">
-                                                            <Link 
-                                                            to={{pathname: `/portal/application/${mainApp.Application__r.Name}`}}
-                                                            params={{ personId: mainApp.Application__r.Name}}>
-                                                                view
+                                                mainApp.Application__r.Fail_Eligibility__c ?
+                                                    <tr style={{ color:"red", }}>
+                                                        <td><input type="checkbox" /></td>
+                                                        <td>{mainApp.Application__r.Name}</td>
+                                                        <td>{mainApp.Application__r.Applicant_Name__c}</td>
+                                                        <td>{mainApp.Application__r.No_of_Bene__c}</td>
+                                                        <td>{mainApp.Application__r.Date_of_Application__c}</td>
+                                                        <td>{mainApp.Application__r.Application_Status__c}</td>
+                                                        <td>
+                                                            <Link
+                                                                to={{ pathname: `/portal/application/${mainApp.Application__r.Name}` }}
+                                                                params={{ personId: mainApp.Application__r.Name }}
+                                                            >
+                                                                <button className="btn btn-small btn-orange">view</button>
                                                             </Link>
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    <tr>
+                                                        <td><input type="checkbox" /></td>
+                                                        <td>{mainApp.Application__r.Name}</td>
+                                                        <td>{mainApp.Application__r.Applicant_Name__c}</td>
+                                                        <td>{mainApp.Application__r.No_of_Bene__c}</td>
+                                                        <td>{mainApp.Application__r.Date_of_Application__c}</td>
+                                                        <td>{mainApp.Application__r.Application_Status__c}</td>
+                                                        <td>
+                                                            <Link
+                                                                to={{ pathname: `/portal/application/${mainApp.Application__r.Name}` }}
+                                                                params={{ personId: mainApp.Application__r.Name }}
+                                                            >
+                                                                <button className="btn btn-small btn-orange">view</button>
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
                                             ))
                                             }
 

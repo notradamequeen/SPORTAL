@@ -28,4 +28,4 @@ Email_Address__c, Contact_Number__c, Home_Phone__c, Mobile_Phone__c FROM Person_
 
 export const q_BENE_DATA = "Select Full_Name__c, Gender__c, ID_type__c, Nationality__c, ID_Number__c, \
 Other_Nationality__c, Date_of_Birth__c, Race__c, Marital_Status__c, Other_Race__c, Other_Marital_Status__c, \
-Email_Address__c, Contact_Number__c, Home_Phone__c, Mobile_Phone__c FROM Person__c WHERE RecordType.Id = '0125D0000008awgQAA' AND Application__r.Name In "
+Email_Address__c, Contact_Number__c, Home_Phone__c, Mobile_Phone__c FROM Person__c WHERE RecordType.Name = 'Beneficiary' AND Application__r.Name In "
