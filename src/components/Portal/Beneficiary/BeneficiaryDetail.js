@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import SideMenu from '../common/side_menu';
-import { getBeneDetail } from '../services';
+import { getBeneDetail, getBeneReceiptList } from '../services';
 import '../../../assets/css/themify-icons.css';
 import '../../../assets/css/portal.css';
+import BeneReceiptList from './BeneReceiptList'
 
 class BeneficiaryDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             BeneDetail: [],
+            BeneReceiptList: [],
         };
     }
     componentDidMount() {
@@ -19,22 +21,41 @@ class BeneficiaryDetail extends React.Component {
             this.props.match.params.personId,
             this.props.user.siteToken.hash,
         ).then(response => response.json()).then((json) => {
-            console.log(json.records[0])
+            // console.log(json.records[0])
             this.setState({ BeneDetail: json.records });
         });
+        getBeneReceiptList(
+            this.props.match.params.personId,
+            this.props.user.siteToken.hash,
+        ).then(response => response.json()).then((json) => {
+            this.setState({ BeneReceiptList: json.records})
+        })
     }
     render() {
         console.log(this.state.BeneDetail);
+        console.log(BeneReceiptList)
+        const approver = this.props.user.loggedInUser.Partner_Authority__c.toLowerCase() == 'approver'
         return (
             <div id="application-detail">
                 <div className="container body portal">
                     <div className="main_container">
                         <SideMenu />
-                        <div className="content-title">
-                            <p className="page_title">Beneficiary Detail </p>
+                        <div className="content-title ">
+                            <span className="pull-left">
+                                <p className="page_title">Beneficiary Detail </p>
+                            </span>
+                            <span className="pull-right">
+                                <button className="btn btn-green">
+                                {approver ? "Approve" : "Verify" }
+                                </button>
+                                <button className="btn btn-red">Reject</button>
+                                <button className="btn-renew">Renew Application</button>
+                                <button className="btn-transfer">Transfer</button>
+                                <button className="btn btn-red">Terminate</button>                                
+                            </span>
                             <hr width="100%" />
                         </div>
-                        <div className="content-page">
+                        <div className="content-page col-lg-8 col-md-7">
                             <div className="x_panel">
                                 <div className="x_title">
                                     Personal Details
@@ -257,8 +278,11 @@ class BeneficiaryDetail extends React.Component {
                                                 disabled="true" />
                                         </div>
                                     </div>
-                                </div>                                 
+                                </div>                             
                             </div>
+                        </div>
+                        <div className = "col-lg-4 col-md-5">
+                            <BeneReceiptList ReceiptList = {this.state.BeneReceiptList}/>
                         </div>
                     </div>
                 </div>
