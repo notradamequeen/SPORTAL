@@ -176,6 +176,49 @@ button.btn-small.btn-orange {
     padding-left: 20%;
     padding-right: 20%;
 }
+button.btn-renew {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid #80b575;
+    background-color: #80b575;
+    height: 40px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.8em;
+}
+button.btn-transfer {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid #686d67;
+    background-color: #686d67; 
+    height: 40px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 0.8em;
+}
+
+button.btn-renew:hover {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid #80b575;
+    background-color: #80b575; 
+    height: 40px;
+    border-radius: 25px;
+    color: #000;
+    font-size: 0.8em;
+}
+
+button.btn-transfer:hover {
+    text-decoration-color: #fff;
+    min-width: 100px;
+    border:1px solid #686d67;
+    background-color: #686d67; 
+    height: 40px;
+    border-radius: 25px;
+    color: #000;
+    font-size: 0.8em;
+}
+
 table tbody tr.danger td {
     color: red;
     background-color: red;
