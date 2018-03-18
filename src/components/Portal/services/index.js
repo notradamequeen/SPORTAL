@@ -2,9 +2,11 @@ import { spmfcloudFunctionUrl } from '../../../actions/salesforces';
 import {
     qApplicationDetail,
     qBeneDetail,
+    qApplicationDetail2,
     qApplicationBeneList,
     qApplicationHouList,
-    qAttachment } from '../actions/query';
+    qAttachment,
+    qBeneReceiptList } from '../actions/query';
 import swal from 'sweetalert';
 
 export default null;
@@ -76,6 +78,23 @@ export function getApplicationHouList(key, siteToken) {
     });
 }
 
+export function getApplicationDetail2(key, siteToken) {
+    const query = `${qApplicationDetail2}'${key}'`;
+    return fetch(`${spmfcloudFunctionUrl}/application-detail`, {
+        mode: 'cors',
+        body: JSON.stringify({
+            query,
+            siteToken,
+        }),
+        cache: 'no-cache',
+        method: 'POST',
+        headers: {
+            'hash-token': siteToken,
+            'Content-Type': 'application/json',
+        },
+    });
+}
+
 export function getAttachment(key, siteToken) {
     const query = `${qAttachment}'${key}'`;
     return fetch(`${spmfcloudFunctionUrl}/query-data`, {
@@ -97,6 +116,23 @@ export function getAttachmentStream(key, siteToken) {
         mode: 'cors',
         body: JSON.stringify({
             attachmentId: key,
+            siteToken,
+        }),
+        cache: 'no-cache',
+        method: 'POST',
+        headers: {
+            'hash-token': siteToken,
+            'Content-Type': 'application/json',
+        },
+    });
+}
+
+export function getBeneReceiptList(key, siteToken) {
+    const query = `${qBeneReceiptList}'${key}'`;
+    return fetch(`${spmfcloudFunctionUrl}/query-data`, {
+        mode: 'cors',
+        body: JSON.stringify({
+            query,
             siteToken,
         }),
         cache: 'no-cache',

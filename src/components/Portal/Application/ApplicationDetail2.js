@@ -34,7 +34,7 @@ class ApplicationDetail extends React.Component {
             this.props.match.params.personId,
             this.props.user.siteToken.hash,
         ).then(response => response.json()).then((json) => {
-            console.log('appDetail', json.records[0]);
+            console.log('appDetail2', json);
             this.setState({ appDetail2: json.records });
         });
         getApplicationBeneList(
@@ -52,17 +52,17 @@ class ApplicationDetail extends React.Component {
         });
     }
     render() {
-        console.log(this.state.appDetail);
+        console.log('appDetail2', this.state.appDetail2);
         return (
             <div id="application-detail">
                 <div className="container body portal">
                     <div className="main_container">
                         <SideMenu />
                         <div className="content-title">
-                            <p className="page_title">Main Applicant </p>
+                            <p className="page_title">Application Detail </p>
                             <hr width="100%" />
                         </div>
-                        <div className="content-page col-md-8">
+                        <div className="content-page col-md-9">
                             <div className="x_panel">
                                 <div className="x_title">
                                     Personal Details
@@ -71,211 +71,331 @@ class ApplicationDetail extends React.Component {
                                 <div className="x_content" style={{ display: 'block' }} >
                                     <div className="col-sm-6">
                                         <div className="form-group">
-                                            <label>Name</label>
+                                            <label>Application Name</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant_Name__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Name : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>ID Type</label>
+                                            <label>Applicant Name</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.ID_Type__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_Name__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>ID Number</label>
+                                            <label>Applicant</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.ID_Number__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant__r.Name : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Date Of Birth</label>
+                                            <label>Applicant ID Type</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Date_of_Birth__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_ID_Type__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Marital Status</label>
+                                            <label>Applicant ID Number</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Marital_Status__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_ID__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Other Marital Status</label>
+                                            <label>Applicant Marital Status</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Marital_Status__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_Marital_Status__c : ''}
                                                 disabled="true"
                                             />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Applicant Race</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_Race__c : ''}
+                                                disabled="true"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="col-sm-2 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Applicant_PDPA__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-10 text-content">
+                                                Applicant PDPA
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
                                         <div className="form-group">
-                                            <label>Gender</label>
+                                            <label>Date of Application</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Gender__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Date_of_Application__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Nationality</label>
+                                            <label>Application Type</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Nationality__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Application_Type__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Other Nationality</label>
+                                            <label>Application Status</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Nationality__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Application_Status__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Race</label>
+                                            <label>Source of Application</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Race__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Source_of_Application__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
-                                        <div className="form-group">
-                                            <label>Other Race</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Other_Race__c : ''}
-                                                disabled="true"
-                                            />
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Fail_Flat_Type__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Fail Flat Type
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Fail_Per_Cap_Income__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                &nbsp;Fail Per Cap Income
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Fail_Bene_Requirement__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Fail Bene Requirement
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="x_title">
-                                    Address
+                                    Status
                                     <div className="clearfix" />
                                 </div>
                                 <div className="x_content" style={{ display: 'block' }} >
                                     <div className="col-sm-6">
                                         <div className="form-group">
-                                            <label>Street Name</label>
+                                            <label>Total Number of HouseHold Member</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Street__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Total_number_of_household_members__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Street Number</label>
+                                            <label>No of Dependent youth/children</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Unit_Number__c : ''}
-                                                disabled="true"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>City</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].City__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].No_of_dependent_youth_children__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
                                         <div className="form-group">
-                                            <label>Type of Flat</label>
+                                            <label>No of Bene</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Flat_Type__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].No_of_Bene__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Other Type of Flat</label>
+                                            <label>Completed Bene</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Other_Flat_Type__c : ''}
-                                                disabled="true"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Country</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Country__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Approved_Bene__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="x_title">
-                                    Personal Contact
+                                    Reason for not having Income Earner/Having one Income Earner
                                     <div className="clearfix" />
                                 </div>
                                 <div className="x_content" style={{ display: 'block' }} >
                                     <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Home Phone</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Home_Phone__c : ''}
-                                                disabled="true"
-                                            />
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Alcoholism__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Alcoholism
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <label>Mobile Phone</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Mobile_Phone__c : ''}
-                                                disabled="true"
-                                            />
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Chronic_Illness__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Chronic Illness
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Cultural_or_personal_belief__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Cultural or Personal Belief 
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Disability__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Disability 
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="col-sm-6">
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Low_Education__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Low Education
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Gambling_Addiction__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Gambling Addiction
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Temporarily_unfit_for_work__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Temporarily Unfit for Work 
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-1 checkContainer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-control"
+                                                    checked={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Other_Reason__c : ''}
+                                                    readOnly="true"
+                                                />
+                                            </div>
+                                            <div className="col-sm-11 text-content">
+                                                Other Reason 
+                                            </div>
+                                        </div>
                                         <div className="form-group">
-                                            <label>Email Address</label>
+                                            <label>Other Reason Description</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                value={this.state.appDetail.length > 0 ? this.state.appDetail[0].Applicant__r.Email_Address__c : ''}
+                                                value={this.state.appDetail2.length > 0 ? this.state.appDetail2[0].Other_Reason_Description__c : ''}
                                                 disabled="true"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="x_title">
-                                    Household Member Information
+                                    Income Detail
                                     <div className="clearfix" />
                                 </div>
                                 <div className="x_content" style={{ display: 'block' }} >
@@ -340,7 +460,7 @@ class ApplicationDetail extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <div className="row">
                                 <div className="x_panel">
                                     <div className="x_title">

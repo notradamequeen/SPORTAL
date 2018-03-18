@@ -180,3 +180,11 @@ table tbody tr.danger td {
     color: red;
     background-color: red;
 }
+.checkContainer{
+    padding-right: 0;
+    padding-left: 0;
+    border: none;
+}
+.text-content {
+    margin-top: 10px;
+}

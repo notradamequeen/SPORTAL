@@ -150,6 +150,7 @@ router.post('/application-detail', validateToken, loginToSalesforce, (req, res) 
         });
         const query = req.body.query;
         conn.query(query, (error, results) => {
+            console.log(error, results)
             if (error) return res.status(500).send({ error: true, status: 500, results });
             if (results.records.length > 0) {
                 return res.send({ status: 200, records: results.records }).status(200);

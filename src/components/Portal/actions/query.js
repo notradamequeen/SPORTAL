@@ -24,6 +24,14 @@ Applicant__r.Mobile_Phone__c, Applicant__r.Office_Number__c, Applicant__r.Relati
 Applicant__r.Occupation__c, Applicant__r.Employment_Status__c, Applicant__r.Employment_Start_Date__c, Applicant__r.Monthly_Gross_Income__c \
 From Application__c Where Name =';
 
+export const qApplicationDetail2 = 'Select Id, Name, Applicant_Name__c, Applicant__r.Name, Applicant_Id_Type__c, Applicant_Id__c, \
+Applicant_Marital_Status__c, Applicant_Race__c, Applicant_PDPA__c, Date_of_Application__c, Application_Type__c, Application_Status__c, \
+Source_of_Application__c, Fail_Flat_Type__c, Fail_Per_Cap_Income__c, Fail_Bene_Requirement__c, Total_number_of_household_members__c, \
+No_of_dependent_youth_children__c, No_of_Bene__c, Approved_Bene__c, Alcoholism__c, Chronic_Illness__c, Cultural_or_personal_belief__c, \
+Disability__c, Low_Education__c, Gambling_Addiction__c, Temporarily_unfit_for_work__c, Other_Reason__c, Other_Reason_Description__c, \
+Total_income_earners__c, Total_Monthly_Gross_Income__c, Calculated_per_capita_income__c, Declaration_Completed__c, Media_Coverage_consent__c, \
+Other_Source_of_Income__c From Application__c Where Name =';
+
 export const qApplicationBeneList = "Select Name, Full_Name__c, Applying_to__r.Name, Application_Status__c from Person__c Where RecordType.Name = 'Beneficiary' AND Application__r.Name =";
 
 export const qBeneDetail = "Select Id, Name, Full_Name__c, ID_Type__c, ID_Number__c, Relationship_to_Applicant__c, Application_Date__c, Gender__c, Age_at_Application__c, \
@@ -35,3 +43,5 @@ export const qApplicationHouList = "Select Name, Full_Name__c, Relationship_to_A
 export const qFundRequestList = 'Select Name, Partner_Name__r.Name, Year__c, Period__c, Partner_Type__c, Type__c, FR_Status__c From Fund_Request__c Where Partner_Name__r.Id =';
 
 export const qAttachment = 'Select Id, Body, ContentType, Name, ParentId From Attachment Where ParentId =';
+
+export const qBeneReceiptList = 'Select Name, Issued_By__c, Approved_Amount__c, Generated_From__c From Receipt__c Where Generated_From__r.Name ='
