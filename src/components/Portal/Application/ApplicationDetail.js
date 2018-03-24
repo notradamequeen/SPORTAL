@@ -3,26 +3,31 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import SideMenu from '../common/side_menu';
+import SideMenu from '../common/SideMenu';
 import {
     getApplicationDetail,
     getApplicationBeneList,
     getApplicationHouList,
-    getApplicationDetail2 } from '../services';
+    getApplicationDetail2,
+    submitVerifyBene } from '../services';
 import '../../../assets/css/themify-icons.css';
 import '../../../assets/css/portal.css';
 
 class ApplicationDetail extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             appDetail: [],
             appDetail2: [],
             appBeneList: [],
             appHouList: [],
         };
+        this.submit = this.submit.bind(this);
     }
     componentDidMount() {
+        if (this.props.user.loggedInUser == null) {
+            this.context.history.push('/login')
+        }
         getApplicationDetail(
             this.props.match.params.personId,
             this.props.user.siteToken.hash,
@@ -51,8 +56,27 @@ class ApplicationDetail extends React.Component {
             this.setState({ appHouList: json.records });
         });
     }
+    submit() {
+        const datas = [];
+        this.appBeneList.map((Benitem) => {
+            const data = {
+                Id: Benitem.Id,
+                Application_Status__c: Benitem.Application_Status__c == 'Rejected By Partner' ? Benitem.Application_Status__c : 'Submit by Partner',
+            };
+            datas.push(data);
+        });
+        submitVerifyBene(
+            this.props.user.siteToken.hash,
+            datas,
+        ).then((response) => {
+            console.log('submit', response)
+            response.json();
+        });
+    }
     render() {
-        console.log(this.state.appDetail);
+        if (this.props.user.loggedInUser == null) {
+            this.context.history.push('/login')
+        }
         return (
             <div id="application-detail">
                 <div className="container body portal">

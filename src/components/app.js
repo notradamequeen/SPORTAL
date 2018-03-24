@@ -5,10 +5,7 @@ import {
     Redirect,
     Switch,
 } from 'react-router-dom';
-import { connect } from 'react-redux';
 import Recaptcha from 'react-recaptcha';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'gentelella/build/css/custom.min.css';
 import swal from 'sweetalert';
 import propTypes from 'prop-types';
 import Login from './Login';
@@ -16,44 +13,11 @@ import Home from './Home';
 import Profile from './Profile';
 import Contact from './Contact';
 import Registration from './Registration';
-import Dashboard from './Portal';
-import ApplicationList from './Portal/Application/ApplicationList';
-import BeneficiaryList from './Portal/Beneficiary/BeneficiaryList';
+import ParentPoint from './Portal';
+
 import { spmfcloudFunctionUrl } from '../actions/salesforces';
-import { request } from 'https';
-import ApplicationDetail from './Portal/Application/ApplicationDetail';
-import BeneficiaryDetail from './Portal/Beneficiary/BeneficiaryDetail';
-import FundRequestList from './Portal/FundRequest/FundRequestList';
-import ApplicationDetail2 from './Portal/Application/ApplicationDetail2';
 
-
-const CPrivateRoute = props => (
-    <Route
-        render={() => {
-            if (props.currentUser.loggedInUser !== null) {
-                return <props.component />;
-            }
-            return (<Redirect to={{
-                pathname: '/login',
-                state: { from: props.location},
-            }}
-            />);
-        }}
-    />
-);
-
-
-CPrivateRoute.propTypes = {
-    component: propTypes.func.isRequired,
-    location: propTypes.any.isRequired,
-    currentUser: propTypes.object.isRequired,
-};
-
-const privateRouteToProps = state => ({
-    currentUser: state.user,
-});
-
-const PrivateRoute = connect(privateRouteToProps)(CPrivateRoute);
+// import ApplicationDetail from './Portal/Application/ApplicationDetail';
 
 
 class AllRoutes extends React.Component {
@@ -68,8 +32,7 @@ class AllRoutes extends React.Component {
         this.resetRecaptcha = this.resetRecaptcha.bind(this);
     }
 
-    componentWillMount() {
-        
+    componentDidMount() {
     }
 
     componentWillUnmount() {
@@ -147,7 +110,7 @@ class AllRoutes extends React.Component {
                             width: 200,
                         }}
                     />
-                    <p>We need to verify that you're not a robot.</p>
+                    <p style={{ fontSize: 15, margin: 10 }}>To access this form please acknowledge that you are not a robot</p>
                     <Recaptcha
                         ref={(e) => {
                             this.recaptchaInstance = e;
@@ -168,25 +131,16 @@ class AllRoutes extends React.Component {
         }
         return (
             <Router>
-                <div>
-                    <Switch>
-                        <Route exact path="/" component={Registration} />
-                        <Route exact path="/login" component={Login} />
-                        <PrivateRoute exact path="/profile" component={Profile} />
-                        <PrivateRoute exact path="/contact" component={Contact} />
-                        <PrivateRoute exact path="/portal" component={Dashboard} />
-                        <PrivateRoute exact path="/portal/applications" component={ApplicationList} />
-                        <Route exact path="/portal/application/:personId" component={ApplicationDetail2} />
-                        <Route exact path="/portal/beneficiary/:personId" component={BeneficiaryDetail} />
-                        <PrivateRoute exact path="/portal/beneficiaries" component={BeneficiaryList} />
-                        <PrivateRoute exact path="/portal/fundrequests" component={FundRequestList} />
-                        <Route
-                            render={(props) => {
-                                window.location = `/404.html?from=${props.location.pathname}`;
-                            }}
-                        />
-                    </Switch>
-                </div>
+                <Switch>
+                    <Route exact path="/" component={Registration} />
+                    <Route exact path="/login" component={Login} />
+                    <Route path="/portal" component={ParentPoint} />
+                    <Route
+                        render={(props) => {
+                            window.location = `/404.html?from=${props.location.pathname}`;
+                        }}
+                    />
+                </Switch>
             </Router>
         );
     }

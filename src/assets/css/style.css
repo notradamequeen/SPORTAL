@@ -20,6 +20,8 @@ html{
 }
 .registrationForm{
   margin: 50px;
+  padding: 20px;
+  background-color: #fff;
 }
 .home_container, .profile_container{
     margin:100px 20px 20px 20px;
@@ -99,4 +101,10 @@ html{
   }
   .header-title{
     text-align: center;
+  }
+
+  .modal-body p.labelFor{
+    font-size: 16px;
+    margin-top: 10px;
+    font-family: 'Lato';
   }

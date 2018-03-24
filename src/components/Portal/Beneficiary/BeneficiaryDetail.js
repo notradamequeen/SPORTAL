@@ -2,289 +2,220 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import SideMenu from '../common/side_menu';
-import { getBeneDetail, getBeneReceiptList } from '../services';
-import '../../../assets/css/themify-icons.css';
-import '../../../assets/css/portal.css';
-import BeneReceiptList from './BeneReceiptList'
+import swal from 'sweetalert';
+import BeneReceiptList from './BeneReceiptList';
+
+import { getBeneficiaryDetail, changeBeneficiaryStatus, getPicklist, save } from './actions';
+import {
+    BeneficiaryForOfficialUse,
+    BeneficiaryContactDetail,
+    BeneficiaryInformation,
+    BeneficiaryAppInformation,
+} from './components';
+import { saveObject } from '../../../actions/salesforces';
 
 class BeneficiaryDetail extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = {
-            BeneDetail: [],
-            BeneReceiptList: [],
+            beneDetail: null,
+            loading: false,
+            editMode: false,
         };
+        this.changeStatus = this.changeStatus.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.getPicklist = getPicklist.bind(this);
+        this.save = save.bind(this);
     }
-    componentDidMount() {
-        getBeneDetail(
-            this.props.match.params.personId,
-            this.props.user.siteToken.hash,
-        ).then(response => response.json()).then((json) => {
-            // console.log(json.records[0])
-            this.setState({ BeneDetail: json.records });
+    async componentWillMount() {
+        this.setState({ loading: true });
+        try {
+            const detail = await getBeneficiaryDetail(this.props.match.params.id, this.props.user.siteToken.hash);
+            this.setState({
+                beneDetail: detail.records[0] || null,
+                loading: false,
+            });
+        } catch (error) {
+            swal({
+                text: error.toString(),
+                title: 'Error when retriving beneficiary',
+            });
+        }
+    }
+
+    onChange(attributeName, value) {
+        this.setState({
+            beneDetail: {
+                ...this.state.beneDetail,
+                [attributeName]: value,
+            },
         });
-        getBeneReceiptList(
-            this.props.match.params.personId,
-            this.props.user.siteToken.hash,
-        ).then(response => response.json()).then((json) => {
-            this.setState({ BeneReceiptList: json.records})
-        })
     }
+
+    async changeStatus(status) {
+        if (this.state.loading) return;
+        let dataToUpdate = {
+            Id: this.state.beneDetail.Id,
+            Application_Status__c: status,
+        };
+        const { beneDetail } = this.state;
+        if (status === 'Verified by Partner') {
+            dataToUpdate = Object.assign({}, dataToUpdate, {
+                Payout_Start__c: beneDetail.Payout_Start__c,
+                Payout_End__c: beneDetail.Payout_End__c,
+                Approve_Exception__c: beneDetail.Approve_Exception__c,
+                No_of_Receipts_Approved__c: beneDetail.No_of_Receipts_Approved__c,
+            });
+        }
+        this.setState({ loading: true });
+        try {
+            const response = await changeBeneficiaryStatus(dataToUpdate, this.props.user.siteToken.hash);
+            if (response.status !== 200) {
+                swal({
+                    title: 'Error when updating status',
+                    text: response.message,
+                    dangerMode: true,
+                });
+            } else {
+                swal({
+                    title: 'Successfully update beneficiary status',
+                    text: `This beneficiary status has been updated to "${status}"`,
+                });
+            }
+            this.setState({ loading: false });
+            
+            this.componentWillMount();
+        } catch (error) {
+            swal({
+                text: error.toString(),
+                title: 'An error occured when updating status',
+            });
+            this.setState({ loading: false });
+        }
+    }
+
+
     render() {
-        console.log(this.state.BeneDetail);
-        console.log(BeneReceiptList)
-        const approver = this.props.user.loggedInUser.Partner_Authority__c.toLowerCase() == 'approver'
+        const approver = this.props.user.loggedInUser.Partner_Authority__c.toLowerCase() === 'approver';
+        let buttons = [];
+        const { beneDetail, editMode } = this.state;
+        if (beneDetail === null) {
+            return (
+                <p style={{ textAlign: 'center' }}>
+                    {this.state.loading ? <i className="fa fa-3x fa-spinner fa-spin" /> : null}
+                </p>
+            );
+        }
+        if (approver) {
+            buttons = [
+                (beneDetail.Application_Status__c === 'Rejected by Partner' || beneDetail.Application_Status__c === 'Verified by Partner') ?
+                    <button className="btn btn-info" onClick={() => this.changeStatus('Received')}>Revert</button> : ''
+            ];
+            if (beneDetail.Application_Status__c === 'Verified by Partner') {
+                buttons.push(
+                    <button
+                        className="btn btn-success btn-fill"
+                        onClick={() => {
+                            if (this.props.user.loggedInUser.Account.Partner_Type__c === 'School') this.changeStatus('Submitted to SPMF');
+                            else {
+                                this.changeStatus('Approved by Partner');
+                            }
+                        }}
+                    >
+                        <i className="fa fa-thumbs-up" /> Approve
+                    </button>,
+                    <button className="btn btn-danger btn-fill" onClick={() => this.changeStatus('Rejected By Partner')}>Reject</button>);
+            }
+        } else if (beneDetail.Application_Status__c === 'Received') {
+            buttons.push(<button className="btn btn-success btn-fill" onClick={() => this.changeStatus('Verified by Partner')}>Verify</button>);
+        }
+
+        if (beneDetail.Application_Status__c === 'Received') {
+            if (!editMode) {
+                buttons.push(
+                    <button className="btn btn-default" onClick={() => this.setState({ editMode: true })} key="edit">
+                        <i className="fa fa-pencil" /> Edit
+                    </button>);
+            } else {
+                buttons.push(
+                    <button className="btn btn-warning" onClick={() => this.setState({ editMode: false })} key="cancel">
+                        Cancel
+                    </button>,
+                    <button className="btn btn-warning" onClick={this.save} key="Save">
+                        <i className="fa fa-save" /> Save
+                    </button>);
+            }
+        }
         return (
-            <div id="application-detail">
-                <div className="container body portal">
-                    <div className="main_container">
-                        <SideMenu />
-                        <div className="content-title ">
-                            <span className="pull-left">
-                                <p className="page_title">Beneficiary Detail </p>
-                            </span>
-                            <span className="pull-right">
-                                <button className="btn btn-green">
-                                {approver ? "Approve" : "Verify" }
-                                </button>
-                                <button className="btn btn-red">Reject</button>
-                                <button className="btn-renew">Renew Application</button>
-                                <button className="btn-transfer">Transfer</button>
-                                <button className="btn btn-red">Terminate</button>                                
-                            </span>
-                            <hr width="100%" />
+            <div id="beneficiaryDetail" className="row">
+                <div className="col-lg-9 col-sm-12 col-md-9">
+                    <div className="card">
+                        <div className="col-md-3">
+                            <button
+                                className="btn btn-default btn-fill"
+                                onClick={() => {
+                                    if (this.props.history.length <= 1) this.props.history.push(`/portal/application/${beneDetail.Application__c}`);
+                                    else this.props.history.goBack();
+                                }}
+                            >
+                                <i className="fa fa-arrow-left" /> Back
+                            </button>
                         </div>
-                        <div className="content-page col-lg-8 col-md-7">
-                            <div className="x_panel">
-                                <div className="x_title">
-                                    Personal Details
-                                    <div className="clearfix" />
-                                </div>
-                                <div className="x_content" style={{ display: 'block' }} >
-                                    <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Name</label>
-                                            <input 
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Full_Name__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>ID Type</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].ID_Type__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>ID Number</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].ID_Number__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Gender</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Gender__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Current School</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Current_School__r.Name : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Nationality</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Nationality__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Religion</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Religion__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                    </div>
-                                <div className="col-sm-6">
-                                    <div className="form-group">
-                                        <label>Relationship to Applicant</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Relationship_to_Applicant__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Application Date</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Application_Date__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Date of Birth</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Full_Name__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Age at Application</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Age_at_Application__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Race</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Race__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Marital Status</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Marital_Status__c : ''}
-                                            disabled="true" />
-                                    </div>
-                                </div>                                
-                                </div>
-                                <div className="x_title">
-                                    Beneficiary Information
-                                    <div className="clearfix" />
-                                </div>
-                                <div className="x_content" style={{ display: 'block' }} >
-                                    <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Applying to</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Applying_to__r.Name : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Referred From</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Referred_From__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Referred Date</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Referred_Date__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Referring Reason</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Referring_Reason__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Application Type</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Application_Type__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Status</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Application_Status__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Current Level</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Current_Level__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Stream</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Stream__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                    </div>                             
-                                </div>
-                                <div className="x_title">
-                                    Contact Details
-                                    <div className="clearfix" />
-                                </div>
-                                <div className="x_content" style={{ display: 'block' }} >
-                                    <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Email Address</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Email_Address__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-6">
-                                        <div className="form-group">
-                                            <label>Home Phone</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Home_Phone__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Mobile Phone</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                value={this.state.BeneDetail.length > 0 ? this.state.BeneDetail[0].Mobile_Phone__c : ''}
-                                                disabled="true" />
-                                        </div>
-                                    </div>
-                                </div>                             
+                        <div className="col-md-9 pull-right" style={{ textAlign: 'right', display: beneDetail.RecordType.Name === 'Beneficiary' ? 'block' : 'none' }}>
+                            <div className="btn-group">
+                                {buttons}
+                                <button className="btn btn-info btn-fill" onClick={() => this.changeStatus('Received')}>Renew Application</button>
+                                <button className="btn btn-warning btn-fill">Transfer</button>
+                                <button className="btn btn-danger" onClick={() => this.changeStatus('Rejected')}>Terminate</button>
                             </div>
                         </div>
-                        <div className = "col-lg-4 col-md-5">
-                            <BeneReceiptList ReceiptList = {this.state.BeneReceiptList}/>
-                        </div>
+                        <div className="clearfix" />
+                        <hr />
+                        <p style={{ textAlign: 'center' }}>
+                            {this.state.loading ? <i className="fa fa-3x fa-spinner fa-spin" /> : null}
+                        </p>
+                        <h4>Basic Information</h4>
+                        <hr />
+                        <BeneficiaryInformation
+                            editMode={editMode}
+                            beneDetail={beneDetail}
+                            onFormChanged={this.onChange}
+                            getPicklist={this.getPicklist}
+                        />
+                        { beneDetail.RecordType.Name === 'Beneficiary' ?
+                            <div>
+                                <h4>Application Information</h4>
+                                <hr />
+                                <BeneficiaryAppInformation
+                                    editMode={editMode}
+                                    beneDetail={beneDetail}
+                                    onFormChanged={this.onChange}
+                                />
+                            </div> : null }
+                        <h4>Contact Details</h4>
+                        <BeneficiaryContactDetail
+                            editMode={editMode}
+                            beneDetail={beneDetail}
+                            onFormChanged={this.onChange}
+                            getPicklist={this.getPicklist}
+                        />
+                        { beneDetail.RecordType.Name === 'Beneficiary' ?
+                            <div>
+                                <h4>For Official Use</h4>
+                                <BeneficiaryForOfficialUse
+                                    editMode={beneDetail.Application_Status__c === 'Received'}
+                                    beneDetail={beneDetail}
+                                    onFormChanged={this.onChange}
+                                />
+                            </div> : null }
+                        <div className="clearfix" />
                     </div>
+                </div>
+                <div className="col-md-3">
+                    <BeneReceiptList
+                        beneficiaryId={this.props.match.params.id}
+                        token={this.props.user.siteToken.hash}
+                    />
                 </div>
             </div>
         );
@@ -293,6 +224,8 @@ class BeneficiaryDetail extends React.Component {
 
 BeneficiaryDetail.propTypes = {
     user: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+    objectInfo: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = dispatch => (
@@ -303,6 +236,7 @@ const mapDispatchToProps = dispatch => (
 const mapStateToProps = state => ({
     user: state.user,
     salesforce: state.salesforce,
+    objectInfo: state.objectInfo,
 });
 
 

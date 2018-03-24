@@ -1,91 +1,101 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import swal from 'sweetalert';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import SideMenu from '../common/side_menu';
-import { getBeneciciaryList } from '../actions';
-import '../../../assets/css/themify-icons.css';
-import '../../../assets/css/portal.css';
+import { getBeneficiaryList } from './actions';
 
 class BeneficiaryList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            loading: false,
+            list: [],
         };
+        this.getBeneficiaryList = getBeneficiaryList.bind(this);
     }
-    componentDidMount() {
-        this.props.getBeneciciaryList(
-            this.props.user.loggedInUser.Account.Id,
-            this.props.user.siteToken.hash,
-        );
+    async componentWillMount() {
+        try {
+            this.setState({ loading: true });
+            const result = await this.getBeneficiaryList();
+            this.setState({ loading: false, list: result.records || [] });
+        } catch (error) {
+            swal({
+                text: error.toString(),
+                title: 'An error when getting beneficiary records',
+            });
+        }
     }
+
     render() {
-        console.log(this.state.MainApplicantPersonData);
+        const columns = [{
+            Header: 'ID Number',
+            accessor: 'ID_Number__c',
+        }, {
+            Header: 'ID Type',
+            accessor: 'ID_Type__c',
+        }, {
+            Header: 'Name',
+            accessor: 'Name',
+        }, {
+            accessor: 'Active__c', // Required because our accessor is not a string
+            Header: 'Active Beneficiary',
+            Cell: props => <i className={`fa fa-2x fa-${props.value ? 'check' : 'times'}`} />,
+        }, {
+            accessor: 'Last_Payment_Date__c',
+            Header: 'Last Payment',
+        }, {
+            accessor: 'Nationality__c',
+            Header: 'Nationality',
+        }, {
+            accessor: 'Race__c',
+            Header: 'Race',
+        }, {
+            Header: 'Action',
+            accessor: 'Updated_by_Application_Person__c',
+            Cell: props => (
+                <span style={{ textAlign: 'center' }}>
+                    <Link to={`/portal/beneficiary/${props.value}`} className="btn btn-fill btn-primary"><i className="fa fa-eye" /> View</Link>
+                </span>
+            ),
+        }];
+
+    
         return (
-            <div id="application-list">
-                <div className="container body portal">
-                    <div className="main_container">
-                        <SideMenu />
-                        <div className="content-title">
-                            <p className="page_title">Beneficiaries </p>
-                            <hr width="100%" />
-                        </div>
-                        <div className="content-page">
-                            <div className="x_panel">
-                                <div className="x_title" />
-                                <div className="x_content" style={{ display: 'block', width: 'auto' }}>
-                                    <table className="table table-striped" style={{ width: 'auto' }}>
-                                        <thead>
-                                            <tr>
-                                                <th><input type="checkbox" /></th>
-                                                <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Applicant</th>
-                                                <th>DOB</th>
-                                                <th>Payout Amount</th>
-                                                <th>Last Payment Date</th>
-                                                <th>Level</th>
-                                                <th>Stream</th>
-                                                <th>School</th>
-                                                <th>Active</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            { this.props.salesforce.beneficiaryList.records.map((BeneData) => {
-                                                console.log('bene', BeneData);
-                                                return (
-                                                    <tr>
-                                                        <td><input type="checkbox" /></td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Name}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Full_Name__c}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Application__r.Applicant_Name__c}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Date_of_Birth__c}</td>
-                                                        <td>{BeneData.Total_Amount_Outstanding__c}</td>
-                                                        <td>{BeneData.Last_Payment_Date__c}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Current_Level__c}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Stream__c}</td>
-                                                        <td>{BeneData.Updated_by_Application_Person__r.Current_School__r ?
-                                                            BeneData.Updated_by_Application_Person__r.Current_School__r.Name : ''}</td>
-                                                        <td>{BeneData.Active__c ? 'Yes' : 'No'}</td>
-                                                        <td>
-                                                            <Link
-                                                                to={{ pathname: `/portal/beneficiary/${BeneData.Updated_by_Application_Person__r.Name}` }}
-                                                                params={{ personId: BeneData.Updated_by_Application_Person__r.Name }}>
-                                                                <button className="btn btn-small btn-orange">view</button>
-                                                            </Link>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })
-                                            }
-
-                                        </tbody>
-                                    </table>
-
-                                </div>
+            <div className="card">
+                <div className="row">
+                    <div className="col-md-12 btn-group-center text-center">
+                        {/* 
+                        this.props.user.loggedInUser.Partner_Authority__c === 'Approver' ?
+                            <div>
+                                <button className="btn btn-success">
+                                    <i className="fa fa-thumbs-up" /> Approve
+                                </button>
+                                <button className="btn btn-danger">
+                                    <i className="fa fa-times" /> Reject
+                                </button>
+                            </div>
+                            :
+                            <button className="btn btn-warning">
+                                <i className="fa fa-paper-plane" /> Submit
+                            </button>
+                        */}
+                    </div>
+                    <div className="clearfix" />
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="card">
+                            <p style={{ textAlign: 'center' }}>
+                                {this.state.loading ? <i className="fa fa-3x fa-spinner fa-spin" /> : null}
+                            </p>
+                            <div className="content table-responsive table-full-width">
+                                <ReactTable
+                                    data={this.state.list}
+                                    columns={columns}
+                                />
                             </div>
                         </div>
                     </div>
@@ -96,13 +106,12 @@ class BeneficiaryList extends React.Component {
 }
 
 BeneficiaryList.propTypes = {
-    getBeneciciaryList: PropTypes.func.isRequired,
+    
 };
 
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
-        getBeneciciaryList,
     }, dispatch)
 );
 

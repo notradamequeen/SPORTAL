@@ -7,42 +7,9 @@ import {
     qApplicationHouList,
     qAttachment,
     qBeneReceiptList } from '../actions/query';
-import swal from 'sweetalert';
+
 
 export default null;
-
-export function getApplicationDetail(key, siteToken) {
-    const query = `${qApplicationDetail}'${key}'`;
-    return fetch(`${spmfcloudFunctionUrl}/application-detail`, {
-        mode: 'cors',
-        body: JSON.stringify({
-            query,
-            siteToken,
-        }),
-        cache: 'no-cache',
-        method: 'POST',
-        headers: {
-            'hash-token': siteToken,
-            'Content-Type': 'application/json',
-        },
-    });
-}
-export function getApplicationBeneList(key, siteToken) {
-    const query = `${qApplicationBeneList}'${key}'`;
-    return fetch(`${spmfcloudFunctionUrl}/query-data`, {
-        mode: 'cors',
-        body: JSON.stringify({
-            query,
-            siteToken,
-        }),
-        cache: 'no-cache',
-        method: 'POST',
-        headers: {
-            'hash-token': siteToken,
-            'Content-Type': 'application/json',
-        },
-    });
-}
 
 export function getBeneDetail(key, siteToken) {
     const query = `${qBeneDetail}'${key}'`;
@@ -63,6 +30,7 @@ export function getBeneDetail(key, siteToken) {
 
 export function getApplicationHouList(key, siteToken) {
     const query = `${qApplicationHouList}'${key}'`;
+    console.log(query);
     return fetch(`${spmfcloudFunctionUrl}/query-data`, {
         mode: 'cors',
         body: JSON.stringify({
@@ -78,13 +46,12 @@ export function getApplicationHouList(key, siteToken) {
     });
 }
 
-export function getApplicationDetail2(key, siteToken) {
-    const query = `${qApplicationDetail2}'${key}'`;
-    return fetch(`${spmfcloudFunctionUrl}/application-detail`, {
+export function getApplicationDetail(key, siteToken) {
+    const query = qApplicationDetail(key);
+    return fetch(`${spmfcloudFunctionUrl}/query-data`, {
         mode: 'cors',
         body: JSON.stringify({
             query,
-            siteToken,
         }),
         cache: 'no-cache',
         method: 'POST',
@@ -133,6 +100,22 @@ export function getBeneReceiptList(key, siteToken) {
         mode: 'cors',
         body: JSON.stringify({
             query,
+            siteToken,
+        }),
+        cache: 'no-cache',
+        method: 'POST',
+        headers: {
+            'hash-token': siteToken,
+            'Content-Type': 'application/json',
+        },
+    });
+}
+
+export function submitVerifyBene(data, siteToken) {
+    return fetch(`${spmfcloudFunctionUrl}/update-bene-status`, {
+        mode: 'cors',
+        body: JSON.stringify({
+            data,
             siteToken,
         }),
         cache: 'no-cache',

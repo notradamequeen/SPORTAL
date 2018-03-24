@@ -29,6 +29,18 @@ const DEFAULT_STATE = {
         retrievedAt: 0,
         records: [],
     },
+    receiptList: {
+        retrievedAt: 0,
+        records: [],
+    },
+    terminationList: {
+        retrievedAt: 0,
+        records: [],
+    },
+    transferList: {
+        retrievedAt: 0,
+        records: [],
+    },
     recordType: {
         data: {},
     },
@@ -99,6 +111,27 @@ const fnList = {
     GET_FUND_REQUEST_LIST: (state, payload) => ({
         ...state,
         fundRequestList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
+        },
+    }),
+    GET_RECEIPT_LIST: (state, payload) => ({
+        ...state,
+        receiptList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
+        },
+    }),
+    GET_TERMINATION_LIST: (state, payload) => ({
+        ...state,
+        terminationList: {
+            retrievedAt: new Date().getTime(),
+            records: payload,
+        },
+    }),
+    GET_TRANSFER_LIST: (state, payload) => ({
+        ...state,
+        transferList: {
             retrievedAt: new Date().getTime(),
             records: payload,
         },

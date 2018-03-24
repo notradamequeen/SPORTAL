@@ -15,17 +15,19 @@ input[type=checkbox]#checkagree{
     -o-transform: scale(1.5); /* Opera */
     padding: 10px;
 }
-input[type=text]
+input[type=text], input[type=number]
 {
     color: #0590ba;
     font-size: 1.1em;
     border-radius: 0.3em;
+    border: 1px solid #bbbbbb;
 }
-select.select {
+select.select, select.form-control {
     color: #0590ba;
     font-size: 1.1em;
     background-color: #fff;
     border-radius: 0.3em;
+    border: 1px solid #bbbbbb;
 }
 
 input[type=file]
@@ -64,7 +66,7 @@ ul.noneul {
     list-style-type: none;
 }
 
-button.btn {
+.registrationForm button.btn {
     text-decoration-color: #fff;
     min-width: 150px;
     border:1px solid #4ea8c4;
@@ -75,11 +77,10 @@ button.btn {
     background-image: -o-linear-gradient(to right, #186b8e, #4ea8c4);
     background-image: linear-gradient(to right, #186b8e, #4ea8c4);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#186b8e, endColorstr=#4ea8c4);
     height: 40px;
-    border-radius: 20px;
     color: #fff;
 }
 
-input[type=button].btn {
+.registrationForm input[type=button].btn {
     text-decoration-color: #fff;
     min-width: 150px;
     border:1px solid #4ea8c4;
@@ -90,7 +91,7 @@ input[type=button].btn {
     background-image: -o-linear-gradient(to right, #186b8e, #4ea8c4);
     background-image: linear-gradient(to right, #186b8e, #4ea8c4);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#186b8e, endColorstr=#4ea8c4);
     height: 45px;
-    border-radius: 25px;
+    
     color: #fff;
 }
 
@@ -98,7 +99,7 @@ h4.info-text {
     color: #0590ba;
 }
 
-button.btn :hover {
+.registrationForm button.btn :hover {
     color: #fff;
     border:1px solid #5ca6c4;
     background-color: #82bbd1; background-image: -webkit-gradient(linear, left top, left bottom, from(#82bbd1), to(#193b61));

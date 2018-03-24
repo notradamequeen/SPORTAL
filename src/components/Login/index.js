@@ -66,7 +66,7 @@ class Login extends React.Component {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Email"
+                                        placeholder="Username"
                                         required=""
                                         onChange={e => this.setState({ email: e.target.value })}
                                     />

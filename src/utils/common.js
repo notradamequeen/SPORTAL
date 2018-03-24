@@ -4,8 +4,8 @@ import jsPDF from 'jspdf';
 
 require('jspdf-autotable');
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'gentelella/build/css/custom.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'gentelella/build/css/custom.min.css';
 // import { isValidElement } from '../../../Library/Caches/typescript/2.6/node_modules/@types/react';
 
 const SF_VERSION = 'v20.0';
@@ -1011,3 +1011,5 @@ export function getData(type, data, datamap = null) {
     }
     return newData;
 }
+
+
