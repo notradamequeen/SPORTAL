@@ -169,7 +169,7 @@ export function validation(step, data) {
     const invalidFields = [];
     const invalidFiles = [];
     let isValid = false;
-    if (step == 2) {
+    if (step === 2) {
         requiredField = ['Full_Name__c', 'ID_Type__c', 'ID_Number__c', 'Email_Address__c', 'Postal__c',
             'Street__c', 'Block__c', 'Flat_Type__c', 'Date_of_Birth__c', 'Marital_Status__c', 'Gender__c',
             'Nationality__c', 'Race__c', 'Contact_Number__c',
@@ -181,7 +181,7 @@ export function validation(step, data) {
                     return true;
                 } else {
                     invalidFields.push('Other Marital Status')
-                    return false
+                    return false;
                 }
             }
             if (step2Field == 'Nationality__c' && data[step2Field] == 'Others') {
@@ -223,7 +223,7 @@ export function validation(step, data) {
         }
         return { isValid, invalidFields };
     }
-    if (step == 3) {
+    if (step === 3) {
         requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Current_Level__c',
             'Current_School__c', 'Applying_to__c', 'Race__c', 'Email_Address__c',
             'Gender__c', 'Nationality__c', 'Relationship_to_Applicant__c',
@@ -234,22 +234,23 @@ export function validation(step, data) {
                     validFields.push('true');
                 } else {
                     validFields.push('false');
+                    invalidFields.push(step3Field);
                 }
-                console.log(validFields, step3Field, dataBen);
             });
             if (dataBen.attachment.Body !== undefined) {
-                validFields.push('true');
+                validFiles.push('true');
             } else {
-                validFields.push('false');
+                validFiles.push('false');
+                invalidFiles.push('Nric Document');
             }
         });
-        console.log(validFields);
-        if (!validFields.includes('false')) {
+
+        if (!validFields.includes('false') && !validFiles.includes('false')) {
             isValid = true;
         }
-        return { isValid, invalidFields };
+        return { isValid, invalidFields, invalidFiles };
     }
-    if (step == 4) {
+    if (step === 4) {
         requiredField = ['Full_Name__c', 'ID_Number__c', 'Date_of_Birth__c', 'Relationship_to_Applicant__c',
             'Monthly_Gross_Income__c', 'Employment_Status__c', 'Occupation__c', 'Company__c',
             'Employment_Start_Date__c'];
