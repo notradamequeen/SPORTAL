@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import 'gentelella/build/css/custom.min.css';
+
 import {
     getSalesforceToken,
     getPostalCodeRecord,
@@ -314,7 +316,6 @@ class Registration extends React.Component {
         });
     }
     onClickNext() {
-        console.log(this.state);
         const { steps, currentStep, tabIndex } = this.state;
         if (currentStep > 0) {
             const validate = validation(currentStep + 1, this.state);
@@ -324,17 +325,15 @@ class Registration extends React.Component {
             const invalidFiles = validate.invalidFiles;
             const validFormat = currentStep == 1 ? this.state.isValidMainEmail : !this.state.isValidBenEmail.includes('false');
 
-            if (currentStep == 1) {
+            if (currentStep === 1) {
                 validNric = this.state.isValidMainNric;
             }
-            if (currentStep == 2) {
+            if (currentStep === 2) {
                 validNric = !this.state.isValidBenNric.includes('false');
             }
-            if (currentStep == 3) {
+            if (currentStep === 3) {
                 validNric = !this.state.isValidHouNric.includes('false');
-                console.log('4', validNric);
             }
-
             if (!validFormat) {
                 console.log('false');
                 swal('Invalid Format Email');
@@ -343,14 +342,14 @@ class Registration extends React.Component {
                 swal('Invalid Format NRIC/FIN');
             }
             if (!isValid) {
+                console.log('fields', invalidFields, 'files', invalidFiles);
                 if (invalidFields.length > 0) {
                     swal({
                         icon: 'warning',
                         title: 'cannot move to next step!! the fields below are required',
                         text: `${invalidFields.join(', ')}`,
                     });
-                }
-                if (invalidFiles.length > 0) {
+                } else if (invalidFiles.length > 0) {
                     swal({
                         icon: 'warning',
                         title: 'cannot move to next step!! please upload all required documents',
@@ -408,7 +407,7 @@ class Registration extends React.Component {
         return fetch(this.state.fullUrl, fetchConfig).then(response => response.json());
     }
     save(sobjects, data) {
-        const SF_VERSION = 'v20.0';
+        const SF_VERSION = 'v37.0';
         const salesforceToken = this.props.salesforce.token;
         if (salesforceToken !== null) {
             this.setState({ fullUrl: `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}` });
@@ -426,7 +425,7 @@ class Registration extends React.Component {
         return fetch(this.state.fullUrl, fetchConfig).then(response => response.json());
     }
     update(sobjects, id, data) {
-        const SF_VERSION = 'v20.0';
+        const SF_VERSION = 'v37.0';
         const salesforceToken = this.props.salesforce.token;
         if (salesforceToken !== null) {
             this.setState({ fullUrl: `${salesforceToken.instanceUrl}/services/data/${SF_VERSION}/sobjects/${sobjects}/${id}` });
@@ -521,6 +520,7 @@ class Registration extends React.Component {
             console.log('personData', personData);
             console.log('appRes', json1);
             if (applicationId !== undefined) {
+                personData.Name = `${applicationId}-1`;
                 saveObject('Person__c', personData, salesforceToken).then((json2) => {
                     console.log('updateRes', json2);
                     const personId = json2.id;
@@ -550,9 +550,10 @@ class Registration extends React.Component {
                     }
                 }); /* end Of save Main Applicant */
                 /*  save BenData */
-                this.state.Ben.map((benData) => {
+                this.state.Ben.map((benData, index) => {
                     benData.data.Application__c = applicationId;
                     benData.data.RecordTypeId = '0125D0000008awgQAA';
+                    delete benData.data.Name;
                     this.save('Person__c', benData.data).then((resBen) => {
                         const benId = resBen.id;
                         if (benData.attachment.Name !== undefined) {
@@ -625,8 +626,8 @@ class Registration extends React.Component {
         }
         if (!this.state.isSubmitted) {
             return (
-                <div className="registrationForm">
-                    <div className="container body" id="printed">
+                <div className="registrationForm container-fluid">
+                    <div className="container body col-lg-12 col-sm-12 col-xs-12 col-md-12" id="printed">
                         <div className="col-md-12" id="logoHeader">
                             <div className="col-md-2">
                                 <img src={require('../../assets/img/spmf_logo.jpg')} width="150px" />
@@ -637,73 +638,71 @@ class Registration extends React.Component {
                             </div>
                         </div>
                         {this.state.isLoading ? <div><i className="fa text-center fa-spinner fa-spin fa-3x fa-fw" /></div> :
-                        <div className="" id="AppForm">
-                                <div className="col-md-12 stepper">
-                                <Stepper
-                                        steps={steps}
-                                        activeStep={currentStep}
-                                        completeColor="white"
-                                        completeTitleColor="white"
+                            <div className="" id="AppForm">
+                            <div className="col-md-12 stepper">
+                                    <Stepper
+                                    steps={steps}
+                                    activeStep={currentStep}
+                                    completeColor="white"
+                                    completeTitleColor="white"
                                         // circleFontSize={18}
-                                        circleFontColor="#1bb4e2"
-                                        activeColor="white"
-                                        activeTitleColor="white"
-                                        completeBarColor="white"
-                                    // size={40}
-                                    // titleFontSize={18}
-                                    />
-                            </div>
+                                    circleFontColor="#1bb4e2"
+                                    activeColor="white"
+                                    activeTitleColor="white"
+                                    completeBarColor="white"
+                                />
+                                </div>
 
-                                <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel onSelect={this.onSelect}>
-                                <TabList style={{ display: 'none' }}>
-                                        <Tab>Title 1</Tab>
-                                        <Tab>Title 2</Tab>
-                                        <Tab>Title 3</Tab>
-                                        <Tab>Title 4</Tab>
-                                        <Tab>Title 5</Tab>
-                                    </TabList>
-                                <div id="PrintedForm">
-                                        <TabPanel>
+                            <Tabs selectedIndex={this.state.tabIndex} forceRenderTabPanel onSelect={this.onSelect}>
+                                    <TabList style={{ display: 'none' }}>
+                                    <Tab>Title 1</Tab>
+                                    <Tab>Title 2</Tab>
+                                    <Tab>Title 3</Tab>
+                                    <Tab>Title 4</Tab>
+                                    <Tab>Title 5</Tab>
+                                </TabList>
+                                    <div id="PrintedForm">
+                                    <TabPanel>
                                             <Tab1
                                                 changeState={this.changeState}
                                                 data={this.state}
                                             />
                                         </TabPanel>
-                                        <TabPanel>
+                                    <TabPanel>
                                             <Tab2
                                                 changeState={this.changeState}
                                                 data={this.state}
                                             />
                                         </TabPanel>
-                                        <TabPanel>
+                                    <TabPanel>
                                             <Tab3
                                                 changeState={this.changeState}
                                                 data={this.state}
                                             />
                                         </TabPanel>
-                                        <TabPanel>
+                                    <TabPanel>
                                             <Tab4
                                                 changeState={this.changeState}
                                                 data={this.state}
                                             />
                                         </TabPanel>
-                                        <TabPanel>
+                                    <TabPanel>
                                             <Tab5
                                                 changeState={this.changeState}
                                                 submitApp={this.submitApp}
                                                 data={this.state}
                                             />
                                         </TabPanel>
-                                    </div>
-                            </Tabs>
+                                </div>
+                                </Tabs>
 
-                                <br />
-                                <div className="text-center">
-                                <br />
-                                {buttonprev}
-                                {buttonnext}
-                            </div>
-                            </div>
+                            <br />
+                            <div className="text-center">
+                                    <br />
+                                    {buttonprev}
+                                    {buttonnext}
+                                </div>
+                        </div>
                         }
                         <iframe
                             id="ifmcontentstoprint"

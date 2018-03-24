@@ -10,7 +10,6 @@ import { getBase64, regexValidate, validateNRIC } from '../../utils/common';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class Tab4 extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -19,160 +18,159 @@ class Tab4 extends React.Component {
             Hou: [{}],
             HouFiles: [],
             isValidHouNric: [],
-        }
-        this.handleInputChange                = this.handleInputChange.bind(this);
-        this.handleDOBChange                  = this.handleDOBChange.bind(this);
-        this.addCount                         = this.addCount.bind(this);
-        this.UpdateHou                        = this.UpdateHou.bind(this);
-        this.handleStartDateChange            = this.handleStartDateChange.bind(this);
-        this.handleEndDateChange              = this.handleEndDateChange.bind(this);
-        this.uploadHouFile                    = this.uploadHouFile.bind(this);
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleDOBChange = this.handleDOBChange.bind(this);
+        this.addCount = this.addCount.bind(this);
+        this.UpdateHou = this.UpdateHou.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
+        this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.uploadHouFile = this.uploadHouFile.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
     }
 
     inputChangeHandler(event) {
-        //this.setState({ [event.target.name]: event.target.value });
-        this.props.changeState([event.target.name],event.target.value);
-        this.setState({[event.target.name]: event.target.value});
+        // this.setState({ [event.target.name]: event.target.value });
+        this.props.changeState([event.target.name], event.target.value);
+        this.setState({ [event.target.name]: event.target.value });
     }
 
     handleInputChange(event) {
-        let value = event.target.value
-        if (event.target.name == 'ID_Number__c'){
+        let value = event.target.value;
+        if (event.target.name == 'ID_Number__c') {
             const isValidId = value !== '' ? validateNRIC(value) : true;
-            if(!isValidId) {
-                document.getElementById("nric_error0").innerHTML = "invalid NRIC/FIN format"
+            if (!isValidId) {
+                document.getElementById('nric_error0').innerHTML = 'invalid NRIC/FIN format';
             } else {
-                document.getElementById("nric_error0").innerHTML = ""
+                document.getElementById('nric_error0').innerHTML = '';
             }
             this.props.data.isValidMainNric = isValidId;
         }
-        if (event.target.name == 'Employment_Status__c'){
+        if (event.target.name == 'Employment_Status__c') {
             this.props.data.HouStatusEmployement[0] = event.target.value;
         }
-        if (event.target.id.indexOf('check') !== -1){
-            value = !this.props.data[event.target.name]
+        if (event.target.id.indexOf('check') !== -1) {
+            value = !this.props.data[event.target.name];
         }
         this.props.changeState([event.target.name], value);
-        console.log('step4', this.props.data)
+        console.log('step4', this.props.data);
     }
 
     handleDOBChange(date) {
-        var newDate = date.format("YYYY-MM-DD").toString();
-        //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
+        let newDate = date.format('YYYY-MM-DD').toString();
+        // this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
         this.setState({
-            dob: date
+            dob: date,
         });
-        this.props.changeState('Date_of_Birth__c', newDate)
+        this.props.changeState('Date_of_Birth__c', newDate);
     }
     handleStartDateChange(date) {
-        var newDate = date.format("YYYY-MM-DD").toString();
-        //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
-        this.props.changeState('Employment_Start_Date__c', newDate)
+        let newDate = date.format('YYYY-MM-DD').toString();
+        // this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
+        this.props.changeState('Employment_Start_Date__c', newDate);
     }
     handleEndDateChange(date) {
-        var newDate = date.format("YYYY-MM-DD").toString();
-        //this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
-        this.props.changeState('Employment_End_Date__c', newDate)
+        let newDate = date.format('YYYY-MM-DD').toString();
+        // this.props.changeState('Date_of_Birth__c', date.format("YYYY/MM/DD").toString());
+        this.props.changeState('Employment_End_Date__c', newDate);
     }
 
-    componentWillMount(){
+    componentWillMount() {
         console.log(this.props);
     }
 
     componentDidMount() {
     }
 
-    addCount(){
+    addCount() {
         this.setState({
-            houCount: (this.state.houCount+1)
+            houCount: (this.state.houCount + 1),
         });
         this.props.data.Hou.push({
             data: {
                 Gender__c: '',
                 Race__c: '',
-                Relationship_to_Applicant__c: ''
+                Relationship_to_Applicant__c: '',
             },
             attachment: {},
-        })
+        });
         this.props.data.HouStatusEmployement.push('');
         this.props.data.isValidHouNric.push('');
     }
-    minCount(event){
-        const houIdx = Number(event.target.id.match(/\d+/)[0])
+    minCount(event) {
+        const houIdx = Number(event.target.id.match(/\d+/)[0]);
         this.setState({
-            houCount: (this.state.houCount-1)
+            houCount: (this.state.houCount - 1),
         });
-        this.props.data.Hou.splice(houIdx, 1)
+        this.props.data.Hou.splice(houIdx, 1);
         this.props.data.HouStatusEmployement.splice(houIdx, 1);
         this.props.data.isValidHouNric.splice(houIdx, 1);
     }
-    UpdateHou(event){
-        const HouList = this.props.data.Hou
-        const houIdx = Number(event.target.id.match(/\d+/)[0])
-        HouList[houIdx]['data'][event.target.name] = event.target.value 
-        if(event.target.name === 'ID_Number__c'){
-            let isValidNric = validateNRIC(event.target.value)
+    UpdateHou(event) {
+        const HouList = this.props.data.Hou;
+        const houIdx = Number(event.target.id.match(/\d+/)[0]);
+        HouList[houIdx].data[event.target.name] = event.target.value;
+        if (event.target.name === 'ID_Number__c') {
+            const isValidNric = validateNRIC(event.target.value);
             if (!isValidNric) {
                 document.getElementById(`hou_nric_error${houIdx}`).innerHTML = 'invalid format NRIC/FIN';
             } else {
                 document.getElementById(`hou_nric_error${houIdx}`).innerHTML = '';
             }
-            this.props.data.isValidHouNric = isValidNric.toString()
+            this.props.data.isValidHouNric = isValidNric.toString();
         }
-        if(event.target.name === 'Employment_Status__c'){
+        if (event.target.name === 'Employment_Status__c') {
             this.props.data.HouStatusEmployement[houIdx] = event.target.value;
         }
-        this.setState({ 
-            Hou: HouList
+        this.setState({
+            Hou: HouList,
         });
         this.props.changeState('Hou', HouList);
     }
-    uploadHouFile(event){
-        const houIdx = Number(event.target.id.match(/\d+/)[0])
-        const hou = this.props.data.Hou[Number(event.target.id.match(/\d+/)[0])]
-        const name = event.target.name
-        const file = event.target.files[0]
-        const prefixFile = {file1: 'Nric_Fin_', file2: 'Income_Receipt_', file3:'payslip_'}
-        const fileName = prefixFile[event.target.name] + file.name.replace(/ |-/g, '_')
+    uploadHouFile(event) {
+        const houIdx = Number(event.target.id.match(/\d+/)[0]);
+        const hou = this.props.data.Hou[Number(event.target.id.match(/\d+/)[0])];
+        const name = event.target.name;
+        const file = event.target.files[0];
+        const prefixFile = { file1: 'Nric_Fin_', file2: 'Income_Receipt_', file3: 'payslip_' };
+        const fileName = prefixFile[event.target.name] + file.name.replace(/ |-/g, '_');
         const attachment = {
             Name: fileName,
             Body: '',
-            parentId: ''
-        }
+            parentId: '',
+        };
         getBase64(file).then((encodedFile) => {
-            attachment.Body = encodedFile.split(',')[1]
-            hou['attachment'][name] = attachment
+            attachment.Body = encodedFile.split(',')[1];
+            hou.attachment[name] = attachment;
         });
         document.getElementById(`${event.target.name}Name${houIdx}`).innerHTML = file.name;
-        console.log(hou)
+        console.log(hou);
     }
 
     render() {
         const that = this;
         const update = this.UpdateHou.bind(this);
-        const updateMain = this.handleInputChange.bind(this)
-        const minCount = this.minCount.bind(this)
+        const updateMain = this.handleInputChange.bind(this);
+        const minCount = this.minCount.bind(this);
         const dob = this.state.dob;
         const handleDOBChange = this.handleDOBChange.bind(this);
         const handleStartDateChange = this.handleStartDateChange.bind(this);
-        const handleEndDateChange = this.handleEndDateChange.bind(this)
-        const state = this.state
-        const props = this.props
+        const handleEndDateChange = this.handleEndDateChange.bind(this);
+        const state = this.state;
+        const props = this.props;
         const EarnerCount = props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
         props.data.EarnerCount = props.data.HouStatusEmployement.filter(i => i !== 'Unemployed').length;
         if (EarnerCount > 1) {
             Array.apply(1, Array(8)).map((val, num) => {
-                let fieldName = document.getElementById(`checkbox-able-${num+1}`).getAttribute("name")
+                const fieldName = document.getElementById(`checkbox-able-${num + 1}`).getAttribute('name');
                 props.data[fieldName] = false;
-            })
+            });
         }
-        
         return (
             <div className="col-md-12 print" id="Tab4">
-                {Array.apply(0, Array(this.state.houCount)).map(function (x, i) {
+                {Array.apply(0, Array(this.state.houCount)).map((x, i) => {
                     return (
                         <div className="fullh" key={i.toString()}>  
                         <br />   
@@ -715,7 +713,7 @@ class Tab4 extends React.Component {
                             </div>
                         </div>
                     </div>
-                )
+                );
                 })}
                 <br />
                 <center>
@@ -723,138 +721,147 @@ class Tab4 extends React.Component {
                 </center>
                 <br />
                 <hr className="dashed" />
-                <div className="row">	
+                <div className="row">
                     <div className="col-sm-12">
                         <div className="form-group">
                             <h4 className="info-text">Reason/s for not having an income earner / Having one income earner:</h4>
                             <div className="row col-md-12">
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-1"
-                                        type="checkbox"
-                                        value={true}
-                                        name="Alcoholism__c"
-                                        checked={props.data.Alcoholism__c}
-                                        disabled={EarnerCount > 1 ? true : false} /> 
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-1"
+                                            type="checkbox"
+                                            value
+                                            name="Alcoholism__c"
+                                            checked={props.data.Alcoholism__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-1">Alcoholism</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-2"
-                                        type="checkbox"
-                                        // value="Cultural or personal belief"
-                                        name="Cultural_or_personal_belief__c"
-                                        checked={props.data.Cultural_or_personal_belief__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-2"
+                                            type="checkbox"
+                                            // value="Cultural or personal belief"
+                                            name="Cultural_or_personal_belief__c"
+                                            checked={props.data.Cultural_or_personal_belief__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-2">Cultural or personal belief</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-3"
-                                        type="checkbox"
-                                        // value="Social Visit Pass"
-                                        name="Social_Visit_Pass__c"
-                                        checked={props.data.Social_Visit_Pass__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-3"
+                                            type="checkbox"
+                                            // value="Social Visit Pass"
+                                            name="Social_Visit_Pass__c"
+                                            checked={props.data.Social_Visit_Pass__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-3">Social Visit Pass</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-4"
-                                        type="checkbox"
-                                        value="Chronic illness"
-                                        name="Chronic_Illness__c"
-                                        checked={props.data.Chronic_Illness__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-4"
+                                            type="checkbox"
+                                            value="Chronic illness"
+                                            name="Chronic_Illness__c"
+                                            checked={props.data.Chronic_Illness__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-1">Chronic illness</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-5"
-                                        type="checkbox"
-                                        value="Gambling addiction"
-                                        name="Gambling_Addiction__c"
-                                        checked={props.data.Gambling_Addiction__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-5"
+                                            type="checkbox"
+                                            value="Gambling addiction"
+                                            name="Gambling_Addiction__c"
+                                            checked={props.data.Gambling_Addiction__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-2">Gambling addiction</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-6"
-                                        type="checkbox"
-                                        value="Temporarily unfit for work"
-                                        name="Temporarily_unfit_for_work__c"
-                                        checked={props.data.Temporarily_unfit_for_work__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-6"
+                                            type="checkbox"
+                                            value="Temporarily unfit for work"
+                                            name="Temporarily_unfit_for_work__c"
+                                            checked={props.data.Temporarily_unfit_for_work__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-3">Temporarily unfit for work</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-7"
-                                        type="checkbox"
-                                        value="Disability"
-                                        name="Disability__c"
-                                        checked={props.data.Disability__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-7"
+                                            type="checkbox"
+                                            value="Disability"
+                                            name="Disability__c"
+                                            checked={props.data.Disability__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-3">Disability</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-8"
-                                        type="checkbox"
-                                        value="Low education"
-                                        name="Low_Education__c"
-                                        checked={props.data.Low_Education__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-8"
+                                            type="checkbox"
+                                            value="Low education"
+                                            name="Low_Education__c"
+                                            checked={props.data.Low_Education__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-3">Low education</label>
                                 </div>
                                 <div className="col-md-4">
                                     <label className="custom-option">
-                                    <input
-                                        onChange={updateMain}
-                                        id="checkbox-able-9"
-                                        type="checkbox"
-                                        value="Drug addiction"
-                                        name="Drug_Addiction__c"
-                                        checked={props.data.Drug_Addiction__c}
-                                        disabled={EarnerCount > 1 ? true : false} />
-                                    <span className="button-checkbox"></span>
+                                        <input
+                                            onChange={updateMain}
+                                            id="checkbox-able-9"
+                                            type="checkbox"
+                                            value="Drug addiction"
+                                            name="Drug_Addiction__c"
+                                            checked={props.data.Drug_Addiction__c}
+                                            disabled={EarnerCount > 1}
+                                    />
+                                        <span className="button-checkbox" />
                                     </label>
                                     <label htmlFor="checkbox-able-3">Drug addiction</label>
                                 </div>
-                            </div>	
+                            </div>
                         </div>
                         <div className="col-sm-12">
                             <div className="col-md-4">
@@ -865,30 +872,31 @@ class Tab4 extends React.Component {
                                     type="text"
                                     className="form-control"
                                     placeholder="Please Specify if exist"
-                                    disabled={EarnerCount > 1 ? true : false} />
+                                    disabled={EarnerCount > 1}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
 Tab4.propTypes = {
-    title: PropTypes.string
+    title: PropTypes.string,
 };
 Tab4.defaultProps = {
     title: 'Tab4 ',
 };
 
 
-const mapDispatchToProps = (dispatch)  => ({
-    
+const mapDispatchToProps = dispatch => ({
+
 });
 
 const mapStateToProps = state => ({
     user: state.user,
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tab4);

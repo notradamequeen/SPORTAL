@@ -254,7 +254,7 @@ class Tab2 extends React.Component {
                                 value={this.props.data.ID_Type__c}
                                 onChange={this.handleInputChange}>
                                 {this.props.data.IDTypeList !== undefined && 
-                                    this.props.data.raceList.map((option) => {
+                                    this.props.data.IDTypeList.map((option) => {
                                         return (
                                             <option key={option.value} value={option.value} className="white">{option.label}</option>
                                         );
