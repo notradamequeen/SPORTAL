@@ -661,7 +661,7 @@ class Tab4 extends React.Component {
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>Upload Income Statement Receipt <small className="red">(required)</small></label><br />
+                                    <label>Upload Past 6mths CPF Statement <small className="red">(required)</small></label><br />
                                     <label className="fileContainer">
                                         Choose File
                                         <input
