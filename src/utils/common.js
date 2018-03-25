@@ -953,7 +953,7 @@ export function getData(type, data, datamap = null) {
             ['Date of Birth', data.data.Date_of_Birth__c, 'Race', data.data.Race__c],
             ['Gender', data.data.Gender__c, 'Nationality', data.data.Nationality__c],
             ['School', datamap.schoolMap[data.data.Current_School__c], 'Current Level', data.data.Current_Level__c],
-            ['Stream', data.data.Stream__c, 'Applaying to', datamap.schoolMap[data.data.Applying_to__c]],
+            ['Stream', data.data.Stream__c, 'Applying to', datamap.schoolMap[data.data.Applying_to__c]],
             ['Email', data.data.Email_Address__c, 'Relationship to Applicant', data.data.Relationship_to_Applicant__c],
             ['NRIC Uploaded File', data.attachment.Name],
         );
