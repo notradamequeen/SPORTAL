@@ -915,7 +915,7 @@ export function getData(type, data, datamap = null) {
     if (type == 'Doc') {
         newData.push(
             { title: '     -', text: 'Soft copy of student(s)’s NRIC / birth certificate' },
-            { title: '     -', text: 'Soft copy of both parents’/ guardian’s NRIC / passport' },
+            { title: '     -', text: "Soft copy of both parents’/ guardian’s / household members' NRIC / passport" },
             { title: '     -', text: 'Latest documentary evidence of gross household income of <b>every single member of the household</b> e.g.: latest pay slips and  CPF statements for the past 15 months (My Contribution, My Statement and Transaction History) or income declaration**iIn the absence of evidence indicating household income, please fill up the income declarations from in Annex B STSPMF reserves the right to reject the application if any of the supporting documents is not submitted' },
         );
     }

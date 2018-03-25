@@ -67,7 +67,7 @@ class Tab1 extends React.Component {
                         <input type="checkbox" name="check2" id="check2" defaultChecked={this.props.data.check2} onChange={this.handleInputChange} /> 
                     </div>
                     <div className="col-sm-11 text-content">
-                        Soft copy of both parents’/ guardian’s NRIC / passport
+                        Soft copy of both parents’/ guardian’s / household members' NRIC / passport
                     </div>
                 </div>
                 <div className="row">

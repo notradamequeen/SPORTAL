@@ -71,7 +71,7 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check2" id="check2" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                                Soft copy of both parents’/ guardian’s NRIC / passport
+                                Soft copy of both parents’/ guardian’s / household members' NRIC / passport
                             </div>
                         </div>
                         <div className="row">
