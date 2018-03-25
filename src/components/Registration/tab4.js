@@ -295,6 +295,7 @@ class Tab4 extends React.Component {
                         </div>
                         {/* row 2 */}
                         <div className="row ">
+                            {/* Gender */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Gender <small className="red">(required)</small></label>
@@ -327,6 +328,7 @@ class Tab4 extends React.Component {
                                     }
                                 </div>
                             </div>
+                            {/* Race */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Race <small className="red">(required)</small></label>
@@ -367,6 +369,42 @@ class Tab4 extends React.Component {
                                     }  
                                 </div>
                             </div>
+                            {/* Other race */}
+                            <div className="col-sm-4">
+                                <label>Other Race</label>
+                                <div className="form-group">
+                                    {i == 0 ?
+                                        <div>
+                                            <input
+                                                onChange={updateMain}
+                                                name="Other_Race__c"
+                                                id={`Hou${i}[Other_Race__c]`}
+                                                type="text"
+                                                className="form-control select"
+                                                value={props.data.Other_Race__c}
+                                                disabled={props.data.Race__c !== 'Others' ? true : false}
+                                            />
+                                        </div> :
+                                        <div>
+                                            <input
+                                                onChange={update}
+                                                name="Other_Race__c"
+                                                id={`Hou${i}[Other_Race__c]`}
+                                                type="text"
+                                                className="form-control"
+                                                maxLength="9"
+                                                value={props.data.Hou[i].data.Other_Race__c !== undefined && props.data.Hou[i].data.Race__c === 'Others' ?
+                                                    props.data.Hou[i].data.Other_Race__c : ''}
+                                                disabled={props.data.Hou[i].data.Race__c !== 'Others' ? true : false}
+                                            />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        {/* row 3 */}
+                        <div className="row">
+                            {/* Nationality */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Nationality <small className="red">(required)</small></label>
@@ -406,9 +444,39 @@ class Tab4 extends React.Component {
                                     }
                                 </div>
                             </div>
-                        </div>
-                        {/* row 3 */}
-                        <div className="row">
+                            {/* Other Nationality */}
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    <label>Other Nationality</label>
+                                    {i == 0 ?
+                                        <div>
+                                            <input
+                                                onChange={updateMain}
+                                                name="Other_Nationality__c"
+                                                id={`Hou${i}[Other_Nationality__c]`}
+                                                type="text"
+                                                className="form-control select"
+                                                value={props.data.Other_Nationality__c}
+                                                disabled={props.data.Other_Nationality__c !== 'Others' ? true : false}
+                                            />
+                                        </div> :
+                                        <div>
+                                            <input
+                                                onChange={update}
+                                                name="Other_Nationality__c"
+                                                id={`Hou${i}[Other_Nationality__c]`}
+                                                type="text"
+                                                className="form-control"
+                                                maxLength="9"
+                                                value={props.data.Hou[i].data.Other_Nationality__c !== undefined && props.data.Hou[i].data.Nationality__c === 'Others' ?
+                                                    props.data.Hou[i].data.Other_Nationality__c : ''}
+                                                disabled={props.data.Hou[i].data.Nationality__c !== 'Others' ? true : false}
+                                            />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            {/* Realtionship To Applicant */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Relationship to Applicant <small className="red">(required)</small></label>
@@ -447,6 +515,9 @@ class Tab4 extends React.Component {
                                     }
                                 </div>
                             </div>
+                        </div>
+                        {/* Row 4 */}
+                        <div className="row">
                             {/* Monthly Gross Income */}
                             <div className="col-sm-4">
                                 <div className="form-group">
@@ -484,6 +555,7 @@ class Tab4 extends React.Component {
                                     }  
                                 </div>
                             </div>
+                            {/* Employment Status */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     <label>Employment Status <small className="red">(required)</small></label>
@@ -521,8 +593,6 @@ class Tab4 extends React.Component {
                                     }
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
                             {/* Occupation */}
                             <div className="col-sm-4">
                                 <div className="form-group">
@@ -552,6 +622,10 @@ class Tab4 extends React.Component {
                                     }  
                                 </div>
                             </div>
+                        </div>
+                        {/* Row 5 */}
+                        <div className="row">
+                            {/* Company */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     {i == 0 ? 
@@ -582,6 +656,7 @@ class Tab4 extends React.Component {
                                     
                                 </div>
                             </div>
+                            {/* Employment Start Date */}
                             <div className="col-sm-4">
                                 <div className="form-group">
                                     {i == 0 ?
@@ -633,6 +708,44 @@ class Tab4 extends React.Component {
                                     
                                 </div>
                             </div>
+                            {/* Other Source of Income */}
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    {i == 0 ?
+                                        <div>
+                                        <label>Other Source of Income </label>
+                                        <input
+                                            onChange={updateMain}
+                                            name="Other_Source_of_Income__c"
+                                            id={`Hou${i}[Other_Source_of_Income__c]`}
+                                            type="text"
+                                            className="form-control select"
+                                            value={props.data.Other_Source_of_Income__c}
+                                        /></div> : ''
+                                    }  
+                                </div>
+                            </div>
+                        </div>
+                        {/* Row 6 */}
+                        <div className="row">
+                            {/* Other Source of Income Amount */}
+                            <div className="col-sm-4">
+                                <div className="form-group">
+                                    {i == 0 ? 
+                                        <div>
+                                            <label>Other Source of Income Amount </label>
+                                            <input
+                                                onChange={updateMain}
+                                                name="Other_Source_of_Income_Amount__c"
+                                                id={`Hou${i}[Other_Source_of_Income_Amount__c]`}
+                                                type="text"
+                                                className="form-control"
+                                                value={props.data.Other_Source_of_Income_Amount__c}
+                                            />
+                                        </div> : ''
+                                    }
+                                </div>
+                            </div>
                         </div>
                         <div className="row">
                             <div className="col-sm-4">
@@ -661,7 +774,7 @@ class Tab4 extends React.Component {
                             </div>
                             <div className="col-sm-4">
                                 <div className="form-group">
-                                    <label>Upload Income Statement Receipt <small className="red">(required)</small></label><br />
+                                    <label>Upload Past 6mths CPF Statement <small className="red">(required)</small></label><br />
                                     <label className="fileContainer">
                                         Choose File
                                         <input
@@ -669,7 +782,7 @@ class Tab4 extends React.Component {
                                             name="file2"
                                             type="file"
                                             className="form-control-file"
-                                            id={`Hou${i}[income_receipt_file]`}
+                                            id={`Hou${i}[cpmf_statement]`}
                                             aria-describedby="gh1" />
                                     </label>
                                     <br/>
