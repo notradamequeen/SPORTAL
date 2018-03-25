@@ -908,7 +908,7 @@ export function getData(type, data, datamap = null) {
             { title: '     -', text: 'Family has a gross per capita income (PCI) of $625/ month or less' },
             { title: '     -', text: 'Student is receiving full-time formal education in a mainstream primary/ secondary/ mixed level/ Junior College/ Centralized institute; Independent; SPED; Institutes of Technical Education; Polytechnic; Specialised; Specialized Independent; MOE-designated full-time Madrasahs and Mountbatten Vocational School' },
             { title: '     -', text: 'Is not concurrent receiving STSPMF or other similar monthly school pocket money schemes (Note that applicant under the MOE Financial Assistance Scheme are eligible)' },
-            { title: '     -', text: 'Is currently not receiving  STSPMF and has not been a STSPMF beneficiary for 24 months for the whole schooling years of primary and secondary school and 48 months for post-secondary school.[Note: This does not refer to students who are currently receiving fund through their schools and wish to continue receiving fund, subjected to their eligibility]' },
+            { title: '     -', text: 'Is currently not receiving  STSPMF and has not been a STSPMF beneficiary for 24 months for the whole schooling years of primary and secondary school and 48 months for post-secondary school.[Note: This does not refer to students who are currently receiving fund through their schools/disbursing agencies and wish to continue receiving fund, subjected to their eligibility]' },
             // {title: "     -", text: 'Student is 20 years or younger at point of application'},
         );
     }
