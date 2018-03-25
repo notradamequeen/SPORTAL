@@ -137,7 +137,7 @@ class Success extends React.Component {
                                 <input type="checkbox" name="check9" id="check9" checked />
                             </div>
                             <div className="col-sm-11 text-content">
-                            Is currently not receiving  STSPMF and has not been a STSPMF beneficiary for 24 months for the whole schooling years of primary and secondary school and 48 months for post-secondary school.[Note: This does not refer to students who are currently receiving fund through their schools and wish to continue receiving fund, subjected to their eligibility]
+                            Is currently not receiving  STSPMF and has not been a STSPMF beneficiary for 24 months for the whole schooling years of primary and secondary school and 48 months for post-secondary school.[Note: This does not refer to students who are currently receiving fund through their schools/disbursing agencies and wish to continue receiving fund, subjected to their eligibility]
                             </div>
                         </div>
                         <h4 className="info-text">Additional criteria for students own JC,ITE or Polytechnic applying for STSPMF</h4>
