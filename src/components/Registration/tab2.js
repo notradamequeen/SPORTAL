@@ -102,6 +102,7 @@ class Tab2 extends React.Component {
                 this.setState({ otherMS: true })
             } else {
                 this.setState({ otherMS: false })
+                this.props.changeState('Other_Marital_Status__c', '');
             }
             this.props.changeState('Marital_Status__c', selectedMS.value);
             this.setState({ selectedMS })
@@ -116,6 +117,7 @@ class Tab2 extends React.Component {
                 this.setState({ otherNation: true })
             } else {
                 this.setState({ otherNation: false })
+                this.props.changeState('Other_Nationality__c', '');
             }
             this.props.changeState('Nationality__c', selectedNation.value);
             this.setState({ selectedNation })
@@ -131,6 +133,7 @@ class Tab2 extends React.Component {
                 this.setState({ otherTF: true })
             } else {
                 this.setState({ otherTF: false })
+                this.props.changeState('Other_Flat_Type__c', '');
             }
             this.setState({ selectedFlatType })
             this.props.changeState(['Flat_Type__c'],selectedFlatType.value);
@@ -153,6 +156,7 @@ class Tab2 extends React.Component {
                 this.setState({ otherRace: true })
             } else {
                 this.setState({ otherRace: false })
+                this.props.changeState(['Other_Race__c'], '')
             }
         }
         if(evt.target.name.indexOf("Email") !== -1){
@@ -303,6 +307,8 @@ class Tab2 extends React.Component {
                             <input 
                                 name="Other_Marital_Status__c"
                                 type="text"
+                                value={this.props.data.Other_Marital_Status__c}
+                                onChange={this.handleInputChange}
                                 className="form-control"
                                 disabled={!this.state.otherMS}/>
                         </div>
@@ -334,6 +340,8 @@ class Tab2 extends React.Component {
                                 name="Other_Nationality__c"
                                 type="text"
                                 className="form-control"
+                                value={this.props.data.Other_Nationality__c}
+                                onChange={this.handleInputChange}
                                 disabled={!this.state.otherNation} />
                         </div>
                         <div className="form-group">
@@ -360,6 +368,8 @@ class Tab2 extends React.Component {
                                 name="Other_Race__c"
                                 type="text"
                                 className="form-control"
+                                value={this.props.data.Other_Race__c}
+                                onChange={this.handleInputChange}
                                 disabled={!this.state.otherRace} />
                         </div>
                     </div>
@@ -437,6 +447,8 @@ class Tab2 extends React.Component {
                                 name="Other_Flat_Type__c"
                                 type="text"
                                 className="form-control"
+                                value={this.props.data.Other_Flat_Type__c}
+                                onChange={this.handleInputChanges}
                                 disabled={!this.state.otherTF} />
                         </div>
                         

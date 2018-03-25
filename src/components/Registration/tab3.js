@@ -26,6 +26,7 @@ class Tab3 extends React.Component {
             isValidEmailFormat: [],
             isValidBenNric: [],
             curLevelBySchool: [[]],
+            applyingToList: [[]],
             subTypes: [''],
         };
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -135,6 +136,7 @@ class Tab3 extends React.Component {
         const benIdx = Number(event.target.id.match(/\d+/)[0]);
         const subTypes = this.state.subTypes;
         const curLevelBySchool = this.state.curLevelBySchool;
+        const applyingToList = this.state.applyingToList;
         const value = event.target.value;
         if (event.target.name.indexOf('Email') !== -1) {
             const isValidEmail = value !== '' ? regexValidate('email', value) : true;
@@ -159,38 +161,42 @@ class Tab3 extends React.Component {
 
         if (event.target.name.indexOf('Current_School') !== -1) {
             this.props.data.schoolList.map((item) => {
-                if (item.value == event.target.value) {
+                if (item.value === event.target.value) {
                     const subtype = item.type;
                     subTypes[benIdx] = subtype;
-                    if (subtype == 'Primary School')
-                        {curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
-                        if(clItem.value.includes("Primary")){
-                            return {value: clItem.value, label: clItem.label}
-                        }
-                        document.getElementById(`Ben${benIdx}[Stream__c]`).setAttribute('disabled', 'true')
-                    })};
-                    if (subtype == 'Secondary School')
+                    applyingToList[benIdx] = this.props.data.applyingToList.filter((applItem) => {
+                        console.log(event.target.value, applItem)
+                    })
+                    if (subtype === 'Primary School') {
+                        curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
+                            if (clItem.value.includes("Primary")) {
+                                return { value: clItem.value, label: clItem.label };
+                            }
+                            document.getElementById(`Ben${benIdx}[Stream__c]`).setAttribute('disabled', 'true')
+                        });
+                    }
+                    if (subtype === 'Secondary School')
                         {curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
                         if(clItem.value.includes("Secondary")){
                             return {value: clItem.value, label: clItem.label}
                         }
                         document.getElementById(`Ben${benIdx}[Stream__c]`).removeAttribute('disabled')
                     })};
-                    if (subtype == 'ITE')
+                    if (subtype === 'ITE')
                         {curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
                         if(clItem.value.includes("NITEC")){
                             return {value: clItem.value, label: clItem.label}
                         }
                         document.getElementById(`Ben${benIdx}[Stream__c]`).setAttribute('disabled', 'true')
                     })};
-                    if (subtype == 'Polytechnic')
+                    if (subtype === 'Polytechnic')
                         {curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
                         if(clItem.value.includes("Polytechnic")){
                             return {value: clItem.value, label: clItem.label}
                         }
                         document.getElementById(`Ben${benIdx}[Stream__c]`).setAttribute('disabled', 'true')
                     })};
-                    if (subtype == 'Junior College')
+                    if (subtype === 'Junior College')
                         {curLevelBySchool[benIdx] = this.props.data.currLevelList.filter((clItem)=>{
                         if(clItem.value.includes("JC")){
                             return {value: clItem.value, label: clItem.label}
@@ -200,7 +206,7 @@ class Tab3 extends React.Component {
                 }
             });
         }
-        console.log(BenList);
+        console.log(BenList[benIdx]);
         BenList[benIdx].data[event.target.name] = value;
         this.setState({
             Ben: BenList,
@@ -237,7 +243,8 @@ class Tab3 extends React.Component {
         const school_list = this.state.schoolList;
         const state = this.state;
         const props = this.props;
-        // console.log('subtypes', state.subTypes)
+        // console.log('applyingtoList', props.data.applyingToList)
+        // console.log('schoollist', props.data.schoolList)
         // console.log('curlevelbyschool', this.state.curLevelBySchool)
         // console.log('bencount', this.state.bencount)
         return (

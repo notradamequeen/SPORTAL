@@ -80,8 +80,8 @@ class Registration extends React.Component {
                     console.log('onClick', 5);
                 },
             }],
-            currentStep: 0,
-            tabIndex: 0,
+            currentStep: 2,
+            tabIndex: 2,
             nodeList: [],
             RecordType: { Household_Member: '0125D0000008awbQAA', Beneficiary: '0125D0000008awgQAA' },
             employStatusList: [],
@@ -241,7 +241,7 @@ class Registration extends React.Component {
 
                 const applyingToList = [];
                 this.props.salesforce.applyingToList.fields.records.map((atlItem) => {
-                    applyingToList.push({ type: atlItem.Partner_Type__c, value: atlItem.Id, label: atlItem.Name });
+                    applyingToList.push({ type: atlItem.Partner_SubType__c, value: atlItem.Id, label: atlItem.Name });
                     levelSchoolMap.push({ [atlItem.Name]: atlItem.Partner_SubType__c });
                     schoolMap[atlItem.Id] = atlItem.Name;
                 });
@@ -317,6 +317,7 @@ class Registration extends React.Component {
     }
     onClickNext() {
         const { steps, currentStep, tabIndex } = this.state;
+        console.log(currentStep);
         if (currentStep > 0) {
             const validate = validation(currentStep + 1, this.state);
             const isValid = validate.isValid;

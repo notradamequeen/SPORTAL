@@ -93,6 +93,7 @@ class Tab4 extends React.Component {
                 Gender__c: '',
                 Race__c: '',
                 Relationship_to_Applicant__c: '',
+                Monthly_Gross_Income__c: 0,
             },
             attachment: {},
         });
