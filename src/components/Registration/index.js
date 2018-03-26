@@ -284,6 +284,7 @@ class Registration extends React.Component {
                         this.state.IDTypeList = item.picklistValues;
                     }
                 });
+                this.filterRelationships();
             });
             this.retrieve('Application__c/describe').then((json) => {
                 const appFields = json.fields;
@@ -310,6 +311,16 @@ class Registration extends React.Component {
             this.setState({ isLoading: false });
         });
     }
+
+    filterRelationships() {
+        const relationshipList = this.state.relationList.filter(relation => {
+            return relation.value === 'Son' || relation.value === 'Daughter' || relation.value === 'Step son' || relation.value === 'Step daughter' || relation.value === 'Legal ward (of the legal guardian)'
+        })
+        this.setState({
+            relationList: relationshipList
+        })
+    }
+
     componentWillUnmount() {
         window.removeEventListener('beforeunload', (event) => {
             console.log(event);

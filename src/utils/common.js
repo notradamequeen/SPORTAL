@@ -915,7 +915,7 @@ export function getData(type, data, datamap = null) {
     if (type == 'Doc') {
         newData.push(
             { title: '     -', text: 'Soft copy of student(s)’s NRIC / birth certificate' },
-            { title: '     -', text: 'Soft copy of both parents’/ guardian’s NRIC / passport' },
+            { title: '     -', text: "Soft copy of both parents’/ guardian’s / household members' NRIC / passport" },
             { title: '     -', text: 'Latest documentary evidence of gross household income of <b>every single member of the household</b> e.g.: latest pay slips and  CPF statements for the past 15 months (My Contribution, My Statement and Transaction History) or income declaration**iIn the absence of evidence indicating household income, please fill up the income declarations from in Annex B STSPMF reserves the right to reject the application if any of the supporting documents is not submitted' },
         );
     }
@@ -953,7 +953,7 @@ export function getData(type, data, datamap = null) {
             ['Date of Birth', data.data.Date_of_Birth__c, 'Race', data.data.Race__c],
             ['Gender', data.data.Gender__c, 'Nationality', data.data.Nationality__c],
             ['School', datamap.schoolMap[data.data.Current_School__c], 'Current Level', data.data.Current_Level__c],
-            ['Stream', data.data.Stream__c, 'Applaying to', datamap.schoolMap[data.data.Applying_to__c]],
+            ['Stream', data.data.Stream__c, 'Applying to', datamap.schoolMap[data.data.Applying_to__c]],
             ['Email', data.data.Email_Address__c, 'Relationship to Applicant', data.data.Relationship_to_Applicant__c],
             ['NRIC Uploaded File', data.attachment.Name],
         );
@@ -984,11 +984,7 @@ export function getData(type, data, datamap = null) {
      may share the relevant information with STSPMF.',
             },
             {
-                number: '        ', text: 'b) that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any \
-        agency or persons authorised by The Straits Times School Pocket Money Fund for the purpose of rendering \
-    me or assessing my eligibility for financial or other assistance in future occasions; or for research studies \
-          in which I, as a specific individual, shall not be identified; or for any other purpose prescribed or permitted \
-         under Singapore law..',
+                number: '        ', text: 'b) that the record of this application, if approved, may be shared with STSPMF Trustees, the school and any agency, organization or persons authorized by The Straits Times School Pocket Money Fund for the purpose of rendering me or assessing my eligibility for financial or other assistance in future occasions; or for research studies or for any other purpose prescribed or permitted under Singapore law.',
             },
             { number: '      4.', text: 'I acknowledge that the information I have provided is accurate. I understand that [my children / my ward(s)*] data will be stored in the electronic Case Management System (and in future, any replacement system developed by STSPMF) and consent for the data to be shared with STSPMF and across other agencies for analysis and enhancement of service delivery.' },
             { number: '      5.', text: 'I am aware that the disbursing agency and/or STSPMF has the right to recover in full the STSPMF that was given to me, if I have provided inaccurate information, or withheld any relevant information from the school.' },
